@@ -25,12 +25,19 @@ function Headline({ text }) {
   );
 }
 
+// Shared by SlideImage and the LCP preload so both request the same URLs.
+function slideSources(slide) {
+  return {
+    desktop: responsiveImage(slide.image_desktop, { aspect: [16, 9], widths: DESKTOP_WIDTHS }),
+    mobile: responsiveImage(slide.image_mobile || slide.image_desktop, {
+      aspect: slide.image_mobile ? [4, 5] : [16, 9],
+      widths: MOBILE_WIDTHS,
+    }),
+  };
+}
+
 function SlideImage({ slide, priority }) {
-  const desktop = responsiveImage(slide.image_desktop, { aspect: [16, 9], widths: DESKTOP_WIDTHS });
-  const mobile = responsiveImage(slide.image_mobile || slide.image_desktop, {
-    aspect: slide.image_mobile ? [4, 5] : [16, 9],
-    widths: MOBILE_WIDTHS,
-  });
+  const { desktop, mobile } = slideSources(slide);
   return (
     <picture>
       <source media="(min-width: 1024px)" srcSet={desktop.srcSet} sizes="100vw" />
@@ -88,7 +95,12 @@ function Hero() {
   if (isPending) return <HeroSkeleton />;
   if (!total) return null;
 
-  const first = responsiveImage(slides[0].image_mobile || slides[0].image_desktop, { aspect: [4, 5], widths: MOBILE_WIDTHS });
+  const first = slideSources(slides[0]);
+  // Same split as SlideImage's <source media>, so each viewport preloads only the image it shows.
+  const preloads = [
+    { image: first.mobile, media: "(max-width: 1023px)" },
+    { image: first.desktop, media: "(min-width: 1024px)" },
+  ].filter((p) => p.image.src);
 
   return (
     <section
@@ -101,7 +113,9 @@ function Hero() {
       onBlur={() => setHold(false)}
     >
       {/* LCP: hoisted into <head> by React 19. */}
-      {first.src && <link rel="preload" as="image" href={first.src} imageSrcSet={first.srcSet} imageSizes="100vw" fetchPriority="high" />}
+      {preloads.map(({ image, media }) => (
+        <link key={media} rel="preload" as="image" href={image.src} imageSrcSet={image.srcSet} imageSizes="100vw" media={media} fetchPriority="high" />
+      ))}
 
       {/* Slides share one grid cell, so the tallest sets the height and fades never reflow. */}
       <div className="grid lg:min-h-svh">

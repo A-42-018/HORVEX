@@ -11,9 +11,9 @@ const STRAP_SLUGS = ["chain", "leather"];
 const TOP_LEVEL_SLUGS = ["men", "women"];
 
 const PRICE_LINKS = [
-  { to: "/shop?price_max=2999", label: strings.mega.prices.under2999 },
-  { to: "/shop?price_max=4999", label: strings.mega.prices.under4999 },
-  { to: "/shop?price_min=5000", label: strings.mega.prices.over4999 },
+  { to: "/shop?max=2999", label: strings.mega.prices.under2999 },
+  { to: "/shop?max=4999", label: strings.mega.prices.under4999 },
+  { to: "/shop?min=5000", label: strings.mega.prices.over4999 },
 ];
 
 const HELP_LINKS = [

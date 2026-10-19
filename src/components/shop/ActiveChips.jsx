@@ -6,16 +6,17 @@ import { strings } from "../../lib/strings";
 const t = strings.listing.filters;
 
 // Removable chips for every active filter, plus "Clear all".
-function ActiveChips({ view, showCategory = false }) {
+function ActiveChips({ view, showCategory = false, showGender = true }) {
   const { filters, update, toggle, clear } = view;
   const categories = useCategories();
   const chips = [];
 
+  if (filters.search) chips.push({ id: "search", label: t.searchChip(filters.search), remove: () => update({ search: null }) });
   if (showCategory && filters.category) {
     const name = categories.data?.find((c) => c.slug === filters.category)?.name ?? filters.category;
     chips.push({ id: "category", label: name, remove: () => update({ category: null }) });
   }
-  if (filters.gender) chips.push({ id: "gender", label: t.genders[filters.gender], remove: () => update({ gender: null }) });
+  if (showGender && filters.gender) chips.push({ id: "gender", label: t.genders[filters.gender], remove: () => update({ gender: null }) });
   if (filters.priceMin != null || filters.priceMax != null) {
     const label = t.priceChip(
       filters.priceMin != null ? formatTaka(filters.priceMin) : null,

@@ -1,5 +1,5 @@
 import { query } from "./supabase";
-import { listProducts } from "./products";
+import { categoryScope, listProducts } from "./products";
 
 // Categories and collections. RLS hides hidden categories and collections
 // outside their active window.
@@ -47,17 +47,31 @@ const RULE_FILTERS = {
 };
 
 export function collectionFilters(rules = {}) {
-  return Object.fromEntries(
+  const { category, ...filters } = Object.fromEntries(
     Object.entries(rules)
       .filter(([key]) => key in RULE_FILTERS)
       .map(([key, value]) => [RULE_FILTERS[key], value]),
   );
+  return category ? { ...filters, ...categoryScope(category) } : filters;
+}
+
+const maxOf = (a, b) => (a == null ? b : b == null ? a : Math.max(a, b));
+const minOf = (a, b) => (a == null ? b : b == null ? a : Math.min(a, b));
+
+/** User filters narrowed by a collection's rules: the price ranges intersect, and every other rule wins. */
+function withinRules(rules, filters) {
+  return {
+    ...filters,
+    ...rules,
+    priceMin: maxOf(rules.priceMin, filters.priceMin),
+    priceMax: minOf(rules.priceMax, filters.priceMax),
+  };
 }
 
 /** Products in a collection: hand-picked order for "manual", the rules for "rules". */
 export async function listCollectionProducts(collection, { sort, limit = 24, offset = 0, filters = {} } = {}) {
   if (collection.mode === "rules") {
-    return listProducts({ ...collectionFilters(collection.rules), ...filters, sort, limit, offset });
+    return listProducts({ ...withinRules(collectionFilters(collection.rules), filters), sort, limit, offset });
   }
   const links = await query((db) =>
     db.from("collection_products").select("product_id").eq("collection_id", collection.id).order("sort_order"),

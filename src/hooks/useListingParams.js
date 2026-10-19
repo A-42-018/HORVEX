@@ -6,7 +6,8 @@ export const PAGE_SIZE = 24;
 const MAX_PAGES = 20;
 export const PRICE_RANGE = { min: 0, max: 12000, step: 500 };
 const GENDERS = ["men", "women", "unisex"];
-const FILTER_KEYS = ["category", "gender", "min", "max", "strap", "movement", "stock"];
+const FILTER_KEYS = ["category", "gender", "min", "max", "strap", "movement", "stock", "search"];
+const SEARCH_MAX = 64;
 
 const list = (raw, field) =>
   (raw ?? "").split(",").filter((key, i, all) => key in FILTER_OPTIONS[field] && all.indexOf(key) === i);
@@ -18,8 +19,9 @@ const price = (raw) => {
 /**
  * Listing view state kept in the URL (?sort=price-asc&page=2) so links can be shared.
  * `sort` is undefined when absent/invalid (collections then keep their hand-picked order).
- * Filters (?category=&gender=&min=&max=&strap=a,b&movement=a,b&stock=1) are parsed into `filters`
- * (the shape `listProducts` takes); any filter change resets `page`.
+ * Filters (?category=&gender=&min=&max=&strap=a,b&movement=a,b&stock=1&search=) are parsed into `filters`
+ * (the shape `listProducts` takes); any filter change resets `page`. `search` (from the search
+ * overlay's "View all") is a chip but not a panel filter, so it isn't in `activeCount`.
  * `page` = how many pages are shown (load more appends, so the view is reproducible).
  */
 export function useListingParams() {
@@ -41,6 +43,7 @@ export function useListingParams() {
     strap: list(params.get("strap"), "strap"),
     movement: list(params.get("movement"), "movement"),
     inStock: params.get("stock") === "1" || undefined,
+    search: params.get("search")?.trim().slice(0, SEARCH_MAX) || undefined,
   };
   const activeCount =
     [filters.category, filters.gender, filters.inStock].filter(Boolean).length +
@@ -70,7 +73,7 @@ export function useListingParams() {
     limit: page * PAGE_SIZE,
     filters,
     activeCount,
-    hasFilters: activeCount > 0,
+    hasFilters: activeCount > 0 || Boolean(filters.search),
     update: (changes) => update({ ...changes, page: null }),
     /** Toggle one key of a comma-list param (strap, movement). */
     toggle: (key, value) => {

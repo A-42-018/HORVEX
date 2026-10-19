@@ -50,6 +50,7 @@ const en = {
       reset: "Reset",
       activeLabel: "Active filters",
       remove: (label) => `Remove filter: ${label}`,
+      searchChip: (term) => `Search: “${term}”`,
       priceChip: (min, max) => (min != null && max != null ? `${min} – ${max}` : min != null ? `From ${min}` : `Up to ${max}`),
     },
     browseAll: "Browse all watches",

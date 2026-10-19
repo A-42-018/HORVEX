@@ -3,7 +3,7 @@
 Phase specs: `roadmap.md` §14 · Session starter: `PHASE_PROMPT.md` · Project rules: `CLAUDE.md` · Archive: `docs/history.md` (old notes + decisions; don't read it for block B)
 
 ## Next Up
-**B14b — Gallery (mobile): done (build + lint pass). Next: B15a — Variants & stock (Sonnet). Still pending 👤/browser: browser checks for B1a–B14b, and apply migration `20261020100000_b3c_courier_partners.sql`.**
+**B14b — Gallery (mobile): done; block B review fixes done. Next: B15a — Variants & stock (Sonnet). Still pending 👤/browser: full browser checks for B1a–B14b (review-fix pages were checked), and apply migration `20261020100000_b3c_courier_partners.sql`.**
 
 ## Status
 Statuses: `todo` · `in progress` · `blocked (👤 you)` · `done`
@@ -97,6 +97,8 @@ Statuses: `todo` · `in progress` · `blocked (👤 you)` · `done`
 ## Session Notes
 Newest first, 3–5 lines each: what was done, anything deferred, anything the next phase must know. For an unfinished phase, list what's done and what's left. **Keep only the 5 newest entries here**; move older ones to `docs/history.md`.
 
+- **Block B review fixes (done):** Imported B1a–B14b from the zip (commit "Import block B through B14b (from zip)"; dropped the unused pre-B11 `home/*` sections and `src/data/`), then fixed 10 review findings: `/category/men|women` list by gender via `categoryScope()` (services/products.js; gender facet hidden there, men/women left out of the /shop category radios); menu price links use `?min=`/`?max=`; `?search=` is a URL filter with a chip (not counted in `activeCount`, cleared by `clear()`); rule collections intersect user filters (`withinRules`); `PriceRange` is controlled (no remount; commits on pointerup + stepping keys only); `MobileCarousel` only scrolls for external index changes; hero preloads mobile + desktop crops with `media`; gallery eager-loads only the visible layout (`hooks/useMediaQuery.js`); the mobile filter count runs only inside the open sheet; 44px dot targets; tab bar uses `text-badge`.
+  Verified: build, lint (same 7 pre-existing warnings), browser at 1238/1024px and 375px, no console errors. Not done: `home/Anatomy.jsx` still has a one-off `text-[0.625rem]` (out of scope). Real touch swipes were simulated with wheel/scroll events, not a device.
 - **B14b (done):** `ProductGallery` below `lg` is now a native scroll-snap swipe carousel (`MobileCarousel`: dots, tap opens lightbox, scroll position ↔ `index` synced both ways); desktop viewer/thumbs are `lg+` only (thumbs no longer shown on mobile; dots replace them). `GalleryLightbox` gained touch gestures via pointer events: swipe to change image, two-finger pinch zoom (1–4x), drag-pan when zoomed (bounded), double-tap toggles 2.5x; mouse behaviour unchanged. No new strings/deps. B15a: put variant→image change through `ProductGallery`'s `index` (lift state or add an `activeImageUrl` prop) when wiring the picker.
   Verified: `npm ci`, build, lint (no new warnings). Not browser-checked (375px swipe + dots, pinch/double-tap on a real touch device, lightbox swipe at 1x vs zoomed, 1-image product, desktop unchanged at 1440px). No git repo in the zip, so not committed.
 
@@ -109,8 +111,8 @@ Newest first, 3–5 lines each: what was done, anything deferred, anything the n
 - **B13a (done):** URL-synced filters: `useListingParams` now parses `category, gender, min, max, strap, movement, stock` into `filters` (the `listProducts` shape) and exposes `update`, `toggle`, `activeCount`, `hasFilters`; any change resets `page`; `clear` drops filters + page but keeps `sort`. `listProducts` gained `strap`/`movement` (arrays of `FILTER_OPTIONS` keys → `specs->>…` ILIKE, OR within facet) and `inStock`; collections accept `filters`. New `shop/FilterPanel` (category radios on /shop only, gender, dual price slider `PriceRange` 0–12000 step 500, strap, movement, in-stock), `shop/ActiveChips`; `Listing.jsx` has a sticky `lg+` sidebar + chips. **B13b:** reuse `FilterPanel`/`ActiveChips` inside a bottom sheet (`Drawer`) with "Apply (n)" (panel currently applies instantly; use a draft copy of params) and show chips below `lg`. Dial-colour facet skipped: no dial-colour data exists (only variant swatches); add when the DB has it.
   Verified: `npm ci`, build, lint (no new warnings). Not browser-checked (combine filters + sort, shared URL, slider keyboard, 1440px sticky sidebar).
 
-- **B12b (done):** New `hooks/useListingParams.js` (`?sort=` validated against `PRODUCT_SORTS`, `?page=N` = pages shown, capped 20; `replace` navigation, no scroll reset; exposes `sort, limit, hasParams, setSort, loadMore, clear`). New `shop/SortSelect.jsx`, `shop/ListingEmpty.jsx`; added `bestselling` sort to `services/products.js`. `Listing.jsx` shows "Showing n of total", sort select, "Load more" (refetches `page*24` from offset 0, previous items kept), empty state ("Clear filters" if params, else "Browse all watches"). Collections: no `sort` param keeps the hand-picked order; choosing "Featured" removes the param. B13 should add filter params via `useListingParams`' `update` (not exported yet: export it or extend the hook) and reset `page` on filter change.
-  Verified: `npm ci`, build, lint (only pre-existing warnings). Not browser-checked (shared URL with `?sort=price-asc&page=2` reproduces view; 375px sort row).
 
 ## Decisions
 New decisions from block B go here (one line each). Earlier decisions are in `docs/history.md`; the ones that matter day to day are already in `CLAUDE.md`.
+- `men`/`women` category slugs always resolve to a gender filter (`categoryScope`), on listings and in collection rules.
+- Rule collections narrow user filters: price ranges intersect; gender/category/featured/bestseller/badge rules override the URL.

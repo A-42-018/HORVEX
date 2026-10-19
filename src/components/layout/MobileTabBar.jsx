@@ -7,7 +7,7 @@ import { strings } from "../../lib/strings";
 
 const ICON = { size: 22, strokeWidth: 1.5, "aria-hidden": true };
 const ITEM =
-  "relative flex min-h-16 flex-col items-center justify-center gap-1 text-[0.625rem] font-medium uppercase tracking-wider transition-colors duration-fast focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-focus";
+  "relative flex min-h-16 flex-col items-center justify-center gap-1 text-badge transition-colors duration-fast focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-focus";
 
 const tone = (active) => (active ? "text-gold" : "text-muted hover:text-fg");
 

@@ -5,15 +5,17 @@ import { ActiveChips, FilterPanel, ListingEmpty, ListingHeader, MobileFilters, S
 import NotFound from "./NotFound";
 import { useCategory, useCollection, useCollectionProducts, useProducts } from "../hooks/useCatalog";
 import { useListingParams } from "../hooks/useListingParams";
+import { categoryScope } from "../services/products";
 import { strings } from "../lib/strings";
 
 // Result count for a draft filter set (mobile "Apply (n)"), per listing type.
 const useShopTotal = (filters) => useProducts({ ...filters, limit: 1 }).data?.total;
-const categoryTotal = (slug) => (filters) => useProducts({ ...filters, category: slug, limit: 1 }).data?.total;
+const categoryTotal = (slug) => (filters) => useProducts({ ...filters, category: undefined, ...categoryScope(slug), limit: 1 }).data?.total;
 const collectionTotal = (collection) => (filters) =>
   useCollectionProducts(collection, { filters, limit: 1 }).data?.total;
 
-function ListingBody({ title, description, crumbs, query, view, useTotal, showCategory = false }) {
+function ListingBody({ title, description, crumbs, query, view, useTotal, showCategory = false, showGender = true }) {
+  const facets = { showCategory, showGender };
   const { data, isFetching } = query;
   const shown = data?.items.length ?? 0;
   const total = data?.total ?? 0;
@@ -28,7 +30,7 @@ function ListingBody({ title, description, crumbs, query, view, useTotal, showCa
           <aside className="hidden lg:block">
             <div className="sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto pr-2">
               <h2 className="mb-4 text-h3 text-fg">{strings.listing.filters.title}</h2>
-              <FilterPanel view={view} showCategory={showCategory} />
+              <FilterPanel view={view} {...facets} />
             </div>
           </aside>
           <div className="min-w-0">
@@ -37,11 +39,11 @@ function ListingBody({ title, description, crumbs, query, view, useTotal, showCa
                 {data ? strings.listing.showing(shown, total) : ""}
               </p>
               <div className="flex items-center gap-3">
-                <MobileFilters view={view} showCategory={showCategory} useTotal={useTotal} />
+                <MobileFilters view={view} {...facets} useTotal={useTotal} />
                 <SortSelect value={view.sort} onChange={view.setSort} />
               </div>
             </div>
-            <ActiveChips view={view} showCategory={showCategory} />
+            <ActiveChips view={view} {...facets} />
             {isEmpty ? (
               <ListingEmpty hasParams={view.hasFilters} onClear={view.clear} />
             ) : (
@@ -82,7 +84,8 @@ export function CategoryListing() {
   const { slug } = useParams();
   const category = useCategory(slug);
   const view = useListingParams();
-  const query = useProducts({ ...view.filters, category: slug, sort: view.sort, limit: view.limit });
+  const scope = categoryScope(slug);
+  const query = useProducts({ ...view.filters, category: undefined, ...scope, sort: view.sort, limit: view.limit });
   if (category.isPending) return <ListingSkeleton />;
   if (!category.data) return <NotFound />;
   return (
@@ -93,6 +96,7 @@ export function CategoryListing() {
       query={query}
       view={view}
       useTotal={categoryTotal(slug)}
+      showGender={!scope.gender}
     />
   );
 }

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Maximize2 } from "lucide-react";
 import { IconButton } from "../common";
+import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { responsiveImage } from "../../lib/images";
 import { strings } from "../../lib/strings";
 import GalleryLightbox from "./GalleryLightbox";
@@ -35,10 +36,11 @@ function GalleryImage({ image, name, sizes, eager = false, className = "", style
 }
 
 // Below lg: horizontal scroll-snap track (native swipe, no JS drag). The
-// visible slide is read from scroll position; external index changes (e.g. the
-// lightbox) scroll the track to match.
-function MobileCarousel({ list, name, index, onIndex, onOpen }) {
+// visible slide is read from scroll position; only index changes from outside
+// (the lightbox) scroll the track, so swipes and smooth dot scrolls aren't cut short.
+function MobileCarousel({ list, name, index, onIndex, onOpen, eager }) {
   const trackRef = useRef(null);
+  const scrolledTo = useRef(index); // last index the track itself reported
   const total = list.length;
 
   const slideWidth = () => trackRef.current?.clientWidth || 1;
@@ -47,14 +49,16 @@ function MobileCarousel({ list, name, index, onIndex, onOpen }) {
     const el = trackRef.current;
     if (!el) return;
     const next = Math.round(el.scrollLeft / slideWidth());
-    if (next !== index && next >= 0 && next < total) onIndex(next);
+    if (next < 0 || next >= total) return;
+    scrolledTo.current = next;
+    if (next !== index) onIndex(next);
   };
 
   useEffect(() => {
     const el = trackRef.current;
-    if (!el) return;
-    const target = index * slideWidth();
-    if (Math.abs(el.scrollLeft - target) > 2) el.scrollTo({ left: target, behavior: "auto" });
+    if (!el || index === scrolledTo.current) return;
+    scrolledTo.current = index;
+    el.scrollTo({ left: index * slideWidth(), behavior: "auto" });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [index]);
 
@@ -81,7 +85,7 @@ function MobileCarousel({ list, name, index, onIndex, onOpen }) {
               aria-label={g.zoom}
               className="block h-full w-full focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-focus"
             >
-              <GalleryImage image={image} name={name} eager={i === 0} sizes="100vw" />
+              <GalleryImage image={image} name={name} eager={eager && i === 0} sizes="100vw" />
             </button>
           </li>
         ))}
@@ -92,7 +96,7 @@ function MobileCarousel({ list, name, index, onIndex, onOpen }) {
       </span>
 
       {total > 1 && (
-        <div className="absolute inset-x-0 bottom-3 flex justify-center gap-1">
+        <div className="absolute inset-x-0 bottom-0 flex justify-center">
           {list.map((image, i) => (
             <button
               key={image.id ?? image.url}
@@ -100,7 +104,7 @@ function MobileCarousel({ list, name, index, onIndex, onOpen }) {
               onClick={() => scrollToSlide(i)}
               aria-label={g.thumb(i + 1, total)}
               aria-current={i === index}
-              className="flex h-6 w-6 items-center justify-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
+              className="flex h-11 w-11 items-center justify-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
             >
               <span
                 className={`block h-1.5 rounded-full bg-fg transition-[opacity,transform] duration-fast ${
@@ -119,8 +123,10 @@ function MobileCarousel({ list, name, index, onIndex, onOpen }) {
 // shows a zoom lens (transform only); click/Enter opens the lightbox, and the
 // arrow buttons + thumbnails work without any hover. Below lg the same
 // component shows a native scroll-snap swipe carousel with dots; tapping a
-// slide opens the lightbox (pinch zoom lives there).
+// slide opens the lightbox (pinch zoom lives there). Only the layout that's
+// showing loads its first image eagerly; the hidden one stays lazy (never fetched).
 function ProductGallery({ images, name, className = "" }) {
+  const desktop = useMediaQuery("(min-width: 1024px)");
   const list = orderGalleryImages(images);
   const [index, setIndex] = useState(0);
   const [lightbox, setLightbox] = useState(false);
@@ -168,7 +174,7 @@ function ProductGallery({ images, name, className = "" }) {
               key={current.url}
               image={current}
               name={name}
-              eager={index === 0}
+              eager={desktop && index === 0}
               sizes="(min-width: 1024px) 40vw, 100vw"
             />
           </span>
@@ -200,7 +206,7 @@ function ProductGallery({ images, name, className = "" }) {
         )}
       </div>
 
-      <MobileCarousel list={list} name={name} index={index} onIndex={setIndex} onOpen={() => setLightbox(true)} />
+      <MobileCarousel list={list} name={name} eager={!desktop} index={index} onIndex={setIndex} onOpen={() => setLightbox(true)} />
 
       {total > 1 && (
         <ul className="hidden gap-2 lg:flex lg:w-20 lg:shrink-0 lg:flex-col lg:overflow-y-auto lg:overflow-x-visible lg:p-1">

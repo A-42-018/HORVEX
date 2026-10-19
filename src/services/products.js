@@ -41,6 +41,11 @@ function specClause(field, keys = []) {
   return patterns.map((pattern) => `specs->>${field}.ilike.${pattern}`).join(",");
 }
 
+// "men" / "women" are gender landing categories: no product has them as category_id, so their
+// listings filter on products.gender (which also includes unisex) instead of the category slug.
+export const GENDER_CATEGORIES = ["men", "women"];
+export const categoryScope = (slug) => (GENDER_CATEGORIES.includes(slug) ? { gender: slug } : { category: slug });
+
 const bySortOrder = (a, b) => a.sort_order - b.sort_order;
 
 /** Embedded rows come back unordered; sort them once here so components don't. */

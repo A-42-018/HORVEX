@@ -1,6 +1,6 @@
 import { useCategories } from "../../hooks/useCatalog";
 import { PRICE_RANGE } from "../../hooks/useListingParams";
-import { FILTER_OPTIONS } from "../../services/products";
+import { FILTER_OPTIONS, GENDER_CATEGORIES } from "../../services/products";
 import { strings } from "../../lib/strings";
 import PriceRange from "./PriceRange";
 
@@ -27,12 +27,14 @@ function Check({ type = "checkbox", name, checked, onChange, children }) {
 
 /**
  * Filter controls, driven by `useListingParams()` (`view`). Shared by the desktop sidebar (B13a)
- * and the mobile sheet (B13b). `showCategory` is off on category/collection pages.
+ * and the mobile sheet (B13b). `showCategory` is off on category/collection pages; `showGender` is
+ * off on the men/women landing pages. The men/women categories are left out of the category radios
+ * because the gender group already covers them.
  */
-function FilterPanel({ view, showCategory = false }) {
+function FilterPanel({ view, showCategory = false, showGender = true }) {
   const { filters, update, toggle } = view;
   const categories = useCategories();
-  const topLevel = (categories.data ?? []).filter((c) => !c.parent_id);
+  const topLevel = (categories.data ?? []).filter((c) => !c.parent_id && !GENDER_CATEGORIES.includes(c.slug));
 
   return (
     <div role="group" aria-label={t.label}>
@@ -48,13 +50,15 @@ function FilterPanel({ view, showCategory = false }) {
           ))}
         </Group>
       )}
-      <Group title={t.gender}>
-        {Object.keys(t.genders).map((key) => (
-          <Check key={key} checked={filters.gender === key} onChange={() => update({ gender: filters.gender === key ? null : key })}>
-            {t.genders[key]}
-          </Check>
-        ))}
-      </Group>
+      {showGender && (
+        <Group title={t.gender}>
+          {Object.keys(t.genders).map((key) => (
+            <Check key={key} checked={filters.gender === key} onChange={() => update({ gender: filters.gender === key ? null : key })}>
+              {t.genders[key]}
+            </Check>
+          ))}
+        </Group>
+      )}
       <Group title={t.price}>
         <PriceRange
           min={filters.priceMin ?? PRICE_RANGE.min}

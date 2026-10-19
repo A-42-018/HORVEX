@@ -14,6 +14,7 @@ const pick = (filters) => ({
   strap: filters.strap,
   movement: filters.movement,
   inStock: filters.inStock,
+  search: filters.search,
 });
 
 const countOf = (f) =>
@@ -25,15 +26,24 @@ const countOf = (f) =>
 // URL-style keys (what FilterPanel sends) -> filters shape.
 const KEY = { min: "priceMin", max: "priceMax", stock: "inStock" };
 
+// Mounted inside the open sheet only, so the count query never runs while it's closed.
+function ApplyButton({ draft, useTotal, onApply }) {
+  const total = useTotal(draft);
+  return (
+    <Button className="flex-1" onClick={onApply}>
+      {total == null ? t.apply : t.applyCount(total)}
+    </Button>
+  );
+}
+
 /**
  * Bottom-sheet filters below `lg`. Edits a draft copy of the URL filters; "Apply (n)" commits it
  * in one URL update and n is the live result count for the draft.
  * `useTotal(filters)` returns the result count for a filter object (page-specific query).
  */
-function MobileFilters({ view, showCategory = false, useTotal }) {
+function MobileFilters({ view, showCategory = false, showGender = true, useTotal }) {
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState(() => pick(view.filters));
-  const total = useTotal({ ...draft });
 
   const openSheet = () => {
     setDraft(pick(view.filters));
@@ -70,7 +80,8 @@ function MobileFilters({ view, showCategory = false, useTotal }) {
     setOpen(false);
   };
 
-  const clearDraft = () => setDraft({ strap: [], movement: [] });
+  // The search term isn't a panel filter, so Reset keeps it (as Apply does).
+  const clearDraft = () => setDraft({ strap: [], movement: [], search: draft.search });
   const count = countOf(draft);
 
   return (
@@ -89,13 +100,11 @@ function MobileFilters({ view, showCategory = false, useTotal }) {
             <Button variant="ghost" onClick={clearDraft} disabled={!count}>
               {t.reset}
             </Button>
-            <Button className="flex-1" onClick={apply}>
-              {total == null ? t.apply : t.applyCount(total)}
-            </Button>
+            <ApplyButton draft={draft} useTotal={useTotal} onApply={apply} />
           </div>
         }
       >
-        <FilterPanel view={draftView} showCategory={showCategory} />
+        <FilterPanel view={draftView} showCategory={showCategory} showGender={showGender} />
       </Drawer>
     </>
   );
