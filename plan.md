@@ -10,7 +10,7 @@ Statuses: `todo` · `in progress` · `blocked (👤 you)` · `done`
 | 0 | Project setup | — | done |
 | A1 | Design tokens & fonts | Opus | done |
 | A2 | Core primitives & style guide | Opus | done |
-| A3 | Database schema & RLS | Opus | todo |
+| A3 | Database schema & RLS | Opus | done |
 | A4 | Order engine & seed data | Opus | todo |
 | A5 | Data layer & client state | Opus | todo |
 | A6 | Admin auth & admin patterns | Opus | todo |
@@ -51,10 +51,18 @@ Statuses: `todo` · `in progress` · `blocked (👤 you)` · `done`
 | C6 | QA, launch & handover | Opus | todo |
 
 ## Next Up
-**A3 — Database schema & RLS (Opus).** Starts with a 👤 You step: create the Supabase project and put the URL + anon key in `.env`.
+**A4 — Order engine & seed data (Opus).** No 👤 You step. Apply new migrations + `seed.sql` the same way as A3 (SQL Editor, see `supabase/README.md`).
 
 ## Session Notes
 Newest first. Keep each entry to 3–6 lines: what was done, anything deferred, anything the next phase must know. For an unfinished phase, list what's done and what's left.
+
+### Phase A3 — Database schema & RLS (done)
+- Supabase project created (Mumbai), `.env` holds URL + publishable key. Migrations in `supabase/migrations/` (schema · RLS · storage) were applied by pasting into the SQL Editor; `supabase/README.md` documents the steps and the access model. No CLI or DB password needed.
+- All §9.4 tables + indexes + `updated_at` triggers. `cost_price` lives in admin-only `product_costs`, not `products`. Customers = `admin_customers` view (`security_invoker`, built from orders). Status changes write `order_status_history` via trigger (`changed_by = auth.uid()`). `site_settings` singleton row is created by the migration (A4 seed should `update` it).
+- Helpers `is_admin()` / `is_manager()` / `is_owner()` / `admin_role()`. RLS on every table: public reads published rows; staff = orders, customers, blocked phones; manager = all but settings/admin users; owner = all. No INSERT policy on `orders` for anyone, so A4's `place_order` must be `security definer`. Anon may only insert `subscribers` / `contact_messages` (frontend must not request `return=representation`; no read-back).
+- Buckets `product-images`, `site-media` (≤ 50 MB, allows mp4/webm), `review-photos`: public by URL, not listable by anon, manager+ write.
+- Verified: `supabase/tests/a3_rls_check.sql` passes on the live project (and locally on PGlite, where planted leaks make it fail); anon REST probes get 42501 on orders/costs/coupons/customers and `cost_price` doesn't exist. No UI change.
+- For later: new tables in A4+ need explicit `grant`s like A3 (Supabase's default grants differ per project setting). A6: disable public sign-ups in Auth settings (any signup gets `authenticated`; harmless under RLS but noisy). `order_number` format is only checked (`^HVX-[0-9A-Z]{5,}$`); A4 generates it.
 
 ### Phase A2 — Core primitives & style guide (done)
 - `components/common`: Button (primary gold + sheen / secondary / ghost / link, `loading`), Badge (new / sale / limited / soldOut), Card, Container, SectionHeading (`action` → "View all →") restyled; new IconButton, Input (floating label, `multiline`, `error`/`hint`), Select (native), Drawer (right panel ≥ md, bottom sheet on mobile; `side="left"`), Modal, Skeleton, Price, Rating. Template variant names (`outline`, `ghost`, `success`, `neutral`, `hoverable`) still work.
@@ -95,3 +103,8 @@ Newest first. Keep each entry to 3–6 lines: what was done, anything deferred, 
 - Drawer/Modal use a native `<dialog>` (top layer + inert page) plus a Tab-wrap handler, instead of a portal + focus-trap library.
 - Context colours use `color-mix()` in the Tailwind colour functions so `/opacity` modifiers work on CSS-var colours.
 - IconButton is circular (`rounded-full`), an exception to the "999px only for chips" radius rule, matching the "ring" spec.
+- `cost_price` is a separate `product_costs` table (manager+) instead of a column: RLS is row-level, and column grants would break `select=*` for every role.
+- Table grants are explicit: anon gets SELECT only on storefront tables and INSERT only on `subscribers` / `contact_messages`; sensitive tables aren't granted to anon at all (fails before RLS). `authenticated` gets CRUD and RLS decides.
+- Role helpers are `security definer` with `search_path = ''`; policies call them as `(select public.is_admin())` so they run once per statement.
+- Status-like columns are `text` + CHECK, not enums (easier to extend from a migration).
+- Migrations are applied through the dashboard SQL Editor (no Supabase CLI/DB password); every migration ships with a self-cleaning test script in `supabase/tests/`.
