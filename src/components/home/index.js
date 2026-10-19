@@ -1,0 +1,13 @@
+export { default as Hero } from "./Hero";
+export { default as TrustFeatures } from "./TrustFeatures";
+export { default as CategoryShowcase } from "./CategoryShowcase";
+export { default as BestSellers } from "./BestSellers";
+export { default as PromoBanner } from "./PromoBanner";
+export { default as NewArrivals } from "./NewArrivals";
+export { default as BrandStory } from "./BrandStory";
+export { default as WhyChooseUs } from "./WhyChooseUs";
+export { default as CustomerReviews } from "./CustomerReviews";
+export { default as SocialShowcase } from "./SocialShowcase";
+export { default as Newsletter } from "./Newsletter";
+export { default as FAQ } from "./FAQ";
+export { default as FinalCTA } from "./FinalCTA";
