@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 
-// The one browser client. Only the URL and the publishable (anon) key belong
-// here; RLS decides what each request may read or write.
+// Only the URL and the publishable (anon) key belong in the browser; RLS
+// decides what each request may read or write.
 const url = import.meta.env.VITE_SUPABASE_URL;
 const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
@@ -11,11 +11,18 @@ if (!isSupabaseConfigured && import.meta.env.DEV) {
   console.warn("Supabase isn't configured: copy .env.example to .env and fill in the URL and anon key.");
 }
 
-export const supabase = isSupabaseConfigured
-  ? createClient(url, anonKey, {
-      auth: { persistSession: true, autoRefreshToken: true },
-    })
-  : null;
+/** Creates a client for this project. The admin builds its own one in services/adminClient.js. */
+export const createSupabaseClient = (authOptions) =>
+  isSupabaseConfigured ? createClient(url, anonKey, { auth: authOptions }) : null;
+
+// The storefront client never holds a session. RLS shows admins drafts and
+// hidden rows, so an owner signed in to /admin must still see the shop as a
+// visitor does; the admin session lives in its own client and storage key.
+export const supabase = createSupabaseClient({
+  persistSession: false,
+  autoRefreshToken: false,
+  detectSessionInUrl: false,
+});
 
 /**
  * Error thrown by every service. `code` is the server's stable token
@@ -30,34 +37,41 @@ export class ServiceError extends Error {
   }
 }
 
-function client() {
-  if (!supabase) throw new ServiceError("not_configured");
-  return supabase;
-}
-
-async function run(build) {
-  const result = await build(client());
-  if (result.error) {
-    const { message, code, details } = result.error;
-    throw new ServiceError(message, { code, details, cause: result.error });
+/** Binds query() / queryWithCount() / rpc() to a client. */
+export function createServiceHelpers(supabaseClient) {
+  function client() {
+    if (!supabaseClient) throw new ServiceError("not_configured");
+    return supabaseClient;
   }
-  return result;
-}
 
-/** Runs a query builder against the client and returns `data`, or throws a ServiceError. */
-export const query = async (build) => (await run(build)).data;
-
-/** Same as query() for selects made with `{ count: "exact" }`: returns { data, count }. */
-export async function queryWithCount(build) {
-  const { data, count } = await run(build);
-  return { data, count };
-}
-
-/** Calls a public RPC. Order-engine errors keep their snake_case token as `code`. */
-export async function rpc(name, args) {
-  const { data, error } = await client().rpc(name, args);
-  if (error) {
-    throw new ServiceError(error.message, { code: error.message, details: error.details, cause: error });
+  async function run(build) {
+    const result = await build(client());
+    if (result.error) {
+      const { message, code, details } = result.error;
+      throw new ServiceError(message, { code, details, cause: result.error });
+    }
+    return result;
   }
-  return data;
+
+  return {
+    /** Runs a query builder against the client and returns `data`, or throws a ServiceError. */
+    query: async (build) => (await run(build)).data,
+
+    /** Same as query() for selects made with `{ count: "exact" }`: returns { data, count }. */
+    async queryWithCount(build) {
+      const { data, count } = await run(build);
+      return { data, count };
+    },
+
+    /** Calls an RPC. Order-engine errors keep their snake_case token as `code`. */
+    async rpc(name, args) {
+      const { data, error } = await client().rpc(name, args);
+      if (error) {
+        throw new ServiceError(error.message, { code: error.message, details: error.details, cause: error });
+      }
+      return data;
+    },
+  };
 }
+
+export const { query, queryWithCount, rpc } = createServiceHelpers(supabase);

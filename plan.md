@@ -13,7 +13,7 @@ Statuses: `todo` · `in progress` · `blocked (👤 you)` · `done`
 | A3 | Database schema & RLS | Opus | done |
 | A4 | Order engine & seed data | Opus | done |
 | A5 | Data layer & client state | Opus | done |
-| A6 | Admin auth & admin patterns | Opus | todo |
+| A6 | Admin auth & admin patterns | Opus | done |
 | B1 | Header (desktop) + announcement | Sonnet | todo |
 | B2 | Mega menu & search | Sonnet | todo |
 | B3 | Mobile nav & footer | Sonnet | todo |
@@ -51,10 +51,18 @@ Statuses: `todo` · `in progress` · `blocked (👤 you)` · `done`
 | C6 | QA, launch & handover | Opus | todo |
 
 ## Next Up
-**A6 — Admin auth & admin patterns (Opus).** 👤 You: create the owner user in Supabase Auth and its `admin_profiles` row (exact steps are given at the start of the session). Also disable public sign-ups (see A3 notes).
+**B1 — Header (desktop) + announcement (Sonnet).**
 
 ## Session Notes
 Newest first. Keep each entry to 3–6 lines: what was done, anything deferred, anything the next phase must know. For an unfinished phase, list what's done and what's left.
+
+### Phase A6 — Admin auth & admin patterns (done)
+- 👤 Owner user + `admin_profiles` row (role `owner`) and a non-admin test user created; public sign-ups disabled. No "forgot password" flow: reset by recreating the user in the dashboard (noted on the login page).
+- Two Supabase clients: the storefront `supabase` holds no session (RLS shows admins drafts, so a signed-in owner must still see the shop as a visitor); `services/adminClient.js` holds the admin session under `horvex-admin-auth`. `supabase.js` now exports `createServiceHelpers(client)`; admin services (`auth.js`, `admin.js`, `storage.js`) use the admin client and are imported only by admin code.
+- `admin/auth/`: `AuthProvider` (session listener + profile query; status loading/signedOut/denied/error/admin; drops `auth` and `[domain, "admin", …]` queries on sign-out), `RequireAdmin` (→ `/admin/login` with `state.from`, refusal screen for non-staff), `RequireRole` + `roles.js` (`hasRole`; per-page min role: staff = dashboard/orders/customers, owner = settings/users, else manager). Login page signs non-staff straight back out. Layout: role-filtered nav, name · role, Sign out. Admin route got `HydrateFallback`.
+- Helpers: `admin/hooks/useAdminMutation.js` (`useAdminMutation` = invalidate domains + quiet activity_log entry; `useAdminCrud(table)` = create/update/remove/reorder), `useImageUpload` → `services/storage.js` (`uploadImage` compresses to WebP ≤ 2000px with a lazily imported `browser-image-compression`, random file names, 1-year cache; `uploadFile`, `removeFiles`, `pathFromPublicUrl`).
+- Verified: signed out → login (from remembered); owner signed in and landed back on `/admin/products` with all 12 nav items; admin client reads orders as `owner` while the storefront client stays anon (orders 42501); sign-out clears only the admin session; storefront still loads products; desktop + 375px, no overflow, no app console errors. Non-admin refusal: the code path signs them out with "doesn't have admin access" (user to confirm with the test account).
+- For later: CRUD/upload helpers are untested against live writes (no admin screen yet) — B22/B23 exercise them first. Activity logging is client-side and best-effort; C5 could move critical logs (orders, prices) to DB triggers. Owner TOTP 2FA (§9.4, optional) not done — C5. Admin reads must use `[domain, "admin", …]` keys.
 
 ### Phase A5 — Data layer & client state (done)
 - `services/`: `supabase.js` (client, `ServiceError`, `query` / `queryWithCount` / `rpc`), `products.js` (`listProducts` with category/gender/featured/bestseller/badge/price/search/ids/sort → `{ items, total }`, `getProduct`, `getProductsByIds`, reviews + `summarizeRatings`), `categories.js` (categories, collections, manual and rule collections), `content.js` (home sections, hero, banners, FAQs, testimonials, recent reviews, pages, subscribe/contact inserts), `settings.js` (site settings, zones), `orders.js` (quote/place/track) and `queryKeys.js`.
@@ -131,4 +139,8 @@ Newest first. Keep each entry to 3–6 lines: what was done, anything deferred, 
 - `order_rejected` is deliberately the same for blocked phones and the honeypot.
 - Data layer: services return snake_case DB rows; components use hooks only; query keys are `[domain, kind, ...params]` from one factory, and writes invalidate a whole domain.
 - Wishlist and recently viewed store ids only (fresh product data on load); the cart stores display snapshots clamped to the engine's limits and the stock at add time; checkout trusts only `quote_order`.
+- Admin uses its own Supabase client/session (`horvex-admin-auth`); the storefront client never has a session, so RLS admin rights (drafts, hidden rows) never leak into the shop view.
+- Admin access = Supabase Auth session + `admin_profiles` row. UI role gates mirror RLS (`hasRole`), RLS stays the real enforcement. Non-staff are signed out at login.
+- Activity log is written client-side after a successful admin mutation (best-effort, never fails the save); admin read keys are `[domain, "admin", …]` so domain invalidation covers them and sign-out drops them.
+- Admin images are compressed to WebP in the browser before upload, stored under random names (immutable, 1-year cache).
 - Persisted stores share `store/persist.js`: versioned `horvex-<name>` keys, reset on a version bump without a migrate, cross-tab sync via the storage event. Overlay UI state is never persisted.

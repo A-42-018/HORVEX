@@ -1,38 +1,59 @@
 import { Route, Routes } from "react-router";
+import AuthProvider from "./auth/AuthProvider";
+import RequireAdmin from "./auth/RequireAdmin";
+import RequireRole from "./auth/RequireRole";
 import AdminLayout from "./layout/AdminLayout";
 import AdminPlaceholder from "./pages/AdminPlaceholder";
+import Login from "./pages/Login";
 
 // Everything under /admin lives behind this module, which the router loads as
 // a separate chunk, so storefront visitors never download admin code.
+// [path, title, phase, minRole]: staff = orders + customers (roadmap §10).
 const PAGES = [
-  ["orders", "Orders", 11],
-  ["orders/:orderId", "Order detail", 11],
-  ["products", "Products", 10],
-  ["products/new", "New product", 10],
-  ["products/:productId", "Edit product", 10],
-  ["categories", "Categories & collections", 10],
-  ["homepage", "Homepage builder", 12],
-  ["content", "Content", 12],
-  ["coupons", "Coupons", 12],
-  ["delivery", "Delivery zones", 12],
-  ["customers", "Customers", 11],
-  ["reviews", "Reviews", 12],
-  ["settings", "Settings", 12],
-  ["users", "Users & roles", 12],
+  ["orders", "Orders", "B25", "staff"],
+  ["orders/:orderId", "Order detail", "B26", "staff"],
+  ["products", "Products", "B22", "manager"],
+  ["products/new", "New product", "B22", "manager"],
+  ["products/:productId", "Edit product", "B23", "manager"],
+  ["categories", "Categories & collections", "B24", "manager"],
+  ["homepage", "Homepage builder", "B27", "manager"],
+  ["content", "Content", "B28", "manager"],
+  ["coupons", "Coupons", "B29", "manager"],
+  ["delivery", "Delivery zones", "B29", "manager"],
+  ["customers", "Customers", "B26", "staff"],
+  ["reviews", "Reviews", "B28", "manager"],
+  ["settings", "Settings", "B29", "owner"],
+  ["users", "Users & roles", "B29", "owner"],
 ];
 
 function AdminApp() {
   return (
-    <Routes>
-      <Route path="login" element={<AdminPlaceholder title="Admin login" phase={9} />} />
-      <Route element={<AdminLayout />}>
-        <Route index element={<AdminPlaceholder title="Dashboard" phase={9} />} />
-        {PAGES.map(([path, title, phase]) => (
-          <Route key={path} path={path} element={<AdminPlaceholder title={title} phase={phase} />} />
-        ))}
-        <Route path="*" element={<AdminPlaceholder title="Page not found" phase={9} />} />
-      </Route>
-    </Routes>
+    <AuthProvider>
+      <Routes>
+        <Route path="login" element={<Login />} />
+        <Route
+          element={
+            <RequireAdmin>
+              <AdminLayout />
+            </RequireAdmin>
+          }
+        >
+          <Route index element={<AdminPlaceholder title="Dashboard" phase="B21" />} />
+          {PAGES.map(([path, title, phase, minRole]) => (
+            <Route
+              key={path}
+              path={path}
+              element={
+                <RequireRole minRole={minRole}>
+                  <AdminPlaceholder title={title} phase={phase} />
+                </RequireRole>
+              }
+            />
+          ))}
+          <Route path="*" element={<AdminPlaceholder title="Page not found" phase="B21" />} />
+        </Route>
+      </Routes>
+    </AuthProvider>
   );
 }
 
