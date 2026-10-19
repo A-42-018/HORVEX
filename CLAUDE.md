@@ -19,6 +19,14 @@ Premium watch store for Bangladesh: React 19 + Vite 8 + Tailwind 3.4 + React Rou
 5. Commit with the message `Phase <ID>: <name>`. Never push and never commit `.env`.
 6. Running low on usage? Stop at a working state, set status to `in progress`, write in the notes what's done and what's left, and commit as `WIP Phase <ID>`.
 
+## Data & state conventions
+- **Components never call Supabase directly.** Flow: `services/*.js` (queries, built on `query()` / `rpc()` from `services/supabase.js`, which throw `ServiceError` with a `code`) → hooks (`hooks/useCatalog.js`, `useContent.js`, `useOrders.js`) → components. New reads get a service function and a hook.
+- **Query keys only come from `services/queryKeys.js`**: `[domain, kind, ...params]`. Writes invalidate a whole domain (`queryKeys.products.all`). Content/settings/categories use a 5-minute `staleTime`, products the 60 s default.
+- Services return DB rows in snake_case (`compare_at_price`), with `images` / `variants` already sorted. Listings return `{ items, total }`; single lookups return `null` when not found.
+- Order-engine failures surface as `error.code` = the engine token (`out_of_stock`, `invalid_coupon`, …). Map tokens to `strings.js` copy in the UI. Checkout totals come only from `useOrderQuote` / `usePlaceOrder`.
+- Client state is Zustand in `store/`: `useCart`, `useWishlist`, `useRecentlyViewed` (persisted as `horvex-<name>`, synced across tabs) and `useUI` (overlays, not persisted). Subscribe with selectors (`useCart(selectCartCount)`), not the whole store. Wishlist and recently viewed hold ids only; load products with `useProductsByIds`. Cart lines are display snapshots capped at the engine limits (20 lines, 10 per line, stock).
+- Analytics: call `track(EVENTS.x, params)` from `lib/analytics.js` (GA4 event names). The cart and wishlist stores already track their own events.
+
 ## Code rules
 - Mobile-first and responsive (360px → 1920px). Tap targets ≥ 44px.
 - Use design tokens from `tailwind.config.js` only; no hardcoded hex colors or one-off font sizes.

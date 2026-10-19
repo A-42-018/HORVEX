@@ -24,6 +24,20 @@ const en = {
     limited: "Limited",
     soldOut: "Sold out",
   },
+  product: {
+    addToCart: "Add to bag",
+    added: "Added to bag",
+    chooseOptions: "Choose options",
+    maxQty: "Maximum quantity in bag",
+    bagFull: "Your bag is full",
+    wishlistAdd: (name) => `Add ${name} to wishlist`,
+    wishlistRemove: (name) => `Remove ${name} from wishlist`,
+  },
+  data: {
+    loadError: "We couldn't load this right now.",
+    retry: "Try again",
+    noProducts: "No watches here yet.",
+  },
   form: {
     required: "This field is required",
     invalidPhone: "Enter a valid Bangladeshi mobile number (01XXX-XXXXXX)",

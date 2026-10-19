@@ -40,7 +40,7 @@ function Logo() {
   );
 }
 
-function Navbar({ cartCount = 2 }) {
+function Navbar({ cartCount = 0 }) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuButtonRef = useRef(null);

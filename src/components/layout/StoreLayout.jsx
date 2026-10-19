@@ -2,11 +2,14 @@ import { Outlet, ScrollRestoration } from "react-router";
 import AnnouncementBar from "./AnnouncementBar";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import { selectCartCount, useCart } from "../../store/cart";
 
 // Shell for every storefront route: skip link, header, routed page, footer.
 // section-ivory keeps the light template sections readable on the dark base
 // until block B rebuilds the header, footer and pages.
 function StoreLayout() {
+  const cartCount = useCart(selectCartCount);
+
   return (
     <div className="section-ivory min-h-screen">
       <a
@@ -16,7 +19,7 @@ function StoreLayout() {
         Skip to main content
       </a>
       <AnnouncementBar />
-      <Navbar />
+      <Navbar cartCount={cartCount} />
       <main id="main-content">
         <Outlet />
       </main>

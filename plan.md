@@ -12,7 +12,7 @@ Statuses: `todo` · `in progress` · `blocked (👤 you)` · `done`
 | A2 | Core primitives & style guide | Opus | done |
 | A3 | Database schema & RLS | Opus | done |
 | A4 | Order engine & seed data | Opus | done |
-| A5 | Data layer & client state | Opus | todo |
+| A5 | Data layer & client state | Opus | done |
 | A6 | Admin auth & admin patterns | Opus | todo |
 | B1 | Header (desktop) + announcement | Sonnet | todo |
 | B2 | Mega menu & search | Sonnet | todo |
@@ -51,10 +51,18 @@ Statuses: `todo` · `in progress` · `blocked (👤 you)` · `done`
 | C6 | QA, launch & handover | Opus | todo |
 
 ## Next Up
-**A5 — Data layer & client state (Opus).** No 👤 You step. Read `supabase/README.md` → "Order engine" for the RPC contract the order service wraps.
+**A6 — Admin auth & admin patterns (Opus).** 👤 You: create the owner user in Supabase Auth and its `admin_profiles` row (exact steps are given at the start of the session). Also disable public sign-ups (see A3 notes).
 
 ## Session Notes
 Newest first. Keep each entry to 3–6 lines: what was done, anything deferred, anything the next phase must know. For an unfinished phase, list what's done and what's left.
+
+### Phase A5 — Data layer & client state (done)
+- `services/`: `supabase.js` (client, `ServiceError`, `query` / `queryWithCount` / `rpc`), `products.js` (`listProducts` with category/gender/featured/bestseller/badge/price/search/ids/sort → `{ items, total }`, `getProduct`, `getProductsByIds`, reviews + `summarizeRatings`), `categories.js` (categories, collections, manual and rule collections), `content.js` (home sections, hero, banners, FAQs, testimonials, recent reviews, pages, subscribe/contact inserts), `settings.js` (site settings, zones), `orders.js` (quote/place/track) and `queryKeys.js`.
+- Hooks: `hooks/useCatalog.js`, `useContent.js` (also settings/zones), `useOrders.js` (`useOrderQuote`, `usePlaceOrder` invalidates products, `useTrackOrder`). The QueryClient retries only errors without a code (network blips).
+- Stores: `store/cart.js`, `wishlist.js`, `recentlyViewed.js` (persisted `horvex-*`, cross-tab sync), `ui.js` (overlays, not persisted). `lib/analytics.js` `track()` logs in dev only. Conventions are in `CLAUDE.md` → "Data & state conventions".
+- Home: BestSellers (bestsellers) and NewArrivals (newest, All/Men/Women) load live products through `useProducts` via a temporary `HomeProductGrid` (skeleton / error + retry / empty). The template ProductCard now shows real images, `<Price>`, badges, the wishlist store and add-to-bag (products with variants link to the PDP). The navbar cart count is the real store count (it was a fake "2").
+- Verified live: every service call against the seeded DB, `invalid_coupon` arrives as `error.code`; cart (3 items) and wishlist (2) survive a refresh and a new tab; desktop + 375px, no overflow, no console errors.
+- For later: the main chunk is now 625 kB (supabase-js); C4 should split it (e.g. lazy-load non-home routes). The template card's add-to-bag only appears on hover/focus, so touch users can't reach it until B5. `src/data/products.js` is unused now (B11 removes it). `useRecentlyViewed.add` is for B16's PDP to call.
 
 ### Phase A4 — Order engine & seed data (done)
 - Migration `20261019130000_a4_order_engine.sql`: public RPCs `quote_order` (read-only totals + coupon check), `place_order`, `track_order`; internal `price_order`, `normalize_bd_phone`, `request_ip` (execute revoked from anon/authenticated). Contract, error tokens and limits are in `supabase/README.md`.
@@ -121,3 +129,6 @@ Newest first. Keep each entry to 3–6 lines: what was done, anything deferred, 
 - Categories are styles (automatic-skeleton, chain, leather, couple, accessories); `men` / `women` are gender landing categories that list by `products.gender` (+ unisex), not `category_id`. Rule collections use `rules` like `{"price_max": 2999}`.
 - Order numbers are sequential (`HVX-10001`), easy to read out on a phone call; `track_order` still needs the matching phone. Limits: 20 lines, 10 per line, 3 orders/phone/hour, 10/IP/hour (shared carrier IPs).
 - `order_rejected` is deliberately the same for blocked phones and the honeypot.
+- Data layer: services return snake_case DB rows; components use hooks only; query keys are `[domain, kind, ...params]` from one factory, and writes invalidate a whole domain.
+- Wishlist and recently viewed store ids only (fresh product data on load); the cart stores display snapshots clamped to the engine's limits and the stock at add time; checkout trusts only `quote_order`.
+- Persisted stores share `store/persist.js`: versioned `horvex-<name>` keys, reset on a version bump without a migrate, cross-tab sync via the storage event. Overlay UI state is never persisted.

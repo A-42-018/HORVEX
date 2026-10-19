@@ -1,24 +1,17 @@
-import { useMemo, useState } from "react";
-import { Container, SectionHeading, Reveal } from "../common";
-import ProductCard from "./ProductCard";
-import products from "../../data/products";
+import { useState } from "react";
+import { Container, SectionHeading } from "../common";
+import HomeProductGrid from "./HomeProductGrid";
+import { useProducts } from "../../hooks/useCatalog";
 
 const FILTERS = [
-  { id: "all", label: "All" },
-  { id: "clothing", label: "Clothing" },
-  { id: "accessories", label: "Accessories" },
-  { id: "shoes", label: "Shoes" },
+  { id: null, label: "All" },
+  { id: "men", label: "Men" },
+  { id: "women", label: "Women" },
 ];
 
-const newArrivals = products.filter((product) => product.isNewArrival);
-
 function NewArrivals() {
-  const [activeFilter, setActiveFilter] = useState("all");
-
-  const filteredProducts = useMemo(() => {
-    if (activeFilter === "all") return newArrivals;
-    return newArrivals.filter((product) => product.category === activeFilter);
-  }, [activeFilter]);
+  const [gender, setGender] = useState(null);
+  const query = useProducts({ gender, sort: "newest", limit: 8 });
 
   return (
     <section className="bg-bg-secondary py-section-sm lg:py-section">
@@ -26,23 +19,19 @@ function NewArrivals() {
         <SectionHeading
           eyebrow="New Arrivals"
           title="Freshly Arrived"
-          subtitle="The latest additions to the collection, sorted by category."
+          subtitle="The latest additions to the collection."
         />
 
-        <div
-          role="group"
-          aria-label="Filter new arrivals by category"
-          className="flex flex-wrap justify-center gap-2.5"
-        >
+        <div role="group" aria-label="Filter new arrivals" className="flex flex-wrap justify-center gap-2.5">
           {FILTERS.map((filter) => {
-            const isActive = activeFilter === filter.id;
+            const isActive = gender === filter.id;
             return (
               <button
-                key={filter.id}
+                key={filter.label}
                 type="button"
                 aria-pressed={isActive}
-                onClick={() => setActiveFilter(filter.id)}
-                className={`rounded-full border px-5 py-2 text-button transition-colors duration-200 ${
+                onClick={() => setGender(filter.id)}
+                className={`min-h-11 rounded-full border px-5 py-2 text-button transition-colors duration-200 ${
                   isActive
                     ? "border-ink bg-ink text-white"
                     : "border-border bg-bg text-ink-secondary hover:border-ink/30 hover:text-ink"
@@ -54,19 +43,7 @@ function NewArrivals() {
           })}
         </div>
 
-        {filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-2 gap-x-5 gap-y-8 sm:gap-x-6 md:grid-cols-3 lg:grid-cols-4">
-            {filteredProducts.map((product, i) => (
-              <Reveal key={product.id} delay={(i % 4) * 80}>
-                <ProductCard product={product} />
-              </Reveal>
-            ))}
-          </div>
-        ) : (
-          <p className="text-center text-body text-ink-secondary">
-            No new arrivals in this category yet.
-          </p>
-        )}
+        <HomeProductGrid query={query} label="New arrivals" />
       </Container>
     </section>
   );
