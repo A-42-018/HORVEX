@@ -4,7 +4,8 @@ Premium watch store for Bangladesh: React 19 + Vite 8 + Tailwind 3.4 + React Rou
 
 ## Key files
 - `plan.md`: phase status, session notes, decisions. **Read first every session.**
-- `roadmap.md`: full spec. §14 lists the phases. Read only the sections the current phase references, not the whole file.
+- `roadmap.md`: full spec (667 lines). §14 lists the phases. Grep the phase's row and read only the line ranges it references, never the whole file.
+- `docs/history.md`: archived session notes + full decisions log. Block B doesn't need it; block C reads it first.
 - `src/app/router.jsx`: storefront routes · `src/admin/AdminApp.jsx`: admin routes (lazy chunk).
 
 ## Commands

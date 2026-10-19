@@ -546,7 +546,7 @@ Notifications on new orders (pick at least one): admin realtime alert (built in)
 
 ## 14. Build Roadmap: session-sized phases
 
-Each phase is sized to finish in **one Claude session** (a single 5-hour usage window). That means roughly one feature and a handful of files. Phases run **in order**: block A (Opus) → block B (Sonnet) → block C (Opus).
+Block A and C phases are sized for one paid Claude session (a 5-hour usage window). Block B is split into small sub-phases (B1a, B1b…), each sized for one **free-tier** Sonnet session: one or two components and a handful of files. Phases run **in order**: block A (Opus) → block B (Sonnet) → block C (Opus).
 
 **Which model does what**
 - **Opus**: decisions that everything else depends on or that are hard to fix later. That covers design tokens, database schema and security, server-side order logic, shared data contracts, auth, complex scroll/motion work, and audits.
@@ -571,37 +571,77 @@ Each phase is sized to finish in **one Claude session** (a single 5-hour usage w
 
 ### Block B: Build (Sonnet)
 
+Each sub-phase is one or two components, sized for a single **free-tier** Sonnet session. Do them in order: a later sub-phase may build on an earlier one. **Carry-over** items are leftovers from earlier phases; do them in that sub-phase.
+
 | ID | Phase | Scope | Refs | Done when |
 |---|---|---|---|---|
-| **B1** | Header (desktop) + announcement | Data-driven announcement bar/marquee. Split-logo header that is transparent → solid, hides on scroll-down, and shows wishlist/bag counters from the stores | §5.3, §6.1 #1–2 | Works 1024–1920px; counters update live |
-| **B2** | Mega menu & search | Collections mega menu. Full-screen search overlay with instant results, recent searches and popular chips | §5.3 | Keyboard and ESC work; results come from Supabase |
-| **B3** | Mobile nav & footer | Mobile header + slide-in menu, **bottom tab bar** (safe-area), WhatsApp FAB, rebuilt footer (contact, courier, payment, socials from settings) | §5.3, §6.1 #16, §8 | Usable at 360px; FAB never overlaps the tab bar |
-| **B4** | Cart drawer & toasts | Cart drawer (line items, qty, remove, subtotal, free-delivery bar, upsell slot), `sonner` toasts, Add-to-bag wiring | §6.6 | Adding from anywhere opens the drawer; totals are correct |
-| **B5** | Product card & grid | Rebuild ProductCard (lifestyle hover swap, 1 badge max, always-visible heart, mobile "+" button, sold-out state) + ProductGrid + skeletons | §6.2 | Matches spec on mobile and desktop; no layout shift |
-| **B6** | Home: hero & trust | Hero slider from `hero_slides` (separate mobile crop, 01—02—03 progress, simple fades only) + trust marquee | §6.1 #3–4, §4 | Admin data drives the slides; LCP image preloaded |
-| **B7** | Home: categories & featured | Category tiles (snap scroll on mobile) + Featured tabs (Best Sellers / New / Sale) | §6.1 #5–6 | Tabs switch without refetch flicker |
-| **B8** | Home: anatomy & him/her | Anatomy section (**static stacked version**; scroll motion comes in C2) + Him/Her split with mini carousels (Embla) | §6.1 #7–8 | Content editable from DB; swipe works |
-| **B9** | Home: brand film & promo | Brand film band + video modal; promo banners with countdown that auto-hide when inactive | §6.1 #9–10 | Video loads only on demand; expired promo hidden |
-| **B10** | Home: trust & social | How-to-Order 3 steps, reviews/UGC with rating summary, Instagram grid | §6.1 #11–13 | Reviews come from approved DB rows |
-| **B11** | Home: finish & cleanup | Join the Circle (saves to `subscribers`), FAQ, `home_sections` order/visibility wiring. Remove template sections and data that are no longer used | §6.1 #14–15, §9.3 | Reordering or hiding rows in the DB changes the page |
-| **B12** | Shop listing | `/shop`, `/category/:slug`, `/collection/:slug`: header band, grid, sort, load more, URL sync, empty state | §6.3 | Shared URLs reproduce the same view |
-| **B13** | Filters | Desktop sticky sidebar, mobile bottom sheet with "Apply (n)", active chips | §6.3 | Filters combine correctly on both layouts |
-| **B14** | PDP gallery | Thumbnails + hover zoom + lightbox (desktop); swipe + pinch zoom (mobile) | §6.4 | Works without hover; keyboard lightbox |
-| **B15** | PDP buy box | Variants, qty, stock line, **Order Now (COD)**, Add to Bag, wishlist, WhatsApp order link, trust row with delivery estimate, sticky mobile buy bar | §6.4 | A variant change updates price, stock and image |
-| **B16** | PDP details | Tabs (description, specs table, delivery & returns, reviews), box contents, related products, recently viewed | §6.4 | Specs render from the `specs` JSON |
-| **B17** | Wishlist & cart pages | `/wishlist` (move to bag), `/cart` (coupon field, free-delivery bar, estimate), empty states | §6.5, §6.6 | Matches the drawer's totals |
-| **B18** | Checkout form | Add `react-hook-form` + `zod` + a **compatible** `@hookform/resolvers` (no `--legacy-peer-deps`). Form, area selector, district select, live totals, coupon check, collapsible mobile summary, sticky confirm button | §6.7 | Validation messages are clear; totals update live |
-| **B19** | Checkout submit & tracking | Call `place_order`, success page (order number, next steps), clear cart, `/track-order` timeline | §6.7, §6.8 | A real order lands in the DB with server totals and can be tracked |
-| **B20** | Info pages | About, Contact (saves to `contact_messages`), FAQ page, `/policy/:slug` renderer, 404 polish | §6.9 | Content comes from the DB |
-| **B21** | Admin shell & dashboard | Admin sidebar/topbar (bottom bar on mobile), dashboard KPIs, 30-day chart (`recharts`), top products, low stock, **realtime new-order alert** | §10 | Numbers match the DB; an alert fires on a new order |
-| **B22** | Admin products I | Products list (search, filters, quick toggles) + editor fields (no images yet), draft/publish, duplicate | §10 | A product created in admin shows on the site |
-| **B23** | Admin products II | Image upload (compress, drag reorder with `@dnd-kit`, lifestyle flag) + variants editor | §10, §4.2 | Reordering images changes PDP order |
-| **B24** | Admin categories & collections | CRUD, images, reorder, visibility, collection schedule | §10 | Changes reflect on the shop pages |
-| **B25** | Admin orders I | Orders table (status tabs, search, date filter), order detail, status pipeline + history, Call/WhatsApp buttons, admin notes, courier/tracking ID | §10 | A full order lifecycle can be run from a phone |
-| **B26** | Admin orders II | Printable invoice/packing slip, CSV export, customers list with delivered/cancelled ratio, block list | §10 | Invoice prints cleanly on A4 |
-| **B27** | Admin homepage builder | Section reorder/visibility (`@dnd-kit`), per-section text, hero slides CRUD, promo banners | §10, §6.1 | Every home section is editable without code |
-| **B28** | Admin content | Announcement messages, FAQ, testimonials, policy/about pages (`tiptap`), reviews moderation | §10 | Edits appear on the storefront |
-| **B29** | Admin settings | Coupons, delivery zones, site settings (brand, contact, socials, SEO, pixel IDs), users & roles, activity log viewer | §10 | Staff role sees only orders |
+| **B1a** | Announcement bar | Data-driven announcement bar/marquee (messages from settings/content via a hook), pauses on hover/focus, static under reduced motion | §6.1 #1 | Messages come from the DB; marquee pauses |
+| **B1b** | Desktop header | Split-logo header: transparent over the hero → solid, hides on scroll-down, wishlist/bag counters from the stores. Carry-over: remove the `section-ivory` alias from `StoreLayout` once the shell is rebuilt | §5.3, §6.1 #2 | Works 1024–1920px; counters update live |
+| **B2a** | Mega menu | Collections mega menu from categories/collections | §5.3 | Opens by hover and keyboard; ESC closes |
+| **B2b** | Search overlay | Search service + hook, full-screen overlay (`DialogShell`), debounced instant results | §5.3 | Results come from Supabase; keyboard and ESC work |
+| **B2c** | Search extras | Recent searches (small persisted store), popular chips, no-results state | §5.3 | Recent searches survive a refresh |
+| **B3a** | Mobile header & menu | Mobile header + slide-in menu (`Drawer side="left"`) | §5.3, §8 | Usable at 360px; focus trapped |
+| **B3b** | Bottom tab bar & FAB | Bottom tab bar (safe-area insets), WhatsApp FAB (number from settings, hidden when empty) | §5.3, §8 | FAB never overlaps the tab bar |
+| **B3c** | Footer | Rebuilt footer: contact, courier, payment, socials from settings (empty fields hidden) | §6.1 #16 | Settings drive every link |
+| **B4a** | Cart drawer | Drawer with line items, qty, remove, subtotal, empty state | §6.6 | Qty/remove update totals correctly |
+| **B4b** | Toasts & add-to-bag | `sonner` toasts, free-delivery progress bar, upsell slot, Add-to-bag anywhere opens the drawer | §6.6 | Adding from anywhere opens the drawer |
+| **B5a** | Product card | Rebuild ProductCard: lifestyle hover swap, 1 badge max, always-visible heart, mobile "+" button, sold-out state. Carry-over: swap Unsplash `w/h` params for `srcset` | §6.2 | Matches spec on mobile and desktop |
+| **B5b** | Product grid | ProductGrid + skeletons (fixed aspect ratios); replace the temporary `HomeProductGrid` | §6.2 | No layout shift while loading |
+| **B6a** | Hero slider | Slider from `hero_slides` (separate mobile crop, 01—02—03 progress, fades only), LCP image preloaded | §6.1 #3, §4 | Admin data drives the slides |
+| **B6b** | Trust marquee | Trust marquee below the hero | §6.1 #4 | Static under reduced motion |
+| **B7a** | Category tiles | Category tiles, snap scroll on mobile | §6.1 #5 | Tiles come from categories |
+| **B7b** | Featured tabs | Featured tabs: Best Sellers / New / Sale | §6.1 #6 | Tabs switch without refetch flicker |
+| **B8a** | Anatomy (static) | Anatomy section, **static stacked version** (scroll motion comes in C2) | §6.1 #7 | Content editable from DB |
+| **B8b** | Him / Her | Him/Her split with mini carousels (install Embla here) | §6.1 #8 | Swipe works |
+| **B9a** | Brand film | Brand film band + video modal. Carry-over: fix the template `BrandStory` 8px overflow at 375px | §6.1 #9 | Video loads only on demand |
+| **B9b** | Promo banners | Promo banners with countdown, auto-hide when inactive | §6.1 #10 | Expired promo hidden |
+| **B10a** | Reviews | Reviews/UGC with rating summary | §6.1 #12 | Reviews come from approved DB rows |
+| **B10b** | How-to-Order & Instagram | How-to-Order 3 steps + Instagram grid | §6.1 #11, #13 | Content from DB/settings |
+| **B11a** | Join & FAQ | Join the Circle (saves to `subscribers`), home FAQ | §6.1 #14–15 | A signup lands in the DB |
+| **B11b** | Section wiring | `home_sections` order/visibility drives the home page | §6.1 | Reordering or hiding rows in the DB changes the page |
+| **B11c** | Template cleanup | Remove unused template sections and `src/data/` (incl. `src/data/products.js`) | §9.3 | Build and lint clean; nothing unused left |
+| **B12a** | Listing pages | `/shop`, `/category/:slug`, `/collection/:slug`: header band + grid | §6.3 | Each route lists the right products |
+| **B12b** | Sort & URL sync | Sort, load more, URL sync, empty state | §6.3 | Shared URLs reproduce the same view |
+| **B13a** | Filters (desktop) | Filter state in the URL, desktop sticky sidebar, active chips | §6.3 | Filters combine correctly |
+| **B13b** | Filters (mobile) | Mobile bottom sheet with "Apply (n)" | §6.3 | Same results as desktop |
+| **B14a** | Gallery (desktop) | Thumbnails, hover zoom, keyboard lightbox | §6.4 | Works without hover |
+| **B14b** | Gallery (mobile) | Swipe + pinch zoom | §6.4 | Works at 360px |
+| **B15a** | Variants & stock | Variant picker, qty, stock line | §6.4 | A variant change updates price, stock and image |
+| **B15b** | Buy actions | Order Now (COD), Add to Bag, wishlist, WhatsApp order link, trust row with delivery estimate | §6.4 | Each action works |
+| **B15c** | Sticky buy bar | Sticky mobile buy bar | §6.4, §8 | Never covers content or the tab bar |
+| **B16a** | PDP tabs | Tabs: description, specs table, delivery & returns, box contents | §6.4 | Specs render from the `specs` JSON |
+| **B16b** | PDP reviews | Reviews tab with rating summary | §6.4 | Approved reviews only |
+| **B16c** | Related & recent | Related products, recently viewed (`useRecentlyViewed.add` on view) | §6.4 | Recent list survives a refresh |
+| **B17a** | Wishlist page | `/wishlist` with move to bag, empty state | §6.5 | Move to bag works |
+| **B17b** | Cart page | `/cart`: coupon field, free-delivery bar, estimate, empty state | §6.6 | Matches the drawer's totals |
+| **B18a** | Checkout form | Add `react-hook-form` + `zod` + a **compatible** `@hookform/resolvers` (no `--legacy-peer-deps`). Form fields, area selector, district select, hidden honeypot | §6.7 | Validation messages are clear |
+| **B18b** | Checkout totals | Live totals via `useOrderQuote`, coupon check, collapsible mobile summary, sticky confirm button. Map engine error tokens to `strings.js` | §6.7 | Totals update live from the server |
+| **B19a** | Place order | Submit via `usePlaceOrder`, error copy, success page (order number, next steps), clear cart | §6.7 | A real order lands in the DB with server totals |
+| **B19b** | Track order | `/track-order` timeline | §6.8 | The order from B19a can be tracked |
+| **B20a** | About & Contact | About, Contact (saves to `contact_messages`) | §6.9 | A message lands in the DB |
+| **B20b** | FAQ, policies, 404 | FAQ page, `/policy/:slug` renderer, 404 polish | §6.9 | Content comes from the DB |
+| **B21a** | Admin shell | Admin sidebar/topbar, bottom bar on mobile. Carry-over: remove `text-ink` alias from `AdminLayout` | §10 | Usable at 375px |
+| **B21b** | Dashboard | KPIs, 30-day chart (`recharts`), top products, low stock | §10 | Numbers match the DB |
+| **B21c** | New-order alert | Realtime new-order alert | §10 | An alert fires on a new order |
+| **B22a** | Products list | Search, filters, quick toggles | §10 | Toggles save to the DB |
+| **B22b** | Product editor | Editor fields (no images yet), draft/publish, duplicate. First live test of `useAdminCrud` | §10 | A product created in admin shows on the site |
+| **B23a** | Product images | Upload (compress), drag reorder (`@dnd-kit`), lifestyle flag. First live test of `useImageUpload` | §10, §4.2 | Reordering images changes PDP order |
+| **B23b** | Variants editor | Variants editor (stock kept on variants) | §10 | Variant edits show on the PDP |
+| **B24a** | Admin categories | CRUD, images, reorder, visibility | §10 | Changes reflect on the shop pages |
+| **B24b** | Admin collections | CRUD, manual/rule products, schedule | §10 | A scheduled collection appears on time |
+| **B25a** | Orders table | Status tabs, search, date filter | §10 | Filters match the DB |
+| **B25b** | Order detail | Detail view, status pipeline + history | §10 | Status changes write history |
+| **B25c** | Order actions | Call/WhatsApp buttons, admin notes, courier/tracking ID | §10 | A full order lifecycle can be run from a phone |
+| **B26a** | Invoice | Printable invoice / packing slip | §10 | Prints cleanly on A4 |
+| **B26b** | Export & customers | CSV export, customers list with delivered/cancelled ratio, block list | §10 | A blocked phone can't order |
+| **B27a** | Section builder | Section reorder/visibility (`@dnd-kit`), per-section text | §10, §6.1 | Home order changes from admin |
+| **B27b** | Hero & promos | Hero slides CRUD, promo banners | §10, §6.1 | Every home section is editable without code |
+| **B28a** | Announcements & FAQ | Announcement messages, FAQ, testimonials | §10 | Edits appear on the storefront |
+| **B28b** | Pages editor | Policy/about pages with `tiptap` | §10 | Edits appear on the storefront |
+| **B28c** | Review moderation | Approve/hide reviews | §10 | Only approved reviews show |
+| **B29a** | Coupons & zones | Coupons, delivery zones | §10 | Checkout uses the new values |
+| **B29b** | Site settings | Brand, contact, socials, SEO, pixel IDs, maintenance mode (also enforce it in `place_order`) | §10 | Settings change the storefront |
+| **B29c** | Users & activity | Users & roles, activity log viewer | §10 | Staff role sees only orders |
 
 ### Block C: Finish (Opus)
 
