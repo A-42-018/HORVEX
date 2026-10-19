@@ -71,17 +71,19 @@
 | `carbon` | `#141416` | Cards and surfaces on dark |
 | `graphite` | `#1E1F22` | Raised surfaces, inputs, drawers |
 | `steel` | `#2A2B2F` | Borders and dividers on dark |
+| `pewter` | `#6E6F75` | Form-control borders on dark (≥ 3:1, added in A2) |
 | `smoke` | `#9A9AA0` | Secondary text on dark (passes AA on obsidian) |
 | `ivory` | `#F5F1EA` | Light section background; main text on dark |
 | `parchment` | `#EAE4D9` | Secondary light background and cards on ivory |
 | `ink` | `#151412` | Main text on light |
 | `taupe` | `#6B665E` | Secondary text on light |
+| `stone` | `#857F75` | Form-control borders on light (≥ 3:1, added in A2) |
 | `gold` | `#C9A96E` | **Accent**: primary CTA, active states, eyebrows, prices on dark |
 | `gold-light` | `#D8BC86` | Gold hover |
-| `gold-deep` | `#8A6A35` | Gold text **on light backgrounds** (plain gold fails contrast on ivory) |
-| `oxblood` | `#9E3B34` | Sale and discount (a muted luxury red, not bright red) |
-| `emerald` | `#3F7D5A` | Success, in stock, order confirmed |
-| `amber` | `#C08A2E` | Warning, low stock |
+| `gold-deep` | `#80612D` | Gold text **on light backgrounds** (plain gold fails contrast on ivory). Darkened from `#8A6A35` in A2 to pass AA on ivory and parchment |
+| `oxblood` | `#9E3B34` | Sale and discount (a muted luxury red, not bright red). Text on dark: `oxblood-light` `#D2756B` |
+| `emerald` | `#356E4E` | Success, in stock, order confirmed (darkened from `#3F7D5A` in A2 so ivory text on it passes AA). Text on dark: `emerald-light` `#5E9C78` |
+| `amber` | `#C08A2E` | Warning, low stock. Text on light: `amber-deep` `#865D1C` |
 
 **Rules**
 - Gold covers **5% or less of any screen**: CTAs, small labels, thin lines, and nothing larger.

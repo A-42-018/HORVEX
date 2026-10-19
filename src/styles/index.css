@@ -5,13 +5,30 @@
 @tailwind utilities;
 
 @layer base {
-  /* Context tokens: dark is the default surface; .section-ivory flips them. */
-  :root {
+  /* Context tokens: dark is the default surface; .section-ivory flips them and
+     .section-dark restores them inside an ivory area. Exposed as Tailwind colours
+     (text-fg, bg-surface, border-control, text-brand, ...). */
+  :root,
+  .section-dark {
+    --fg: theme("colors.ivory");
+    --on-fg: theme("colors.obsidian");
+    --muted: theme("colors.smoke");
+    --surface: theme("colors.carbon");
+    --raised: theme("colors.graphite");
+    --line: theme("colors.steel");
+    --control: theme("colors.pewter");
     --accent-text: theme("colors.gold.DEFAULT");
     --focus-ring: theme("colors.gold.DEFAULT");
+    --danger: theme("colors.oxblood.light");
+    --positive: theme("colors.emerald.light");
+    --warning: theme("colors.amber.DEFAULT");
+    --elevation: theme("boxShadow.highlight");
+    color-scheme: dark;
+  }
+
+  :root {
     --gutter: 1rem;
     --section-y: 4rem;
-    color-scheme: dark;
   }
 
   @media (min-width: theme("screens.md")) {
@@ -47,9 +64,25 @@
      gold-deep here, since plain gold fails contrast on ivory. */
   .section-ivory {
     @apply bg-ivory text-ink;
+    --fg: theme("colors.ink.DEFAULT");
+    --on-fg: theme("colors.ivory");
+    --muted: theme("colors.taupe");
+    --surface: theme("colors.parchment");
+    --raised: theme("colors.ivory");
+    --line: theme("colors.border.DEFAULT");
+    --control: theme("colors.stone");
     --accent-text: theme("colors.gold.deep");
     --focus-ring: theme("colors.gold.deep");
+    --danger: theme("colors.oxblood.DEFAULT");
+    --positive: theme("colors.emerald.DEFAULT");
+    --warning: theme("colors.amber.deep");
+    --elevation: theme("boxShadow.soft");
     color-scheme: light;
+  }
+
+  /* Dark area inside an ivory one (and the default tone of drawers/modals). */
+  .section-dark {
+    @apply bg-obsidian bg-grain text-ivory;
   }
 }
 

@@ -9,7 +9,7 @@ Statuses: `todo` · `in progress` · `blocked (👤 you)` · `done`
 |---|---|---|---|
 | 0 | Project setup | — | done |
 | A1 | Design tokens & fonts | Opus | done |
-| A2 | Core primitives & style guide | Opus | todo |
+| A2 | Core primitives & style guide | Opus | done |
 | A3 | Database schema & RLS | Opus | todo |
 | A4 | Order engine & seed data | Opus | todo |
 | A5 | Data layer & client state | Opus | todo |
@@ -51,10 +51,18 @@ Statuses: `todo` · `in progress` · `blocked (👤 you)` · `done`
 | C6 | QA, launch & handover | Opus | todo |
 
 ## Next Up
-**A2 — Core primitives & style guide (Opus).**
+**A3 — Database schema & RLS (Opus).** Starts with a 👤 You step: create the Supabase project and put the URL + anon key in `.env`.
 
 ## Session Notes
 Newest first. Keep each entry to 3–6 lines: what was done, anything deferred, anything the next phase must know. For an unfinished phase, list what's done and what's left.
+
+### Phase A2 — Core primitives & style guide (done)
+- `components/common`: Button (primary gold + sheen / secondary / ghost / link, `loading`), Badge (new / sale / limited / soldOut), Card, Container, SectionHeading (`action` → "View all →") restyled; new IconButton, Input (floating label, `multiline`, `error`/`hint`), Select (native), Drawer (right panel ≥ md, bottom sheet on mobile; `side="left"`), Modal, Skeleton, Price, Rating. Template variant names (`outline`, `ghost`, `success`, `neutral`, `hoverable`) still work.
+- Surface-aware colours: CSS vars in `index.css` exposed as Tailwind colours `fg`, `on-fg`, `muted`, `surface`, `raised`, `line`, `control`, `brand`, `focus`, `danger`, `positive`, `warning` (+ `shadow-surface`). New `.section-dark` restores dark vars inside ivory. Drawer/Modal take `tone="dark" | "ivory"` (default dark).
+- Drawer/Modal share `DialogShell` (native `<dialog>` + showModal): ESC, backdrop, close button, Tab wrap, scroll lock, focus to `[data-autofocus]` or the panel, focus back to the trigger. Verified in the browser on both tones at 1440px and 375px.
+- `lib/format.js`: `formatTaka` (en-IN lakh grouping), `discountPercent` (≥ 10% rule), `normalizePhone` / `formatPhone` / `isValidPhone`, `formatDate`, `formatDeliveryBy`. `lib/strings.js` holds UI copy (functions for interpolation). `lucide-react` installed (icons: `size={20} strokeWidth={1.5}`).
+- `/style-guide` is dev-only (route spread behind `import.meta.env.DEV`; not in the production bundle). `.claude/launch.json` gained `horvex-dev-alt` on port 5174 for when another session holds 5173.
+- For later: the ৳ glyph isn't in Manrope, so it renders from the system Bengali font (consider a tiny Hind Siliguri subset for U+09F3 in C4). Template `BrandStory` overflows 8px at 375px before its Reveal fires (no `overflow-hidden`), fix when B9 rebuilds it. `/admin` loaded directly logs React Router's "No HydrateFallback" warning (add `HydrateFallback` in A6/B21). The template ProductCard still shows `$` prices until B5 swaps in `<Price>`.
 
 ### Phase A1 — Design tokens & fonts (done)
 - `tailwind.config.js` rewritten: §3.1 palette, fluid type roles (`text-display/h1/h2/h3/eyebrow/body/small/button/price`, a plugin so each class also sets the font family), `xs` 360 breakpoint, `rounded-control/card/pill`, `shadow-highlight` (dark) / `shadow-soft` (ivory), `bg-grain`, `bg-gold-glow`, `bg-vignette`, tracking `eyebrow/button/wordmark`, `duration-fast/base/slow/reveal`, `ease-out-expo` (default) / `ease-in-out-cubic`.
@@ -82,3 +90,8 @@ Newest first. Keep each entry to 3–6 lines: what was done, anything deferred, 
 - Surface-aware colour is done with CSS vars (`--accent-text`, `--focus-ring`) that `.section-ivory` flips; primitives should use them instead of branching per surface.
 - Variable fonts (`@fontsource-variable`) over static weights: one file per subset covers every weight.
 - Template `accent` aliases to ink, not gold: gold fails contrast on the ivory template sections. A2 restyles Button to gold on dark.
+- AA fixes to the §3.1 palette (A2): `gold-deep` #8A6A35 → #80612D (was 4.45:1 on ivory; now 5.09 ivory / 4.53 parchment); `emerald` #3F7D5A → #356E4E (ivory text on it 5.34:1). Added text variants `oxblood-light` #D2756B and `emerald-light` #5E9C78 (text on dark, ≥ 5.1:1 on graphite) and `amber-deep` #865D1C (text on light). Added `pewter` #6E6F75 / `stone` #857F75 for form-control borders (≥ 3:1, WCAG 1.4.11); `steel` stays for decorative dividers.
+- Primary button is gold with obsidian text on every surface (≥ 8.7:1), not ink on ivory, for one consistent CTA.
+- Drawer/Modal use a native `<dialog>` (top layer + inert page) plus a Tab-wrap handler, instead of a portal + focus-trap library.
+- Context colours use `color-mix()` in the Tailwind colour functions so `/opacity` modifiers work on CSS-var colours.
+- IconButton is circular (`rounded-full`), an exception to the "999px only for chips" radius rule, matching the "ring" spec.
