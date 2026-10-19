@@ -10,7 +10,7 @@
 ## 0. How To Use This Document
 
 - This is the **single source of truth** for design, features, data and build order.
-- Build **one phase at a time** (Section 14). Don't start a phase until the previous one meets its acceptance criteria.
+- Build **one phase per session** (Section 14: block A Opus → block B Sonnet → block C Opus). Start each session with the prompt in `PHASE_PROMPT.md`.
 - Progress is tracked in `plan.md` (same workflow the template used).
 - Template dev rules still apply: reuse before rewriting, no fake functionality, no console errors, responsive from day one, subtle purposeful animation, accessibility built in.
 
@@ -542,30 +542,77 @@ Notifications on new orders (pick at least one): admin realtime alert (built in)
 
 ---
 
-## 14. Build Roadmap (phase by phase)
+## 14. Build Roadmap: session-sized phases
 
-> Estimates assume one developer working full days. Total ≈ **6–7 weeks** to launch.
+Each phase is sized to finish in **one Claude session** (a single 5-hour usage window). That means roughly one feature and a handful of files. Phases run **in order**: block A (Opus) → block B (Sonnet) → block C (Opus).
 
-| Phase | Name | Scope | Est. | Acceptance criteria |
+**Which model does what**
+- **Opus**: decisions that everything else depends on or that are hard to fix later. That covers design tokens, database schema and security, server-side order logic, shared data contracts, auth, complex scroll/motion work, and audits.
+- **Sonnet**: building UI and CRUD screens from the clear specs and patterns block A sets up. It's faster and lighter on usage.
+- If your plan doesn't include Opus, run the Opus phases on Sonnet with extended thinking and review the output more carefully (especially A3, A4, A6 and C5).
+
+**Status, session notes and resume points** are tracked in `plan.md`. To start each session, use the prompt in `PHASE_PROMPT.md`.
+**👤 You** = a step only you can do (accounts, keys, dashboards). The phase can't finish until it's done.
+
+**Done = 0 · Phase 0 (setup) is complete.**
+
+### Block A: Foundation (Opus)
+
+| ID | Phase | Scope | Refs | Done when |
 |---|---|---|---|---|
-| **0** | Project setup & audit | Copy template into `HORVEX/`, rename package, `git init`, install deps, `.env.example`, remove template demo data, add router skeleton | 0.5 d | `npm run dev/build/lint` clean; routes render placeholders |
-| **1** | Brand & design system | Tailwind tokens (colors, fonts, scale, radius, motion), self-hosted fonts, grain texture, restyle `common/` components, new Input/Drawer/Modal/Skeleton/Price, ৳ formatter, logo placeholder | 2 d | A style-guide route (removed before launch) shows all tokens/components on dark + ivory |
-| **2** | Backend foundation | Supabase project, full schema (9.4), RLS policies, storage buckets, `place_order` function, seed ~24 products + categories + settings | 2 d | Seeded data readable publicly; order insert works only through the function; admin-only tables blocked for anon |
-| **3** | Layout shell | Announcement bar, split header + mega menu, scroll behavior, search overlay, mobile menu + **bottom tab bar**, footer, WhatsApp FAB, route transitions, Lenis | 2 d | Navigation works on 360px → 1920px; keyboard accessible |
-| **4** | Home landing | All 16 sections from 6.1, wired to Supabase content (`home_sections`, slides, banners) with skeletons | 4 d | Matches spec; sections hide/reorder from DB values |
-| **5** | Shop & category | Listing, filters (sidebar + bottom sheet), sort, URL sync, load more, empty state | 2 d | Filters combine correctly; URL shareable; mobile sheet works |
-| **6** | Product detail | Gallery (zoom, swipe, lightbox), variants, buy box, trust row, specs/tabs, related, recently viewed, sticky mobile buy bar | 2.5 d | Variant changes price/stock/image; works without hover |
-| **7** | Wishlist & cart | Zustand stores (persisted), cart drawer, cart page, free-delivery progress, fly-to-bag, heart burst | 1.5 d | Survives refresh; counters update everywhere |
-| **8** | COD checkout & orders | Checkout form + zod validation, zones/coupon live totals, `place_order` call, success page, track order, anti-fake measures | 2.5 d | Real order appears in DB with server-calculated totals; tampered prices are rejected; rate limit works |
-| **9** | Admin foundation | Admin login, role guard, shell (sidebar/topbar, mobile layout), dashboard KPIs + chart, realtime new-order alert | 2 d | Non-admin can't access; dashboard numbers match DB |
-| **10** | Admin: catalog | Products CRUD with image upload/compress/reorder, variants, specs; categories & collections | 3 d | Product created in admin appears on the site immediately |
-| **11** | Admin: orders & customers | Orders table/tabs/detail, status pipeline + history, call/WhatsApp, invoice print, CSV export, customers, block list | 2 d | Full order lifecycle can be run from a phone |
-| **12** | Admin: CMS & settings | Homepage builder (drag reorder/visibility), hero slides, banners, announcement, content pages, FAQ, testimonials, reviews moderation, coupons, delivery zones, site settings, users/roles, activity log | 3 d | Every visible text/image on the home page is editable without code |
-| **13** | Motion polish | Preloader, hero reveal + light sweep + bezel ring, Anatomy pinned section, magnetic CTAs, counters, success animation; reduced-motion pass | 2 d | 60fps on mid-range Android; nothing blocks input |
-| **14** | SEO, analytics, performance, a11y | Meta, JSON-LD, sitemap, robots, prerender key pages, GA4 + Pixel events, image/font/code-split optimization, a11y audit | 2 d | Lighthouse targets met (Section 13); events visible in Pixel helper |
-| **15** | QA, launch & handover | Device/browser matrix test, real content upload, domain + Vercel + env, backups, remove style guide, **admin user guide (PDF + short screen recording)** | 2 d | Client signs off on a test order flow end-to-end |
+| **A1** | Design tokens & fonts | Rewrite the Tailwind theme (palette, fluid type scale, spacing, radius, elevation, motion durations/easing, breakpoints). Self-host Cormorant Garamond, Manrope and Michroma via `@fontsource` and drop the Google Fonts link. Base CSS: dark default, ivory section utility, 3% grain texture, gold focus ring, selection color. Placeholder monogram favicon. **Keep old token names working as aliases** so the template sections don't break | §3.1–3.3, §2.2 | Build passes; the site renders in the new fonts and colors with no missing-class breakage |
+| **A2** | Core primitives & style guide | Restyle Button, Badge, Card, Container, SectionHeading. Add Input, Select, IconButton, Drawer, Modal, Skeleton, Price, Rating. `lib/format.js` (৳ with lakh grouping, BD phone) and `lib/strings.js`. Dev-only `/style-guide` route | §3.4, §3.5, §11 | Every primitive is shown on dark and ivory, keyboard-focusable, and passes AA contrast |
+| **A3** | Database schema & RLS | 👤 **You:** create a Supabase project and put the URL and anon key in `.env`. SQL migrations in `supabase/migrations/` cover all §9.4 tables, indexes, an `is_admin()` helper, RLS policies on every table, and storage buckets with policies | §9.4 (+ Security) | Anon can read only active catalog/content and can't read orders, customers or `cost_price`; an admin role can |
+| **A4** | Order engine & seed data | `place_order` function (security definer): re-prices from the DB, checks and decrements stock atomically, applies coupon and delivery zone, enforces rate limit, blocked phones and honeypot, generates the `HVX-` number. `track_order` (phone + number → limited fields). `seed.sql`: 24 watches, categories, zones, settings, home content | §6.7, §6.8, §9.4 | A SQL test script shows that tampered prices are ignored, stock can't go negative, and rate limit and block list reject orders |
+| **A5** | Data layer & client state | `services/supabase.js` plus service modules (products, categories, content, settings, orders). React Query hooks with documented query-key conventions. Zustand stores for cart, wishlist, recently viewed and UI (persisted). `lib/analytics.js` `track()` stub. Conventions written into `CLAUDE.md` | §9.1, §9.2 | Home fetches seeded products through a hook; cart and wishlist survive a refresh |
+| **A6** | Admin auth & admin patterns | Supabase Auth login page, AuthProvider, `RequireAdmin` role guard, logout. Admin CRUD helper (mutations + invalidation), image upload helper (`browser-image-compression` → storage), activity-log helper. 👤 **You:** create the owner user and its `admin_profiles` row | §10, §9.4 Security | `/admin` redirects to login; a non-admin is refused; the owner gets in |
 
-### Test matrix (Phase 15)
+### Block B: Build (Sonnet)
+
+| ID | Phase | Scope | Refs | Done when |
+|---|---|---|---|---|
+| **B1** | Header (desktop) + announcement | Data-driven announcement bar/marquee. Split-logo header that is transparent → solid, hides on scroll-down, and shows wishlist/bag counters from the stores | §5.3, §6.1 #1–2 | Works 1024–1920px; counters update live |
+| **B2** | Mega menu & search | Collections mega menu. Full-screen search overlay with instant results, recent searches and popular chips | §5.3 | Keyboard and ESC work; results come from Supabase |
+| **B3** | Mobile nav & footer | Mobile header + slide-in menu, **bottom tab bar** (safe-area), WhatsApp FAB, rebuilt footer (contact, courier, payment, socials from settings) | §5.3, §6.1 #16, §8 | Usable at 360px; FAB never overlaps the tab bar |
+| **B4** | Cart drawer & toasts | Cart drawer (line items, qty, remove, subtotal, free-delivery bar, upsell slot), `sonner` toasts, Add-to-bag wiring | §6.6 | Adding from anywhere opens the drawer; totals are correct |
+| **B5** | Product card & grid | Rebuild ProductCard (lifestyle hover swap, 1 badge max, always-visible heart, mobile "+" button, sold-out state) + ProductGrid + skeletons | §6.2 | Matches spec on mobile and desktop; no layout shift |
+| **B6** | Home: hero & trust | Hero slider from `hero_slides` (separate mobile crop, 01—02—03 progress, simple fades only) + trust marquee | §6.1 #3–4, §4 | Admin data drives the slides; LCP image preloaded |
+| **B7** | Home: categories & featured | Category tiles (snap scroll on mobile) + Featured tabs (Best Sellers / New / Sale) | §6.1 #5–6 | Tabs switch without refetch flicker |
+| **B8** | Home: anatomy & him/her | Anatomy section (**static stacked version**; scroll motion comes in C2) + Him/Her split with mini carousels (Embla) | §6.1 #7–8 | Content editable from DB; swipe works |
+| **B9** | Home: brand film & promo | Brand film band + video modal; promo banners with countdown that auto-hide when inactive | §6.1 #9–10 | Video loads only on demand; expired promo hidden |
+| **B10** | Home: trust & social | How-to-Order 3 steps, reviews/UGC with rating summary, Instagram grid | §6.1 #11–13 | Reviews come from approved DB rows |
+| **B11** | Home: finish & cleanup | Join the Circle (saves to `subscribers`), FAQ, `home_sections` order/visibility wiring. Remove template sections and data that are no longer used | §6.1 #14–15, §9.3 | Reordering or hiding rows in the DB changes the page |
+| **B12** | Shop listing | `/shop`, `/category/:slug`, `/collection/:slug`: header band, grid, sort, load more, URL sync, empty state | §6.3 | Shared URLs reproduce the same view |
+| **B13** | Filters | Desktop sticky sidebar, mobile bottom sheet with "Apply (n)", active chips | §6.3 | Filters combine correctly on both layouts |
+| **B14** | PDP gallery | Thumbnails + hover zoom + lightbox (desktop); swipe + pinch zoom (mobile) | §6.4 | Works without hover; keyboard lightbox |
+| **B15** | PDP buy box | Variants, qty, stock line, **Order Now (COD)**, Add to Bag, wishlist, WhatsApp order link, trust row with delivery estimate, sticky mobile buy bar | §6.4 | A variant change updates price, stock and image |
+| **B16** | PDP details | Tabs (description, specs table, delivery & returns, reviews), box contents, related products, recently viewed | §6.4 | Specs render from the `specs` JSON |
+| **B17** | Wishlist & cart pages | `/wishlist` (move to bag), `/cart` (coupon field, free-delivery bar, estimate), empty states | §6.5, §6.6 | Matches the drawer's totals |
+| **B18** | Checkout form | Add `react-hook-form` + `zod` + a **compatible** `@hookform/resolvers` (no `--legacy-peer-deps`). Form, area selector, district select, live totals, coupon check, collapsible mobile summary, sticky confirm button | §6.7 | Validation messages are clear; totals update live |
+| **B19** | Checkout submit & tracking | Call `place_order`, success page (order number, next steps), clear cart, `/track-order` timeline | §6.7, §6.8 | A real order lands in the DB with server totals and can be tracked |
+| **B20** | Info pages | About, Contact (saves to `contact_messages`), FAQ page, `/policy/:slug` renderer, 404 polish | §6.9 | Content comes from the DB |
+| **B21** | Admin shell & dashboard | Admin sidebar/topbar (bottom bar on mobile), dashboard KPIs, 30-day chart (`recharts`), top products, low stock, **realtime new-order alert** | §10 | Numbers match the DB; an alert fires on a new order |
+| **B22** | Admin products I | Products list (search, filters, quick toggles) + editor fields (no images yet), draft/publish, duplicate | §10 | A product created in admin shows on the site |
+| **B23** | Admin products II | Image upload (compress, drag reorder with `@dnd-kit`, lifestyle flag) + variants editor | §10, §4.2 | Reordering images changes PDP order |
+| **B24** | Admin categories & collections | CRUD, images, reorder, visibility, collection schedule | §10 | Changes reflect on the shop pages |
+| **B25** | Admin orders I | Orders table (status tabs, search, date filter), order detail, status pipeline + history, Call/WhatsApp buttons, admin notes, courier/tracking ID | §10 | A full order lifecycle can be run from a phone |
+| **B26** | Admin orders II | Printable invoice/packing slip, CSV export, customers list with delivered/cancelled ratio, block list | §10 | Invoice prints cleanly on A4 |
+| **B27** | Admin homepage builder | Section reorder/visibility (`@dnd-kit`), per-section text, hero slides CRUD, promo banners | §10, §6.1 | Every home section is editable without code |
+| **B28** | Admin content | Announcement messages, FAQ, testimonials, policy/about pages (`tiptap`), reviews moderation | §10 | Edits appear on the storefront |
+| **B29** | Admin settings | Coupons, delivery zones, site settings (brand, contact, socials, SEO, pixel IDs), users & roles, activity log viewer | §10 | Staff role sees only orders |
+
+### Block C: Finish (Opus)
+
+| ID | Phase | Scope | Refs | Done when |
+|---|---|---|---|---|
+| **C1** | Signature motion I | Preloader, Lenis (desktop only), route transitions, hero headline mask reveal, light sweep, bezel ring, parallax, magnetic CTAs | §7 #1–5, #12, #14 | 60fps on a mid-range Android; nothing blocks input |
+| **C2** | Signature motion II | Anatomy pinned scroll, fly-to-bag, heart burst, counters, success check; full reduced-motion pass | §7 #6–11, #13, #15 | Reduced motion turns every animation instant |
+| **C3** | SEO & analytics | Per-page meta/OG, JSON-LD (Product, Breadcrumb, FAQ, Organization), sitemap/robots generation, prerender key pages, GA4 + Meta Pixel events through `analytics.js` | §12 | Rich-results test passes; events visible in Pixel Helper |
+| **C4** | Performance & a11y audit | Bundle analysis, image `srcset`/AVIF, font preload, code-split check, Lighthouse and keyboard/screen-reader pass with fixes | §13 | §13 targets met |
+| **C5** | Security & code review | RLS audit, abuse tests on `place_order`, secrets scan, dependency audit, full code review, remove `/style-guide` | §9.4 Security | No high findings left open |
+| **C6** | QA, launch & handover | Device/browser matrix, real content upload, 👤 **You:** domain + Vercel + production env + Supabase backups. Admin user guide (PDF + screen recording) | §16, §17 | The client completes a test order end to end |
+
+### Test matrix (used in C4 and C6)
 - **Devices:** iPhone SE (375), iPhone 14/15 (390–393), Samsung A-series (360/412), iPad (768/1024), laptop 1366, desktop 1440/1920.
 - **Browsers:** Chrome (Android/desktop), Safari (iOS/macOS), Samsung Internet, Firefox, **Facebook + Instagram in-app browsers**.
 - **Flows:** browse → filter → PDP → wishlist → cart → checkout → admin sees order → status updates → track page shows them.
