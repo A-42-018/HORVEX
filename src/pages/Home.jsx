@@ -1,37 +1,68 @@
+import { useHomeSections } from "../hooks/useContent";
 import {
   Hero,
-  TrustFeatures,
+  TrustMarquee,
   CategoryShowcase,
-  BestSellers,
+  FeaturedTabs,
+  Anatomy,
+  HimHer,
   PromoBanner,
-  NewArrivals,
-  BrandStory,
-  WhyChooseUs,
+  BrandFilm,
+  HowToOrder,
   CustomerReviews,
   SocialShowcase,
   Newsletter,
   FAQ,
-  FinalCTA,
 } from "../components/home";
 
-// Landing page. Sections are still the base template's; Phase 4 rebuilds them
-// to the HORVEX spec (roadmap §6.1).
+// home_sections.key → component. Order and visibility come from the DB
+// (RLS only returns visible rows); unknown keys are ignored.
+const SECTIONS = {
+  hero: Hero,
+  trust_marquee: TrustMarquee,
+  categories: CategoryShowcase,
+  featured: FeaturedTabs,
+  anatomy: Anatomy,
+  him_her: HimHer,
+  brand_film: BrandFilm,
+  promo: PromoBanner,
+  how_to_order: HowToOrder,
+  reviews: CustomerReviews,
+  social_grid: SocialShowcase,
+  newsletter: Newsletter,
+  faq: FAQ,
+};
+
+// Spec order (roadmap §6.1); used while loading, on error, or if the table is empty.
+const DEFAULT_ORDER = [
+  "hero",
+  "trust_marquee",
+  "categories",
+  "featured",
+  "anatomy",
+  "him_her",
+  "brand_film",
+  "promo",
+  "how_to_order",
+  "reviews",
+  "social_grid",
+  "newsletter",
+  "faq",
+];
+
 function Home() {
+  const { data, isError } = useHomeSections();
+  const keys =
+    !isError && data?.length
+      ? [...data].sort((a, b) => a.sort_order - b.sort_order).map((row) => row.key)
+      : DEFAULT_ORDER;
+
   return (
     <>
-      <Hero />
-      <TrustFeatures />
-      <CategoryShowcase />
-      <BestSellers />
-      <PromoBanner />
-      <NewArrivals />
-      <BrandStory />
-      <WhyChooseUs />
-      <CustomerReviews />
-      <SocialShowcase />
-      <Newsletter />
-      <FAQ />
-      <FinalCTA />
+      {keys.map((key) => {
+        const Section = SECTIONS[key];
+        return Section ? <Section key={key} /> : null;
+      })}
     </>
   );
 }

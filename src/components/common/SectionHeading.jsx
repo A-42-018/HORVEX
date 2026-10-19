@@ -12,6 +12,7 @@ function SectionHeading({
   align = "center",
   action, // { to, label? }
   as: Heading = "h2",
+  id,
   className = "",
 }) {
   const centered = align === "center" && !action;
@@ -34,7 +35,7 @@ function SectionHeading({
     >
       <div className={`flex flex-col gap-4 ${centered ? "items-center text-center" : "items-start text-left"}`}>
         {eyebrow && <p className="text-eyebrow">{eyebrow}</p>}
-        <Heading className="text-h2 text-fg">{title}</Heading>
+        <Heading id={id} className="text-h2 text-fg">{title}</Heading>
         {subtitle && <p className="max-w-2xl text-body text-muted">{subtitle}</p>}
       </div>
       {actionLink}

@@ -2,6 +2,8 @@ import { createBrowserRouter } from "react-router";
 import StoreLayout from "../components/layout/StoreLayout";
 import Home from "../pages/Home";
 import NotFound from "../pages/NotFound";
+import { CategoryListing, CollectionListing, Shop } from "../pages/Listing";
+import Product from "../pages/Product";
 import PagePlaceholder from "../pages/PagePlaceholder";
 
 // Route map from roadmap §5. Placeholders are swapped for real pages phase by phase.
@@ -12,10 +14,10 @@ export const router = createBrowserRouter([
     element: <StoreLayout />,
     children: [
       { index: true, element: <Home /> },
-      placeholder("shop", "Shop all watches", 5),
-      placeholder("category/:slug", "Category", 5),
-      placeholder("collection/:slug", "Collection", 5),
-      placeholder("product/:slug", "Product", 6),
+      { path: "shop", element: <Shop /> },
+      { path: "category/:slug", element: <CategoryListing /> },
+      { path: "collection/:slug", element: <CollectionListing /> },
+      { path: "product/:slug", element: <Product /> },
       placeholder("wishlist", "Wishlist", 7),
       placeholder("cart", "Your bag", 7),
       placeholder("checkout", "Checkout", 8),

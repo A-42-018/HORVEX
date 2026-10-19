@@ -11,6 +11,7 @@ export const EVENTS = {
   beginCheckout: "begin_checkout",
   purchase: "purchase",
   search: "search",
+  generateLead: "generate_lead",
 };
 
 /** track(EVENTS.addToCart, { item_id, item_name, price, quantity }) */

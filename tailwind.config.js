@@ -178,10 +178,15 @@ export default {
           "0%": { transform: "translateX(-100%)" },
           "100%": { transform: "translateX(100%)" },
         },
+        marquee: {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
       },
       animation: {
         "fade-up": `fadeUp ${DURATION.reveal}ms ${toCubicBezier(EASE.outExpo)} both`,
         shimmer: "shimmer 1.8s ease-in-out infinite",
+        marquee: "marquee var(--marquee-duration, 30s) linear infinite",
       },
     },
   },

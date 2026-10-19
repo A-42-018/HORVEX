@@ -1,60 +1,38 @@
-import { useState } from "react";
-import { Container, SectionHeading, Reveal } from "../common";
-import { ChevronDownIcon } from "../layout/icons";
+import { useId, useState } from "react";
+import { Link } from "react-router";
+import { ChevronDown } from "lucide-react";
+import { Button, Container, Reveal, SectionHeading, Skeleton } from "../common";
+import { useFaqs, useHomeSections } from "../../hooks/useContent";
+import { strings } from "../../lib/strings";
 
-const FAQS = [
-  {
-    question: "How long does delivery take?",
-    answer:
-      "Orders within Dhaka typically arrive in 1-2 business days. Deliveries to the rest of Bangladesh take 3-5 business days, depending on the courier's coverage in your area.",
-  },
-  {
-    question: "Do you offer cash on delivery?",
-    answer:
-      "Yes. Cash on delivery is available nationwide alongside card and mobile wallet payments, so you can pay when your order arrives at your door.",
-  },
-  {
-    question: "What is your return policy?",
-    answer:
-      "Unused items in original condition can be returned within 14 days of delivery for a full refund or exchange. Simply reach out to our support team to start the process.",
-  },
-  {
-    question: "How can I track my order?",
-    answer:
-      "Once your order ships, you'll receive a tracking link by email and SMS so you can follow its progress in real time until it reaches you.",
-  },
-  {
-    question: "What payment methods do you accept?",
-    answer:
-      "We accept major debit/credit cards, mobile wallets (bKash, Nagad, Rocket), and cash on delivery for your convenience.",
-  },
-  {
-    question: "Do you deliver outside Bangladesh?",
-    answer:
-      "Currently we only ship within Bangladesh. We're working on international shipping and will announce it here as soon as it's available.",
-  },
-];
+// Home FAQ (roadmap §6.1 #15): dark accordion, one answer open at a time, from
+// the visible `faqs` rows. Heading from `home_sections.faq` (title/subtitle);
+// `config.limit` caps how many show (default 6, max 12).
 
-function FAQItem({ item, index, isOpen, onToggle }) {
-  const panelId = `faq-panel-${index}`;
-  const buttonId = `faq-button-${index}`;
+const DEFAULT_LIMIT = 6;
+const MAX_LIMIT = 12;
+
+function FAQItem({ item, isOpen, onToggle, uid }) {
+  const panelId = `${uid}-panel`;
+  const buttonId = `${uid}-button`;
 
   return (
-    <div className="border-b border-border">
+    <div className="border-b border-line">
       <h3>
         <button
           id={buttonId}
           type="button"
           aria-expanded={isOpen}
           aria-controls={panelId}
-          onClick={() => onToggle(index)}
-          className="flex w-full items-center justify-between gap-4 py-5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:ring-offset-bg rounded-sm"
+          onClick={onToggle}
+          className="flex min-h-14 w-full items-center justify-between gap-4 py-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
         >
-          <span className="text-body font-semibold text-ink">{item.question}</span>
-          <ChevronDownIcon
-            className={`h-5 w-5 shrink-0 text-ink-secondary transition-transform duration-300 ${
-              isOpen ? "rotate-180" : ""
-            }`}
+          <span className="text-body font-semibold text-fg">{item.question}</span>
+          <ChevronDown
+            aria-hidden="true"
+            size={20}
+            strokeWidth={1.5}
+            className={`shrink-0 text-brand transition-transform duration-base ${isOpen ? "rotate-180" : ""}`}
           />
         </button>
       </h3>
@@ -62,12 +40,10 @@ function FAQItem({ item, index, isOpen, onToggle }) {
         id={panelId}
         role="region"
         aria-labelledby={buttonId}
-        className={`grid overflow-hidden transition-[grid-template-rows] duration-300 ease-in-out ${
-          isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-        }`}
+        className={`grid transition-[grid-template-rows] duration-base ease-out ${isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
       >
         <div className="min-h-0 overflow-hidden">
-          <p className="pb-5 pr-8 text-small text-ink-secondary">{item.answer}</p>
+          <p className="pb-5 pr-8 text-body text-muted">{item.answer}</p>
         </div>
       </div>
     </div>
@@ -75,32 +51,46 @@ function FAQItem({ item, index, isOpen, onToggle }) {
 }
 
 function FAQ() {
-  const [openIndex, setOpenIndex] = useState(0);
+  const uid = useId();
+  const [openId, setOpenId] = useState(null);
+  const { data: sections } = useHomeSections();
+  const { data: faqs, isPending } = useFaqs();
+  const section = sections?.find((s) => s.key === "faq");
+  const configured = Number(section?.config?.limit);
+  const limit = Number.isFinite(configured) && configured > 0 ? Math.min(Math.floor(configured), MAX_LIMIT) : DEFAULT_LIMIT;
+  const items = (faqs ?? []).slice(0, limit);
 
-  function handleToggle(index) {
-    setOpenIndex((current) => (current === index ? -1 : index));
-  }
+  // Nothing to show and nothing loading: drop the section rather than an empty box.
+  if (!isPending && items.length === 0) return null;
 
   return (
-    <section className="bg-bg py-section-sm lg:py-section">
-      <Container className="flex flex-col gap-10">
+    <section aria-labelledby={`${uid}-title`} className="section-dark py-section-sm lg:py-section">
+      <Container className="flex flex-col gap-10 lg:gap-12">
         <SectionHeading
-          eyebrow="FAQ"
-          title="Frequently Asked Questions"
-          subtitle="Everything you need to know about ordering, delivery and returns."
-          align="left"
+          eyebrow={strings.faq.eyebrow}
+          title={section?.title || strings.faq.title}
+          subtitle={section?.subtitle}
+          id={`${uid}-title`}
         />
-        <Reveal as="div" className="mx-auto w-full max-w-3xl border-t border-border">
-          {FAQS.map((item, index) => (
-            <FAQItem
-              key={item.question}
-              item={item}
-              index={index}
-              isOpen={openIndex === index}
-              onToggle={handleToggle}
-            />
-          ))}
+        <Reveal className="mx-auto w-full max-w-3xl border-t border-line">
+          {isPending
+            ? Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="my-3 h-8 w-full" />)
+            : items.map((item) => (
+                <FAQItem
+                  key={item.id}
+                  item={item}
+                  uid={`${uid}-${item.id}`}
+                  isOpen={openId === item.id}
+                  onToggle={() => setOpenId((cur) => (cur === item.id ? null : item.id))}
+                />
+              ))}
         </Reveal>
+        <div className="flex flex-col items-center gap-2 text-center">
+          <p className="text-body text-muted">{strings.faq.more}</p>
+          <Button as={Link} to="/contact" variant="link" size="sm">
+            {strings.faq.contact}
+          </Button>
+        </div>
       </Container>
     </section>
   );

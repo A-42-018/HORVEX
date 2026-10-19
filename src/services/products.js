@@ -17,8 +17,29 @@ const SORTS = {
   newest: [["created_at", false], ["sort_order", true]],
   "price-asc": [["price", true], ["sort_order", true]],
   "price-desc": [["price", false], ["sort_order", true]],
+  bestselling: [["is_bestseller", false], ["sort_order", true]],
 };
 export const PRODUCT_SORTS = Object.keys(SORTS);
+
+// Strap / movement are free text in `specs`, so each option maps to ILIKE patterns.
+export const FILTER_OPTIONS = {
+  strap: {
+    chain: ["%bracelet%", "%chain%"],
+    leather: ["%leather%"],
+    silicone: ["%silicone%"],
+    mesh: ["%mesh%"],
+  },
+  movement: {
+    quartz: ["%quartz%"],
+    chronograph: ["%chronograph%"],
+    automatic: ["%automatic%"],
+  },
+};
+
+function specClause(field, keys = []) {
+  const patterns = keys.flatMap((key) => FILTER_OPTIONS[field][key] ?? []);
+  return patterns.map((pattern) => `specs->>${field}.ilike.${pattern}`).join(",");
+}
 
 const bySortOrder = (a, b) => a.sort_order - b.sort_order;
 
@@ -36,12 +57,15 @@ const escapeSearch = (term) => term.replace(/[\\%_]/g, "\\$&").replace(/[(),]/g,
 
 /**
  * Product listing.
- * filters: { category, gender, featured, bestseller, badge, priceMin, priceMax,
- *            search, ids, sort, limit, offset }
+ * filters: { category, gender, featured, bestseller, onSale, badge, priceMin, priceMax,
+ *            strap, movement, inStock, search, ids, sort, limit, offset }
+ * `strap` / `movement` are arrays of FILTER_OPTIONS keys (OR within a facet, AND across facets).
+ * `onSale` = has a compare-at price (the seed/admin only set it on discounted pieces).
  * `gender` also includes unisex pieces. Returns { items, total }.
  */
 export async function listProducts(filters = {}) {
-  const { category, gender, featured, bestseller, badge, priceMin, priceMax, search, ids } = filters;
+  const { category, gender, featured, bestseller, onSale, badge, priceMin, priceMax, search, ids } = filters;
+  const { strap, movement, inStock } = filters;
   const { sort = "featured", limit = 24, offset = 0 } = filters;
 
   // An inner join lets us filter on the category's slug in one request.
@@ -53,15 +77,43 @@ export async function listProducts(filters = {}) {
     if (gender) q = q.in("gender", [gender, "unisex"]);
     if (featured) q = q.eq("is_featured", true);
     if (bestseller) q = q.eq("is_bestseller", true);
+    if (onSale) q = q.not("compare_at_price", "is", null);
     if (badge) q = q.contains("badges", [badge]);
     if (priceMin != null) q = q.gte("price", priceMin);
     if (priceMax != null) q = q.lte("price", priceMax);
+    if (inStock) q = q.gt("stock", 0);
+    for (const [field, keys] of [["strap", strap], ["movement", movement]]) {
+      const clause = specClause(field, keys);
+      if (clause) q = q.or(clause);
+    }
     if (search?.trim()) q = q.ilike("name", `%${escapeSearch(search)}%`);
     if (ids) q = q.in("id", ids);
     for (const [column, ascending] of SORTS[sort] ?? SORTS.featured) q = q.order(column, { ascending });
     return q.range(offset, offset + limit - 1);
   });
 
+  return { items: data.map(normalize), total: count ?? data.length };
+}
+
+const SEARCH_FIELDS = `
+  id, slug, name, price, compare_at_price, stock, sort_order,
+  category:categories (name),
+  images:product_images (id, url, alt, is_lifestyle, sort_order)`;
+
+export const SEARCH_MIN_CHARS = 2;
+
+/** Lean name search for the instant-results overlay. Returns { items, total }; empty below the minimum length. */
+export async function searchProducts(term, limit = 6) {
+  const clean = escapeSearch(term ?? "");
+  if (clean.length < SEARCH_MIN_CHARS) return { items: [], total: 0 };
+  const { data, count } = await queryWithCount((db) =>
+    db
+      .from("products")
+      .select(SEARCH_FIELDS, { count: "exact" })
+      .ilike("name", `%${clean}%`)
+      .order("sort_order", { ascending: true })
+      .range(0, limit - 1),
+  );
   return { items: data.map(normalize), total: count ?? data.length };
 }
 

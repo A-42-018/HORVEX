@@ -2,6 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { queryKeys } from "../services/queryKeys";
 import {
   getPage,
+  getReviewSummary,
   listBanners,
   listFaqs,
   listHeroSlides,
@@ -27,6 +28,7 @@ export const useFaqs = () => useQuery(contentQuery(queryKeys.content.faqs(), lis
 export const useTestimonials = () => useQuery(contentQuery(queryKeys.content.testimonials(), listTestimonials));
 export const useRecentReviews = (limit = 8) =>
   useQuery(contentQuery(queryKeys.content.recentReviews(limit), () => listRecentReviews(limit)));
+export const useReviewSummary = () => useQuery(contentQuery(queryKeys.content.reviewSummary(), getReviewSummary));
 export const usePage = (slug) =>
   useQuery(contentQuery(queryKeys.content.page(slug), () => getPage(slug), { enabled: Boolean(slug) }));
 

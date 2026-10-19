@@ -1,79 +1,101 @@
-import { memo, useEffect, useState } from "react";
+import { memo } from "react";
 import { Link } from "react-router";
+import { Heart, Plus } from "lucide-react";
 import { Badge, Button, Price } from "../common";
-import { HeartIcon, BagIcon } from "../layout/icons";
 import { discountPercent } from "../../lib/format";
+import { responsiveImage } from "../../lib/images";
 import { strings } from "../../lib/strings";
-import { useCart } from "../../store/cart";
+import { addToBag } from "../../lib/cartActions";
 import { selectInWishlist, useWishlist } from "../../store/wishlist";
 
-// Template card wired to Supabase products and the cart/wishlist stores (A5).
-// B5 replaces it with the HORVEX ProductCard.
+// HORVEX product card (roadmap §6.2), wired to the cart and wishlist stores.
+// Quick View and "Notify me" are not built yet (no modal / no back-in-stock
+// table), so sold-out cards simply drop the add controls.
 
-const CART_FEEDBACK = {
-  out_of_stock: strings.badge.soldOut,
-  max_qty: strings.product.maxQty,
-  max_lines: strings.product.bagFull,
-};
+const SIZES = "(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw";
+const MAX_SWATCHES = 4;
+// `hover:hover` keeps the crossfade from sticking after a tap on touch screens.
+const CAN_HOVER = "[@media(hover:hover)]";
 
+// One badge at most: sold out > sale (≥ 10%) > limited > new.
 function cardBadge(product) {
   if (product.stock < 1) return { variant: "soldOut", label: strings.badge.soldOut };
   const percent = discountPercent(product.price, product.compare_at_price);
   if (percent) return { variant: "sale", label: `−${percent}%` };
-  if (product.badges.includes("limited")) return { variant: "limited", label: strings.badge.limited };
-  if (product.badges.includes("new")) return { variant: "new", label: strings.badge.new };
+  if (product.badges?.includes("limited")) return { variant: "limited", label: strings.badge.limited };
+  if (product.badges?.includes("new")) return { variant: "new", label: strings.badge.new };
   return null;
 }
 
+function CardImage({ image, className }) {
+  const { src, srcSet } = responsiveImage(image.url);
+  return (
+    <img
+      src={src}
+      srcSet={srcSet}
+      sizes={srcSet ? SIZES : undefined}
+      alt=""
+      loading="lazy"
+      decoding="async"
+      className={`h-full w-full object-cover ${className}`}
+    />
+  );
+}
+
+function Swatches({ variants }) {
+  const colours = variants.filter((v) => v.swatch_hex);
+  if (!colours.length) return null;
+  const extra = colours.length - MAX_SWATCHES;
+  return (
+    <div className="flex items-center gap-1.5">
+      <span className="sr-only">{`${strings.product.colours}: ${colours.map((v) => v.name).join(", ")}`}</span>
+      <span aria-hidden="true" className="flex items-center gap-1.5">
+        {colours.slice(0, MAX_SWATCHES).map((v) => (
+          <span key={v.id} className="h-3 w-3 rounded-full border border-line" style={{ backgroundColor: v.swatch_hex }} />
+        ))}
+        {extra > 0 && <span className="text-badge text-muted">+{extra}</span>}
+      </span>
+    </div>
+  );
+}
+
 function ProductCard({ product }) {
-  const { id, slug, name, price, compare_at_price: compareAt, images, variants, stock } = product;
+  const { id, slug, name, price, compare_at_price: compareAt, images = [], variants = [], stock, category } = product;
   const wishlisted = useWishlist(selectInWishlist(id));
   const toggleWishlist = useWishlist((s) => s.toggle);
-  const addToCart = useCart((s) => s.add);
-  const [feedback, setFeedback] = useState(null);
 
-  useEffect(() => {
-    if (!feedback) return;
-    const timer = setTimeout(() => setFeedback(null), 2000);
-    return () => clearTimeout(timer);
-  }, [feedback]);
+  // Studio shot first; the lifestyle shot (or the next image) is the hover swap.
+  const primary = images.find((i) => !i.is_lifestyle) ?? images[0];
+  const secondary = images.find((i) => i !== primary && i.is_lifestyle) ?? images.find((i) => i !== primary);
 
-  const [primary, secondary] = images;
   const badge = cardBadge(product);
   const href = `/product/${slug}`;
   const soldOut = stock < 1;
-
-  const handleAdd = () => {
-    const result = addToCart(product);
-    setFeedback(result.ok ? strings.product.added : CART_FEEDBACK[result.reason]);
-  };
+  const hasOptions = variants.length > 0;
+  const fade = soldOut ? "saturate-[.6]" : "";
 
   return (
     <div className="group flex flex-col">
-      <div className="relative aspect-[3/4] overflow-hidden rounded-lg border border-border bg-bg-secondary">
+      <div className="tokens-dark relative aspect-[4/5] overflow-hidden rounded-card bg-carbon">
         <Link to={href} tabIndex={-1} aria-hidden="true" className="absolute inset-0">
           {primary && (
-            <img
-              src={primary.url}
-              alt=""
-              loading="lazy"
-              decoding="async"
-              className="h-full w-full object-cover transition-opacity duration-300 group-hover:opacity-0"
+            <CardImage
+              image={primary}
+              className={`transition-opacity duration-slow ${secondary ? `${CAN_HOVER}:group-hover:opacity-0` : ""} ${fade}`}
             />
           )}
           {secondary && (
-            <img
-              src={secondary.url}
-              alt=""
-              loading="lazy"
-              decoding="async"
-              className="absolute inset-0 h-full w-full scale-105 object-cover opacity-0 transition-all duration-300 group-hover:scale-100 group-hover:opacity-100"
-            />
+            <span className={`absolute inset-0 opacity-0 transition-opacity duration-slow ${CAN_HOVER}:group-hover:opacity-100`}>
+              <CardImage
+                image={secondary}
+                className={`scale-[1.04] transition-transform duration-slow ${CAN_HOVER}:group-hover:scale-100 ${fade}`}
+              />
+            </span>
           )}
         </Link>
 
         {badge && (
-          <Badge variant={badge.variant} className="absolute left-3 top-3 z-10">
+          <Badge variant={badge.variant} className="absolute left-3 top-3 z-10 bg-obsidian/70 backdrop-blur-sm">
             {badge.label}
           </Badge>
         )}
@@ -83,39 +105,64 @@ function ProductCard({ product }) {
           onClick={() => toggleWishlist(product)}
           aria-label={wishlisted ? strings.product.wishlistRemove(name) : strings.product.wishlistAdd(name)}
           aria-pressed={wishlisted}
-          className={`absolute right-2 top-2 z-10 flex h-11 w-11 items-center justify-center rounded-full border border-border bg-white/90 backdrop-blur transition-colors duration-200 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink ${
-            wishlisted ? "text-sale" : "text-ink"
-          }`}
+          className={`absolute right-1 top-1 z-10 flex h-11 w-11 items-center justify-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-focus`}
         >
-          <HeartIcon className="h-4 w-4" fill={wishlisted ? "currentColor" : "none"} />
+          <span
+            className={`flex h-9 w-9 items-center justify-center rounded-full bg-ivory/90 transition-[background-color,color,transform] duration-fast hover:bg-ivory active:scale-95 ${
+              wishlisted ? "text-oxblood" : "text-ink"
+            }`}
+          >
+            <Heart aria-hidden="true" size={20} strokeWidth={1.5} fill={wishlisted ? "currentColor" : "none"} />
+          </span>
         </button>
 
         {!soldOut && (
-          <div className="absolute inset-x-3 bottom-3 z-10 translate-y-2 opacity-0 transition-all duration-200 ease-out group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:translate-y-0 group-hover:opacity-100">
-            {variants.length > 0 ? (
-              <Button as={Link} to={href} variant="primary" size="sm" className="w-full">
-                {strings.product.chooseOptions}
-              </Button>
+          <>
+            {/* Mobile / touch: always-visible round "+" */}
+            {hasOptions ? (
+              <Link
+                to={href}
+                aria-label={strings.product.chooseOptionsFor(name)}
+                className="absolute bottom-3 right-3 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-gold text-obsidian transition-transform duration-fast active:scale-95 lg:hidden"
+              >
+                <Plus aria-hidden="true" size={20} strokeWidth={1.5} />
+              </Link>
             ) : (
-              <Button variant="primary" size="sm" className="w-full gap-2" onClick={handleAdd}>
-                <BagIcon className="h-4 w-4" />
-                {feedback ?? strings.product.addToCart}
-              </Button>
+              <button
+                type="button"
+                onClick={() => addToBag(product)}
+                aria-label={strings.product.addToCartNamed(name)}
+                className="absolute bottom-3 right-3 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-gold text-obsidian transition-transform duration-fast active:scale-95 lg:hidden"
+              >
+                <Plus aria-hidden="true" size={20} strokeWidth={1.5} />
+              </button>
             )}
-          </div>
+
+            {/* Desktop: bar slides up on hover / keyboard focus */}
+            <div className="absolute inset-x-3 bottom-3 z-10 hidden translate-y-2 opacity-0 transition-[transform,opacity] duration-base group-focus-within:translate-y-0 group-focus-within:opacity-100 lg:block [@media(hover:hover)]:group-hover:translate-y-0 [@media(hover:hover)]:group-hover:opacity-100">
+              {hasOptions ? (
+                <Button as={Link} to={href} size="sm" className="w-full">
+                  {strings.product.chooseOptions}
+                </Button>
+              ) : (
+                <Button size="sm" className="w-full" onClick={() => addToBag(product)}>
+                  {strings.product.addToCart}
+                </Button>
+              )}
+            </div>
+          </>
         )}
       </div>
 
       <div className="flex flex-col gap-1.5 pt-4">
-        <h3 className="line-clamp-1 text-body font-semibold text-ink">
-          <Link to={href} className="rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">
+        {category?.name && <p className="text-badge text-muted">{category.name}</p>}
+        <h3 className="line-clamp-1 text-body font-medium text-fg">
+          <Link to={href} className="rounded-control focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
             {name}
           </Link>
         </h3>
         <Price amount={price} compareAt={compareAt} size="sm" />
-        <p className="sr-only" role="status">
-          {feedback}
-        </p>
+        <Swatches variants={variants} />
       </div>
     </div>
   );

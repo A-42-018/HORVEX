@@ -323,7 +323,7 @@ insert into public.home_sections (key, title, subtitle, config, sort_order) valu
        {"title": "Order", "text": "Place your order in about 30 seconds. No account needed."},
        {"title": "We call to confirm", "text": "Our team calls you within a few hours to confirm the details."},
        {"title": "Check and pay", "text": "Open the box, check your watch, then pay the rider."}]}', 9),
-  ('reviews', 'From Our Customers', null, '{"source": "testimonials"}', 10),
+  ('reviews', 'From Our Customers', null, '{"limit": 8}', 10),
   -- Hidden until real post links are added in Admin → Homepage.
   ('social_grid', 'Follow HORVEX', null, '{"posts": []}', 11),
   ('newsletter', 'Join the Circle', 'Early access to new drops and members-only offers, on WhatsApp or email.',

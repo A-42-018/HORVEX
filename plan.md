@@ -3,7 +3,7 @@
 Phase specs: `roadmap.md` §14 · Session starter: `PHASE_PROMPT.md` · Project rules: `CLAUDE.md` · Archive: `docs/history.md` (old notes + decisions; don't read it for block B)
 
 ## Next Up
-**B1a — Announcement bar (Sonnet).**
+**B14b — Gallery (mobile): done (build + lint pass). Next: B15a — Variants & stock (Sonnet). Still pending 👤/browser: browser checks for B1a–B14b, and apply migration `20261020100000_b3c_courier_partners.sql`.**
 
 ## Status
 Statuses: `todo` · `in progress` · `blocked (👤 you)` · `done`
@@ -12,37 +12,37 @@ Statuses: `todo` · `in progress` · `blocked (👤 you)` · `done`
 
 | ID | Phase | Model | Status |
 |---|---|---|---|
-| B1a | Announcement bar | Sonnet | todo |
-| B1b | Desktop header | Sonnet | todo |
-| B2a | Mega menu | Sonnet | todo |
-| B2b | Search overlay | Sonnet | todo |
-| B2c | Search extras | Sonnet | todo |
-| B3a | Mobile header & menu | Sonnet | todo |
-| B3b | Bottom tab bar & FAB | Sonnet | todo |
-| B3c | Footer | Sonnet | todo |
-| B4a | Cart drawer | Sonnet | todo |
-| B4b | Toasts & add-to-bag | Sonnet | todo |
-| B5a | Product card | Sonnet | todo |
-| B5b | Product grid | Sonnet | todo |
-| B6a | Hero slider | Sonnet | todo |
-| B6b | Trust marquee | Sonnet | todo |
-| B7a | Category tiles | Sonnet | todo |
-| B7b | Featured tabs | Sonnet | todo |
-| B8a | Anatomy (static) | Sonnet | todo |
-| B8b | Him / Her | Sonnet | todo |
-| B9a | Brand film | Sonnet | todo |
-| B9b | Promo banners | Sonnet | todo |
-| B10a | Reviews | Sonnet | todo |
-| B10b | How-to-Order & Instagram | Sonnet | todo |
-| B11a | Join & FAQ | Sonnet | todo |
-| B11b | Section wiring | Sonnet | todo |
-| B11c | Template cleanup | Sonnet | todo |
-| B12a | Listing pages | Sonnet | todo |
-| B12b | Sort & URL sync | Sonnet | todo |
-| B13a | Filters (desktop) | Sonnet | todo |
-| B13b | Filters (mobile) | Sonnet | todo |
-| B14a | Gallery (desktop) | Sonnet | todo |
-| B14b | Gallery (mobile) | Sonnet | todo |
+| B1a | Announcement bar | Sonnet | in progress |
+| B1b | Desktop header | Sonnet | in progress |
+| B2a | Mega menu | Sonnet | in progress |
+| B2b | Search overlay | Sonnet | in progress |
+| B2c | Search extras | Sonnet | in progress |
+| B3a | Mobile header & menu | Sonnet | in progress |
+| B3b | Bottom tab bar & FAB | Sonnet | in progress |
+| B3c | Footer | Sonnet | in progress |
+| B4a | Cart drawer | Sonnet | in progress |
+| B4b | Toasts & add-to-bag | Sonnet | in progress |
+| B5a | Product card | Sonnet | in progress |
+| B5b | Product grid | Sonnet | in progress |
+| B6a | Hero slider | Sonnet | in progress |
+| B6b | Trust marquee | Sonnet | in progress |
+| B7a | Category tiles | Sonnet | in progress |
+| B7b | Featured tabs | Sonnet | in progress |
+| B8a | Anatomy (static) | Sonnet | in progress |
+| B8b | Him / Her | Sonnet | in progress |
+| B9a | Brand film | Sonnet | in progress |
+| B9b | Promo banners | Sonnet | in progress |
+| B10a | Reviews | Sonnet | in progress |
+| B10b | How-to-Order & Instagram | Sonnet | in progress |
+| B11a | Join & FAQ | Sonnet | in progress |
+| B11b | Section wiring | Sonnet | in progress (browser check pending) |
+| B11c | Template cleanup | Sonnet | done |
+| B12a | Listing pages | Sonnet | done |
+| B12b | Sort & URL sync | Sonnet | done |
+| B13a | Filters (desktop) | Sonnet | done |
+| B13b | Filters (mobile) | Sonnet | done |
+| B14a | Gallery (desktop) | Sonnet | done |
+| B14b | Gallery (mobile) | Sonnet | done |
 | B15a | Variants & stock | Sonnet | todo |
 | B15b | Buy actions | Sonnet | todo |
 | B15c | Sticky buy bar | Sonnet | todo |
@@ -97,7 +97,20 @@ Statuses: `todo` · `in progress` · `blocked (👤 you)` · `done`
 ## Session Notes
 Newest first, 3–5 lines each: what was done, anything deferred, anything the next phase must know. For an unfinished phase, list what's done and what's left. **Keep only the 5 newest entries here**; move older ones to `docs/history.md`.
 
-_No block B sessions yet._
+- **B14b (done):** `ProductGallery` below `lg` is now a native scroll-snap swipe carousel (`MobileCarousel`: dots, tap opens lightbox, scroll position ↔ `index` synced both ways); desktop viewer/thumbs are `lg+` only (thumbs no longer shown on mobile; dots replace them). `GalleryLightbox` gained touch gestures via pointer events: swipe to change image, two-finger pinch zoom (1–4x), drag-pan when zoomed (bounded), double-tap toggles 2.5x; mouse behaviour unchanged. No new strings/deps. B15a: put variant→image change through `ProductGallery`'s `index` (lift state or add an `activeImageUrl` prop) when wiring the picker.
+  Verified: `npm ci`, build, lint (no new warnings). Not browser-checked (375px swipe + dots, pinch/double-tap on a real touch device, lightbox swipe at 1x vs zoomed, 1-image product, desktop unchanged at 1440px). No git repo in the zip, so not committed.
+
+- **B14a (done):** New `product/ProductGallery.jsx` (vertical thumbs + large 4:5 image on `lg+`, studio shots before lifestyle; mouse-only hover lens = `scale(2.2)` transform following the pointer; prev/next buttons, thumbs and click/Enter all work without hover) and `product/GalleryLightbox.jsx` (on `DialogShell`, full-screen; ←/→/Home/End change image, +/− or click toggle 2.5x zoom with pointer pan, counter). Added `strings.product.gallery`. New minimal `pages/Product.jsx` replaces the `product/:slug` placeholder (loading/error/NotFound, gallery + H1 only). **B14b:** below `lg` the gallery currently shows image + horizontal thumbs; add swipe carousel, dots, pinch zoom in `ProductGallery`/lightbox. B15+ fill the buy-box column in `Product.jsx`.
+  Verified: `npm ci`, build, lint (no new warnings). Not browser-checked (hover lens at 1440px, lightbox keys/focus return, product with 1 image, seed slug).
+
+- **B13b (done):** New `shop/MobileFilters.jsx`: below `lg` a "Filters (n)" button (next to sort) opens a `Drawer` (bottom sheet, ivory) holding `FilterPanel` bound to a **draft** copy of the URL filters (re-seeded on open). Footer: "Reset" (clears draft) + "Apply (n)" where n = live result count for the draft (`useTotal(filters)` prop, `limit: 1` query per listing type: shop/category/collection, defined in `Listing.jsx`); Apply commits all filter keys in one `view.update` (resets `page`). `ActiveChips` now shows at all sizes. Added `strings.listing.filters.{buttonCount, apply, applyCount, reset}`.
+  Verified: `npm ci`, build, lint (no new warnings). Not browser-checked (375px sheet scroll, Apply count vs results, draft discarded on close, tablet md+ right-panel layout).
+
+- **B13a (done):** URL-synced filters: `useListingParams` now parses `category, gender, min, max, strap, movement, stock` into `filters` (the `listProducts` shape) and exposes `update`, `toggle`, `activeCount`, `hasFilters`; any change resets `page`; `clear` drops filters + page but keeps `sort`. `listProducts` gained `strap`/`movement` (arrays of `FILTER_OPTIONS` keys → `specs->>…` ILIKE, OR within facet) and `inStock`; collections accept `filters`. New `shop/FilterPanel` (category radios on /shop only, gender, dual price slider `PriceRange` 0–12000 step 500, strap, movement, in-stock), `shop/ActiveChips`; `Listing.jsx` has a sticky `lg+` sidebar + chips. **B13b:** reuse `FilterPanel`/`ActiveChips` inside a bottom sheet (`Drawer`) with "Apply (n)" (panel currently applies instantly; use a draft copy of params) and show chips below `lg`. Dial-colour facet skipped: no dial-colour data exists (only variant swatches); add when the DB has it.
+  Verified: `npm ci`, build, lint (no new warnings). Not browser-checked (combine filters + sort, shared URL, slider keyboard, 1440px sticky sidebar).
+
+- **B12b (done):** New `hooks/useListingParams.js` (`?sort=` validated against `PRODUCT_SORTS`, `?page=N` = pages shown, capped 20; `replace` navigation, no scroll reset; exposes `sort, limit, hasParams, setSort, loadMore, clear`). New `shop/SortSelect.jsx`, `shop/ListingEmpty.jsx`; added `bestselling` sort to `services/products.js`. `Listing.jsx` shows "Showing n of total", sort select, "Load more" (refetches `page*24` from offset 0, previous items kept), empty state ("Clear filters" if params, else "Browse all watches"). Collections: no `sort` param keeps the hand-picked order; choosing "Featured" removes the param. B13 should add filter params via `useListingParams`' `update` (not exported yet: export it or extend the hook) and reset `page` on filter change.
+  Verified: `npm ci`, build, lint (only pre-existing warnings). Not browser-checked (shared URL with `?sort=price-asc&page=2` reproduces view; 375px sort row).
 
 ## Decisions
 New decisions from block B go here (one line each). Earlier decisions are in `docs/history.md`; the ones that matter day to day are already in `CLAUDE.md`.

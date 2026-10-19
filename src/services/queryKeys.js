@@ -18,6 +18,7 @@ export const queryKeys = {
     // Sorted so the same set of ids hits the same cache entry.
     byIds: (ids) => ["products", "byIds", [...ids].sort()],
     reviews: (productId) => ["products", "reviews", productId],
+    search: (term, limit) => ["products", "search", term, limit],
   },
   categories: {
     all: ["categories"],
@@ -38,6 +39,7 @@ export const queryKeys = {
     faqs: () => ["content", "faqs"],
     testimonials: () => ["content", "testimonials"],
     recentReviews: (limit) => ["content", "recentReviews", limit],
+    reviewSummary: () => ["content", "reviewSummary"],
     page: (slug) => ["content", "page", slug],
   },
   settings: {

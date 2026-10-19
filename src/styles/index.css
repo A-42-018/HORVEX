@@ -8,8 +8,10 @@
   /* Context tokens: dark is the default surface; .section-ivory flips them and
      .section-dark restores them inside an ivory area. Exposed as Tailwind colours
      (text-fg, bg-surface, border-control, text-brand, ...). */
+  /* .tokens-dark: the dark values without a background, for overlays on photos. */
   :root,
-  .section-dark {
+  .section-dark,
+  .tokens-dark {
     --fg: theme("colors.ivory");
     --on-fg: theme("colors.obsidian");
     --muted: theme("colors.smoke");
@@ -99,4 +101,26 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Hero slider progress line (B6a): transform only. */
+@keyframes hero-progress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* Trust marquee (B6b): transform only; pauses on hover/focus. */
+@keyframes trust-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.trust-marquee { overflow: hidden; }
+.trust-marquee__track { display: flex; width: max-content; animation: trust-marquee 40s linear infinite; }
+.trust-marquee__row { display: flex; flex-shrink: 0; min-width: 100vw; justify-content: space-around; }
+.trust-marquee:hover .trust-marquee__track,
+.trust-marquee:focus-within .trust-marquee__track { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+  .trust-marquee__track { width: auto; flex-wrap: wrap; justify-content: center; animation: none !important; padding-inline: var(--gutter); }
+  .trust-marquee__row { flex-wrap: wrap; justify-content: center; }
+  .trust-marquee__row[aria-hidden="true"] { display: none; }
 }

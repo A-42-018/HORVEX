@@ -1,4 +1,5 @@
 import { query } from "./supabase";
+import { summarizeRatings } from "./products";
 
 // Homepage and editorial content. RLS returns only visible/active rows (and
 // hero slides inside their date window), so no status filters here.
@@ -49,6 +50,12 @@ export function listRecentReviews(limit = 8) {
       .order("created_at", { ascending: false })
       .limit(limit),
   );
+}
+
+/** { average, count } over every approved review (RLS hides the rest). */
+export async function getReviewSummary() {
+  const rows = await query((db) => db.from("reviews").select("rating").limit(5000));
+  return summarizeRatings(rows);
 }
 
 /** A published page (policies, about), or null. */

@@ -7,9 +7,17 @@ const SETTINGS_FIELDS = `
   contact_phone, whatsapp_number, contact_email, address, socials, announcements,
   footer_text, free_delivery_threshold, seo_title, seo_desc, ga4_id, fb_pixel_id,
   maintenance_mode`;
+// Added in B3c (migration 20261020100000). Until it is applied, fall back to the
+// original columns so the rest of the storefront keeps working.
+const COURIER_FIELD = "courier_partners";
 
-export function getSiteSettings() {
-  return query((db) => db.from("site_settings").select(SETTINGS_FIELDS).maybeSingle());
+export async function getSiteSettings() {
+  try {
+    return await query((db) => db.from("site_settings").select(`${SETTINGS_FIELDS}, ${COURIER_FIELD}`).maybeSingle());
+  } catch (error) {
+    if (!String(error?.message).includes(COURIER_FIELD)) throw error;
+    return query((db) => db.from("site_settings").select(SETTINGS_FIELDS).maybeSingle());
+  }
 }
 
 export function listDeliveryZones() {

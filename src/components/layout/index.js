@@ -1,3 +1,9 @@
 export { default as AnnouncementBar } from "./AnnouncementBar";
 export { default as Navbar } from "./Navbar";
 export { default as Footer } from "./Footer";
+export { default as SearchOverlay } from "./SearchOverlay";
+export { default as MobileMenu } from "./MobileMenu";
+export { default as MobileTabBar } from "./MobileTabBar";
+export { default as WhatsAppFab } from "./WhatsAppFab";
+export { default as CartDrawer } from "./CartDrawer";
+export { default as Toaster } from "./Toaster";

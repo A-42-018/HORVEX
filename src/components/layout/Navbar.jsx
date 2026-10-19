@@ -1,184 +1,151 @@
-import { useEffect, useRef, useState } from "react";
-import { Container } from "../common";
-import { SearchIcon, UserIcon, HeartIcon, BagIcon, MenuIcon, CloseIcon } from "./icons";
+import { useState } from "react";
+import { Link, NavLink, useLocation } from "react-router";
+import { Heart, Menu, Search, ShoppingBag } from "lucide-react";
+import { Container, IconButton } from "../common";
+import MegaMenu from "./MegaMenu";
+import { useHeaderScroll } from "../../hooks/useHeaderScroll";
+import { selectCartCount, selectCartEstimate, useCart } from "../../store/cart";
+import { selectWishlistCount, useWishlist } from "../../store/wishlist";
+import { useUI } from "../../store/ui";
+import { formatTaka } from "../../lib/format";
+import { strings } from "../../lib/strings";
+
+const ICON = { size: 20, strokeWidth: 1.5 };
 
 const NAV_LINKS = [
-  { label: "Home", href: "#home" },
-  { label: "Shop", href: "#shop" },
-  { label: "Categories", href: "#categories" },
-  { label: "New Arrivals", href: "#new-arrivals" },
-  { label: "About", href: "#about" },
+  { to: "/category/men", label: strings.nav.men },
+  { to: "/category/women", label: strings.nav.women },
 ];
 
-function IconButton({ label, children, className = "", ...props }) {
+function Counter({ value }) {
+  if (value < 1) return null;
   return (
-    <button
-      type="button"
-      aria-label={label}
-      className={`relative inline-flex h-10 w-10 items-center justify-center rounded-full text-ink transition-colors duration-200 hover:bg-bg-secondary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink ${className}`}
-      {...props}
+    <span
+      aria-hidden="true"
+      className="pointer-events-none absolute -right-0.5 -top-0.5 flex h-[1.125rem] min-w-[1.125rem] items-center justify-center rounded-pill bg-gold px-1 text-badge tracking-normal text-obsidian tabular-nums"
     >
-      {children}
-    </button>
+      {value > 99 ? "99+" : value}
+    </span>
   );
 }
 
-function Logo() {
+function Wordmark() {
   return (
-    <a
-      href="#home"
-      className="flex items-center gap-2 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
-      aria-label="Storefront home"
+    <Link
+      to="/"
+      aria-label={strings.nav.home}
+      className="group flex items-center gap-4 rounded-control px-2 py-3"
     >
-      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-ink text-small font-bold text-white">
-        S
-      </span>
-      <span className="text-body sm:text-h3 font-semibold tracking-tight text-ink whitespace-nowrap">
-        Storefront
-      </span>
-    </a>
+      <span aria-hidden="true" className="hidden h-px w-8 bg-gold/60 transition-[width] duration-base group-hover:w-12 lg:block" />
+      <span className="font-logo text-body uppercase tracking-wordmark text-fg">HORVEX</span>
+      <span aria-hidden="true" className="hidden h-px w-8 bg-gold/60 transition-[width] duration-base group-hover:w-12 lg:block" />
+    </Link>
   );
 }
 
-function Navbar({ cartCount = 0 }) {
-  const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const menuButtonRef = useRef(null);
+// Mobile: [☰] HORVEX [Search] [Bag] (menu = MobileMenu drawer). Desktop (lg+): [Men] [Women] [Collections ▾ mega menu]  — HORVEX —  [Search] [Wishlist] [Bag].
+// Transparent over the top of the home page, solid after 80px, hides on scroll
+// down. Below lg it is a plain solid bar that stays visible.
+function Navbar() {
+  const { pathname } = useLocation();
+  const { scrolled, hidden } = useHeaderScroll();
+  const cartCount = useCart(selectCartCount);
+  const cartEstimate = useCart(selectCartEstimate);
+  const wishlistCount = useWishlist(selectWishlistCount);
+  const openCart = useUI((s) => s.openCart);
+  const openSearch = useUI((s) => s.openSearch);
+  const openMenu = useUI((s) => s.openMenu);
 
-  useEffect(() => {
-    let ticking = false;
-    const update = () => {
-      setScrolled(window.scrollY > 8);
-      ticking = false;
-    };
-    const onScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(update);
-    };
-    update();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  useEffect(() => {
-    document.body.style.overflow = menuOpen ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [menuOpen]);
-
-  useEffect(() => {
-    const onKeyDown = (e) => {
-      if (e.key === "Escape" && menuOpen) {
-        setMenuOpen(false);
-        menuButtonRef.current?.focus();
-      }
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [menuOpen]);
+  const isHome = pathname === "/";
+  const [megaOpen, setMegaOpen] = useState(false);
+  const solid = scrolled || !isHome || megaOpen;
 
   return (
     <header
-      className={`sticky top-0 z-50 w-full border-b transition-colors duration-300 ${
-        scrolled ? "border-border bg-white/90 backdrop-blur-md shadow-sm" : "border-transparent bg-bg"
-      }`}
+      className={`sticky top-0 z-50 transition-transform duration-slow ease-out-expo focus-within:!translate-y-0 ${
+        hidden ? "lg:-translate-y-full" : ""
+      } ${isHome ? "lg:-mb-20" : ""}`}
     >
-      <Container>
+      {/* Background layers fade with opacity only: solid obsidian + blur, or a soft top scrim. */}
+      <div
+        aria-hidden="true"
+        className={`absolute inset-0 border-b border-line bg-obsidian/90 backdrop-blur-md transition-opacity duration-base ${
+          solid ? "opacity-100" : "opacity-100 lg:opacity-0"
+        }`}
+      />
+      <div
+        aria-hidden="true"
+        className={`absolute inset-0 hidden bg-gradient-to-b from-obsidian/70 to-transparent transition-opacity duration-base lg:block ${
+          solid ? "opacity-0" : "opacity-100"
+        }`}
+      />
+
+      <Container className="relative">
         <nav
-          className="flex h-16 items-center justify-between gap-4 lg:h-20"
-          aria-label="Primary"
+          aria-label={strings.nav.label}
+          className="grid h-16 grid-cols-[1fr_auto_1fr] items-center gap-2 lg:h-20"
         >
-          {/* Mobile: menu button + logo */}
-          <div className="flex items-center gap-2 lg:hidden">
-            <IconButton
-              label={menuOpen ? "Close menu" : "Open menu"}
-              onClick={() => setMenuOpen((v) => !v)}
-              ref={menuButtonRef}
-            >
-              {menuOpen ? <CloseIcon /> : <MenuIcon />}
+          <div className="flex items-center lg:hidden">
+            <IconButton label={strings.nav.menu} variant="ghost" className="-ml-2 border-0" onClick={openMenu}>
+              <Menu {...ICON} />
             </IconButton>
-            <Logo />
           </div>
 
-          {/* Desktop: logo left */}
-          <div className="hidden lg:flex lg:items-center">
-            <Logo />
-          </div>
-
-          {/* Desktop: center links */}
           <ul className="hidden items-center gap-8 lg:flex">
             {NAV_LINKS.map((link) => (
-              <li key={link.label}>
-                <a
-                  href={link.href}
-                  className="text-nav text-ink-secondary transition-colors duration-200 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+              <li key={link.to}>
+                <NavLink
+                  to={link.to}
+                  className={({ isActive }) =>
+                    `relative inline-flex min-h-11 items-center text-button transition-colors duration-fast after:absolute after:inset-x-0 after:bottom-2 after:h-px after:origin-left after:bg-gold after:transition-transform after:duration-base hover:text-brand focus-visible:text-brand ${
+                      isActive ? "text-brand after:scale-x-100" : "text-fg after:scale-x-0 hover:after:scale-x-100"
+                    }`
+                  }
                 >
                   {link.label}
-                </a>
+                </NavLink>
               </li>
             ))}
+            <li>
+              <MegaMenu onOpenChange={setMegaOpen} headerHidden={hidden} />
+            </li>
           </ul>
 
-          {/* Right: icons */}
-          <div className="flex items-center gap-1 sm:gap-2">
-            <IconButton label="Search" className="hidden sm:inline-flex">
-              <SearchIcon />
+          <div className="lg:justify-self-center">
+            <Wordmark />
+          </div>
+
+          <div className="flex items-center justify-end gap-1">
+            <IconButton label={strings.nav.search} variant="ghost" className="border-0" onClick={openSearch}>
+              <Search {...ICON} />
             </IconButton>
-            <IconButton label="Account" className="hidden lg:inline-flex">
-              <UserIcon />
+            <IconButton
+              as={Link}
+              to="/wishlist"
+              label={strings.nav.wishlist(wishlistCount)}
+              variant="ghost"
+              className="hidden border-0 lg:inline-flex"
+            >
+              <Heart {...ICON} />
+              <Counter value={wishlistCount} />
             </IconButton>
-            <IconButton label="Wishlist" className="hidden lg:inline-flex">
-              <HeartIcon />
-            </IconButton>
-            <IconButton label="Search" className="sm:hidden">
-              <SearchIcon />
-            </IconButton>
-            <IconButton label={`Cart, ${cartCount} items`}>
-              <BagIcon />
+            <button
+              type="button"
+              aria-label={strings.nav.bag(cartCount)}
+              onClick={openCart}
+              className="relative inline-flex h-11 min-w-11 items-center justify-center gap-2 rounded-pill px-3 text-fg transition-colors duration-fast hover:bg-fg/10 active:scale-95"
+            >
+              <span className="relative">
+                <ShoppingBag {...ICON} />
+                <Counter value={cartCount} />
+              </span>
               {cartCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-sale text-[10px] font-bold text-white">
-                  {cartCount}
-                </span>
+                <span className="hidden text-small font-semibold tabular-nums xl:inline">{formatTaka(cartEstimate)}</span>
               )}
-            </IconButton>
+            </button>
           </div>
         </nav>
       </Container>
-
-      {/* Mobile menu panel */}
-      <div
-        className={`grid overflow-hidden bg-white transition-[grid-template-rows] duration-300 ease-in-out lg:hidden ${
-          menuOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-        }`}
-      >
-        <div className="min-h-0">
-          <Container>
-            <ul className="flex flex-col divide-y divide-border border-t border-border py-2">
-              {NAV_LINKS.map((link) => (
-                <li key={link.label}>
-                  <a
-                    href={link.href}
-                    onClick={() => setMenuOpen(false)}
-                    className="block py-3 text-nav text-ink"
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-            <div className="flex items-center gap-4 border-t border-border py-4">
-              <a href="#account" className="flex items-center gap-2 text-nav text-ink-secondary">
-                <UserIcon className="h-5 w-5" /> Account
-              </a>
-              <a href="#wishlist" className="flex items-center gap-2 text-nav text-ink-secondary">
-                <HeartIcon className="h-5 w-5" /> Wishlist
-              </a>
-            </div>
-          </Container>
-        </div>
-      </div>
     </header>
   );
 }

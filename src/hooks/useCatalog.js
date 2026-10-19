@@ -1,6 +1,14 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { queryKeys } from "../services/queryKeys";
-import { getProduct, getProductsByIds, listProductReviews, listProducts, summarizeRatings } from "../services/products";
+import {
+  SEARCH_MIN_CHARS,
+  getProduct,
+  getProductsByIds,
+  listProductReviews,
+  listProducts,
+  searchProducts,
+  summarizeRatings,
+} from "../services/products";
 import {
   getCategory,
   getCollection,
@@ -38,6 +46,17 @@ export function useProductsByIds(ids) {
     queryFn: () => getProductsByIds(ids),
     enabled: ids.length > 0,
     placeholderData: ids.length ? keepPreviousData : [],
+  });
+}
+
+/** Instant search results for a (debounced) term. Idle until the term has enough characters. */
+export function useProductSearch(term, limit = 6) {
+  const clean = term.trim();
+  return useQuery({
+    queryKey: queryKeys.products.search(clean, limit),
+    queryFn: () => searchProducts(clean, limit),
+    enabled: clean.length >= SEARCH_MIN_CHARS,
+    placeholderData: keepPreviousData,
   });
 }
 

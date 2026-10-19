@@ -55,16 +55,16 @@ export function collectionFilters(rules = {}) {
 }
 
 /** Products in a collection: hand-picked order for "manual", the rules for "rules". */
-export async function listCollectionProducts(collection, { sort, limit = 24, offset = 0 } = {}) {
+export async function listCollectionProducts(collection, { sort, limit = 24, offset = 0, filters = {} } = {}) {
   if (collection.mode === "rules") {
-    return listProducts({ ...collectionFilters(collection.rules), sort, limit, offset });
+    return listProducts({ ...collectionFilters(collection.rules), ...filters, sort, limit, offset });
   }
   const links = await query((db) =>
     db.from("collection_products").select("product_id").eq("collection_id", collection.id).order("sort_order"),
   );
   const ids = links.map((l) => l.product_id);
   if (!ids.length) return { items: [], total: 0 };
-  const { items } = await listProducts({ ids, limit: ids.length, sort });
+  const { items } = await listProducts({ ...filters, ids, limit: ids.length, sort });
   // Without an explicit sort, keep the admin's hand-picked order.
   const ordered = sort ? items : ids.map((id) => items.find((p) => p.id === id)).filter(Boolean);
   return { items: ordered.slice(offset, offset + limit), total: ordered.length };
