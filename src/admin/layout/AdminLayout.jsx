@@ -19,7 +19,7 @@ const ADMIN_NAV = [
 
 function AdminLayout() {
   return (
-    <div className="flex min-h-screen flex-col bg-bg-secondary md:flex-row">
+    <div className="flex min-h-screen flex-col bg-bg-secondary text-ink md:flex-row">
       <title>Admin | HORVEX</title>
       <nav aria-label="Admin" className="border-b border-border bg-bg md:w-56 md:shrink-0 md:border-b-0 md:border-r">
         <p className="px-5 py-4 text-small font-semibold uppercase tracking-wider text-ink">HORVEX Admin</p>

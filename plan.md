@@ -8,7 +8,7 @@ Statuses: `todo` · `in progress` · `blocked (👤 you)` · `done`
 | ID | Phase | Model | Status |
 |---|---|---|---|
 | 0 | Project setup | — | done |
-| A1 | Design tokens & fonts | Opus | todo |
+| A1 | Design tokens & fonts | Opus | done |
 | A2 | Core primitives & style guide | Opus | todo |
 | A3 | Database schema & RLS | Opus | todo |
 | A4 | Order engine & seed data | Opus | todo |
@@ -51,10 +51,18 @@ Statuses: `todo` · `in progress` · `blocked (👤 you)` · `done`
 | C6 | QA, launch & handover | Opus | todo |
 
 ## Next Up
-**A1 — Design tokens & fonts (Opus).**
+**A2 — Core primitives & style guide (Opus).**
 
 ## Session Notes
 Newest first. Keep each entry to 3–6 lines: what was done, anything deferred, anything the next phase must know. For an unfinished phase, list what's done and what's left.
+
+### Phase A1 — Design tokens & fonts (done)
+- `tailwind.config.js` rewritten: §3.1 palette, fluid type roles (`text-display/h1/h2/h3/eyebrow/body/small/button/price`, a plugin so each class also sets the font family), `xs` 360 breakpoint, `rounded-control/card/pill`, `shadow-highlight` (dark) / `shadow-soft` (ivory), `bg-grain`, `bg-gold-glow`, `bg-vignette`, tracking `eyebrow/button/wordmark`, `duration-fast/base/slow/reveal`, `ease-out-expo` (default) / `ease-in-out-cubic`.
+- Motion values live in `src/lib/motion.js` (`DURATION`, `EASE`); the Tailwind config imports them, so `motion` components should import the same constants.
+- Fonts are self-hosted with `@fontsource-variable/manrope`, `@fontsource-variable/cormorant-garamond` (+ italic) and `@fontsource/michroma` in `src/styles/fonts.css`; the Google Fonts link is gone. CSS moved to `src/styles/` (§9.2). Hind Siliguri is not installed (optional, only if Bangla copy is added).
+- Base CSS: obsidian + grain body, `.section-ivory`, context vars `--accent-text` / `--focus-ring` (gold on dark, gold-deep on ivory), gold `:focus-visible`, gold `::selection`, `--gutter` (16/24/40 → `px-gutter`) and `--section-y` (64/96/128 → `py-section`).
+- Template aliases: `bg`→ivory, `bg-secondary`→parchment, `ink-secondary`→taupe, `border`→light hairline, `accent`→ink, `success`→emerald, `sale`→oxblood; radii tightened to 2/4px. `StoreLayout` uses `section-ivory` (and `AdminLayout` got `text-ink`) so the template stays readable on the dark base. Remove both once B1/B21 rebuild the shells.
+- Favicon is now the placeholder monogram (H in a 12-tick bezel). `monogram.svg`, logos, apple-touch-icon and the OG image are still to do (C3 / when the client supplies a logo).
 
 ### Phase 0 — Project setup (done)
 - Template copied in, package renamed `horvex@0.1.0`; router skeleton with placeholder pages; `/admin/*` lazy-loaded as its own chunk (`src/admin/AdminApp.jsx`).
@@ -70,3 +78,7 @@ Newest first. Keep each entry to 3–6 lines: what was done, anything deferred, 
 - Admin is mounted via a lazy `admin/*` route with its own `<Routes>` (React Router 7's route `lazy` can't supply `children`).
 - Page titles use React 19's native `<title>`; no helmet library.
 - Phases are session-sized: block A Opus → block B Sonnet → block C Opus (roadmap §14).
+- Type roles are single classes (`text-h2` sets family + size + leading + tracking + weight) in the components layer, so `font-*`/`text-<color>` utilities still override them.
+- Surface-aware colour is done with CSS vars (`--accent-text`, `--focus-ring`) that `.section-ivory` flips; primitives should use them instead of branching per surface.
+- Variable fonts (`@fontsource-variable`) over static weights: one file per subset covers every weight.
+- Template `accent` aliases to ink, not gold: gold fails contrast on the ivory template sections. A2 restyles Button to gold on dark.

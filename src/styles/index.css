@@ -1,0 +1,69 @@
+@import "./fonts.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Context tokens: dark is the default surface; .section-ivory flips them. */
+  :root {
+    --accent-text: theme("colors.gold.DEFAULT");
+    --focus-ring: theme("colors.gold.DEFAULT");
+    --gutter: 1rem;
+    --section-y: 4rem;
+    color-scheme: dark;
+  }
+
+  @media (min-width: theme("screens.md")) {
+    :root {
+      --gutter: 1.5rem;
+      --section-y: 6rem;
+    }
+  }
+
+  @media (min-width: theme("screens.lg")) {
+    :root {
+      --gutter: 2.5rem;
+      --section-y: 8rem;
+    }
+  }
+
+  body {
+    @apply bg-obsidian bg-grain font-sans text-body text-ivory antialiased;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    @apply bg-gold text-obsidian;
+  }
+}
+
+@layer components {
+  /* Light "breathing" section on the dark site. Gold text and rings switch to
+     gold-deep here, since plain gold fails contrast on ivory. */
+  .section-ivory {
+    @apply bg-ivory text-ink;
+    --accent-text: theme("colors.gold.deep");
+    --focus-ring: theme("colors.gold.deep");
+    color-scheme: light;
+  }
+}
+
+/* Global motion-safety net (Phase 17): once the user asks for reduced
+   motion, every animation/transition on the site collapses to effectively
+   instant rather than being disabled per-component. Functionality (accordion
+   open/close, mobile menu, hover states) still works — it just stops moving. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

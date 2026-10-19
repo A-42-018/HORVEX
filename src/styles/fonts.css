@@ -1,0 +1,8 @@
+/* Self-hosted fonts (roadmap §3.2). Variable files cover every weight we use:
+   Manrope 400–700, Cormorant Garamond 500/600 + 500 italic. Michroma is the
+   wordmark placeholder only. Each file is split by unicode-range, so browsers
+   download just the Latin subset. */
+@import "@fontsource-variable/manrope/wght.css";
+@import "@fontsource-variable/cormorant-garamond/wght.css";
+@import "@fontsource-variable/cormorant-garamond/wght-italic.css";
+@import "@fontsource/michroma/400.css";
