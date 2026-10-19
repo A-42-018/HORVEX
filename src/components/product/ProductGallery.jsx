@@ -125,7 +125,7 @@ function MobileCarousel({ list, name, index, onIndex, onOpen, eager }) {
 // component shows a native scroll-snap swipe carousel with dots; tapping a
 // slide opens the lightbox (pinch zoom lives there). Only the layout that's
 // showing loads its first image eagerly; the hidden one stays lazy (never fetched).
-function ProductGallery({ images, name, className = "" }) {
+function ProductGallery({ images, name, activeImageId, className = "" }) {
   const desktop = useMediaQuery("(min-width: 1024px)");
   const list = orderGalleryImages(images);
   const [index, setIndex] = useState(0);
@@ -134,6 +134,14 @@ function ProductGallery({ images, name, className = "" }) {
   const imgRef = useRef(null);
   const total = list.length;
   const current = list[Math.min(index, total - 1)];
+
+  // Variant picker drives this: when it names an image, jump the gallery to it.
+  useEffect(() => {
+    if (!activeImageId) return;
+    const next = list.findIndex((image) => image.id === activeImageId);
+    if (next >= 0) setIndex(next);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeImageId]);
 
   if (!current) {
     return (

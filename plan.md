@@ -3,7 +3,7 @@
 Phase specs: `roadmap.md` §14 · Session starter: `PHASE_PROMPT.md` · Project rules: `CLAUDE.md` · Archive: `docs/history.md` (old notes + decisions; don't read it for block B)
 
 ## Next Up
-**B14b — Gallery (mobile): done; block B review fixes done. Next: B15a — Variants & stock (Sonnet). Still pending 👤/browser: full browser checks for B1a–B14b (review-fix pages were checked), and apply migration `20261020100000_b3c_courier_partners.sql`.**
+**B15a — Variants & stock: done. Next: B15b — Buy actions (Sonnet). Still pending 👤/browser: full browser checks for B1a–B14b (review-fix pages were checked), and apply migration `20261020100000_b3c_courier_partners.sql`.**
 
 ## Status
 Statuses: `todo` · `in progress` · `blocked (👤 you)` · `done`
@@ -43,7 +43,7 @@ Statuses: `todo` · `in progress` · `blocked (👤 you)` · `done`
 | B13b | Filters (mobile) | Sonnet | done |
 | B14a | Gallery (desktop) | Sonnet | done |
 | B14b | Gallery (mobile) | Sonnet | done |
-| B15a | Variants & stock | Sonnet | todo |
+| B15a | Variants & stock | Sonnet | done |
 | B15b | Buy actions | Sonnet | todo |
 | B15c | Sticky buy bar | Sonnet | todo |
 | B16a | PDP tabs | Sonnet | todo |
@@ -99,6 +99,7 @@ Newest first, 3–5 lines each: what was done, anything deferred, anything the n
 
 - **Block B review fixes (done):** Imported B1a–B14b from the zip (commit "Import block B through B14b (from zip)"; dropped the unused pre-B11 `home/*` sections and `src/data/`), then fixed 10 review findings: `/category/men|women` list by gender via `categoryScope()` (services/products.js; gender facet hidden there, men/women left out of the /shop category radios); menu price links use `?min=`/`?max=`; `?search=` is a URL filter with a chip (not counted in `activeCount`, cleared by `clear()`); rule collections intersect user filters (`withinRules`); `PriceRange` is controlled (no remount; commits on pointerup + stepping keys only); `MobileCarousel` only scrolls for external index changes; hero preloads mobile + desktop crops with `media`; gallery eager-loads only the visible layout (`hooks/useMediaQuery.js`); the mobile filter count runs only inside the open sheet; 44px dot targets; tab bar uses `text-badge`.
   Verified: build, lint (same 7 pre-existing warnings), browser at 1238/1024px and 375px, no console errors. Not done: `home/Anatomy.jsx` still has a one-off `text-[0.625rem]` (out of scope). Real touch swipes were simulated with wheel/scroll events, not a device.
+- **B15a (done):** `Product.jsx` now holds `selected` variant + `qty` in `ProductDetail` and renders a `BuyBox` (name, `Price` with variant `price_override`, `VariantPicker`, `QuantityStepper`, `StockLine`). New `components/product/{VariantPicker,QuantityStepper,StockLine}.jsx`; `ProductGallery` takes `activeImageId` and jumps to the variant's image. Qty is clamped to `min(MAX_QTY_PER_LINE, stock)`. Strings under `strings.product`. Verified: build, lint (no new warnings). Not browser-checked (desktop/375px). B15b: add-to-bag/buy-now/wishlist actions using `selected` + `qty` from `ProductDetail`.
 - **B14b (done):** `ProductGallery` below `lg` is now a native scroll-snap swipe carousel (`MobileCarousel`: dots, tap opens lightbox, scroll position ↔ `index` synced both ways); desktop viewer/thumbs are `lg+` only (thumbs no longer shown on mobile; dots replace them). `GalleryLightbox` gained touch gestures via pointer events: swipe to change image, two-finger pinch zoom (1–4x), drag-pan when zoomed (bounded), double-tap toggles 2.5x; mouse behaviour unchanged. No new strings/deps. B15a: put variant→image change through `ProductGallery`'s `index` (lift state or add an `activeImageUrl` prop) when wiring the picker.
   Verified: `npm ci`, build, lint (no new warnings). Not browser-checked (375px swipe + dots, pinch/double-tap on a real touch device, lightbox swipe at 1x vs zoomed, 1-image product, desktop unchanged at 1440px). No git repo in the zip, so not committed.
 

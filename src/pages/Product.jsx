@@ -1,11 +1,67 @@
+import { useState } from "react";
 import { useParams } from "react-router";
-import { Container, Skeleton } from "../components/common";
-import { ProductGallery } from "../components/product";
+import { Container, Price, Skeleton } from "../components/common";
+import { ProductGallery, QuantityStepper, StockLine, VariantPicker } from "../components/product";
 import { useProduct } from "../hooks/useCatalog";
+import { MAX_QTY_PER_LINE } from "../store/cart";
 import { strings } from "../lib/strings";
 import NotFound from "./NotFound";
 
-// PDP shell. Gallery is B14a; buy box (B15), tabs (B16) and related (B16c) slot into the right column / below.
+// PDP shell. Gallery is B14a/B14b; buy box fills in across B15a (variants/stock,
+// here), B15b (buy actions) and B15c (sticky bar); tabs (B16) and related (B16c)
+// slot in below. `selected` lives here (not inside BuyBox) so the gallery can
+// jump to the variant's image alongside the price/stock line updating.
+function BuyBox({ product, selected, onSelect, qty, onQtyChange }) {
+  const { name, price, compare_at_price: compareAt, low_stock_at: lowStockAt, variants = [] } = product;
+  const stock = selected ? selected.stock : product.stock;
+  const maxQty = Math.max(0, Math.min(MAX_QTY_PER_LINE, stock));
+  const displayPrice = selected?.price_override ?? price;
+
+  return (
+    <div className="mt-8 flex flex-col gap-5 lg:mt-0">
+      <h1 className="text-h2">{name}</h1>
+      <Price amount={displayPrice} compareAt={variants.length ? undefined : compareAt} size="lg" />
+
+      <VariantPicker variants={variants} selected={selected} onSelect={onSelect} name={name} />
+
+      <div className="flex flex-col gap-2">
+        <p className="text-small font-medium text-fg">{strings.product.quantity}</p>
+        <QuantityStepper qty={qty} onChange={onQtyChange} maxQty={Math.max(1, maxQty)} disabled={maxQty < 1} />
+      </div>
+
+      <StockLine stock={stock} lowStockAt={lowStockAt} />
+    </div>
+  );
+}
+
+function ProductDetail({ product }) {
+  const { variants = [] } = product;
+  const [selected, setSelected] = useState(() => variants.find((v) => v.stock > 0) ?? variants[0] ?? null);
+  const [qty, setQty] = useState(1);
+
+  const selectVariant = (variant) => {
+    setSelected(variant);
+    setQty((q) => Math.min(q, Math.max(1, Math.min(MAX_QTY_PER_LINE, variant.stock))));
+  };
+
+  return (
+    <>
+      <title>{`${product.name} | HORVEX`}</title>
+      <Container className="py-8 lg:py-12">
+        <div className="lg:grid lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-12">
+          <ProductGallery
+            key={product.id}
+            images={product.images}
+            name={product.name}
+            activeImageId={selected?.image_id ?? null}
+          />
+          <BuyBox product={product} selected={selected} onSelect={selectVariant} qty={qty} onQtyChange={setQty} />
+        </div>
+      </Container>
+    </>
+  );
+}
+
 function Product() {
   const { slug } = useParams();
   const { data: product, isPending, isError, refetch } = useProduct(slug);
@@ -29,19 +85,7 @@ function Product() {
   }
   if (!product) return <NotFound />;
 
-  return (
-    <>
-      <title>{`${product.name} | HORVEX`}</title>
-      <Container className="py-8 lg:py-12">
-        <div className="lg:grid lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-12">
-          <ProductGallery key={product.id} images={product.images} name={product.name} />
-          <div className="mt-8 lg:mt-0">
-            <h1 className="text-h2">{product.name}</h1>
-          </div>
-        </div>
-      </Container>
-    </>
-  );
+  return <ProductDetail product={product} />;
 }
 
 export default Product;

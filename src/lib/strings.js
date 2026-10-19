@@ -324,6 +324,16 @@ const en = {
     colours: "Available colours",
     wishlistAdd: (name) => `Add ${name} to wishlist`,
     wishlistRemove: (name) => `Remove ${name} from wishlist`,
+    options: "Options",
+    selected: (name) => `Selected: ${name}`,
+    quantity: "Quantity",
+    decreaseQty: "Decrease quantity",
+    increaseQty: "Increase quantity",
+    stock: {
+      low: (n) => `Only ${n} left`,
+      in: "In stock",
+      out: "Out of stock",
+    },
     gallery: {
       label: (name) => `${name} images`,
       thumb: (n, total) => `Show image ${n} of ${total}`,
