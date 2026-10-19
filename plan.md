@@ -11,7 +11,7 @@ Statuses: `todo` · `in progress` · `blocked (👤 you)` · `done`
 | A1 | Design tokens & fonts | Opus | done |
 | A2 | Core primitives & style guide | Opus | done |
 | A3 | Database schema & RLS | Opus | done |
-| A4 | Order engine & seed data | Opus | todo |
+| A4 | Order engine & seed data | Opus | done |
 | A5 | Data layer & client state | Opus | todo |
 | A6 | Admin auth & admin patterns | Opus | todo |
 | B1 | Header (desktop) + announcement | Sonnet | todo |
@@ -51,10 +51,17 @@ Statuses: `todo` · `in progress` · `blocked (👤 you)` · `done`
 | C6 | QA, launch & handover | Opus | todo |
 
 ## Next Up
-**A4 — Order engine & seed data (Opus).** No 👤 You step. Apply new migrations + `seed.sql` the same way as A3 (SQL Editor, see `supabase/README.md`).
+**A5 — Data layer & client state (Opus).** No 👤 You step. Read `supabase/README.md` → "Order engine" for the RPC contract the order service wraps.
 
 ## Session Notes
 Newest first. Keep each entry to 3–6 lines: what was done, anything deferred, anything the next phase must know. For an unfinished phase, list what's done and what's left.
+
+### Phase A4 — Order engine & seed data (done)
+- Migration `20261019130000_a4_order_engine.sql`: public RPCs `quote_order` (read-only totals + coupon check), `place_order`, `track_order`; internal `price_order`, `normalize_bd_phone`, `request_ip` (execute revoked from anon/authenticated). Contract, error tokens and limits are in `supabase/README.md`.
+- `place_order` re-prices from the DB, locks product/variant rows in id order and decrements stock, applies coupon + zone + free-delivery threshold, enforces honeypot (`p_website`), block list, 3/hour per phone and 10/hour per IP (advisory-locked), and numbers orders `HVX-10001…` from `order_number_seq`. `track_order` needs phone + number and returns no address/phone/name/notes.
+- `seed.sql`: 7 categories, 24 watches (3 with variants, 1 sold out, 2 low stock), 52 placeholder Unsplash images, 2 collections, 12 reviews, 3 zones, settings, 13 home sections, 3 hero slides, a promo banner, 8 FAQs, 6 testimonials, 6 pages. Contact details and socials are left empty on purpose.
+- Verified: `tests/a4_order_check.sql` passes live and on PGlite (re-runnable, leaves no rows, rewinds the sequence); six planted engine bugs each make it fail. Live anon probes: seeded data readable, tampered price ignored, `price_order` / coupons / orders denied. The first seed run didn't land; the second did.
+- For later: B5/B16 swap the Unsplash `w/h` params for srcset; replace placeholder photos (some show other brands' dials) and draft policy/FAQ copy with the client's (C6). B18 maps the error tokens to `strings.js` copy and keeps the honeypot field hidden. C5: `track_order` and `quote_order` have no rate limit (order-number guessing, coupon enumeration); consider a small attempts table. `maintenance_mode` isn't enforced by `place_order` yet (B29/C5).
 
 ### Phase A3 — Database schema & RLS (done)
 - Supabase project created (Mumbai), `.env` holds URL + publishable key. Migrations in `supabase/migrations/` (schema · RLS · storage) were applied by pasting into the SQL Editor; `supabase/README.md` documents the steps and the access model. No CLI or DB password needed.
@@ -108,3 +115,9 @@ Newest first. Keep each entry to 3–6 lines: what was done, anything deferred, 
 - Role helpers are `security definer` with `search_path = ''`; policies call them as `(select public.is_admin())` so they run once per statement.
 - Status-like columns are `text` + CHECK, not enums (easier to extend from a migration).
 - Migrations are applied through the dashboard SQL Editor (no Supabase CLI/DB password); every migration ships with a self-cleaning test script in `supabase/tests/`.
+- Order engine is plain SQL RPCs (`security definer`, `search_path = ''`), not an Edge Function: one transaction covers locking, stock, coupon and insert. Errors are stable snake_case tokens in `message`; the UI owns the wording.
+- Totals: `subtotal − discount + delivery`; free delivery applies when `subtotal − discount ≥ free_delivery_threshold` or with a `free_shipping` coupon. Checkout shows `quote_order` numbers, never client-computed ones.
+- Products with variants keep stock on the variants (a `variant_id` is required); `products.stock` is kept equal to their sum for listings.
+- Categories are styles (automatic-skeleton, chain, leather, couple, accessories); `men` / `women` are gender landing categories that list by `products.gender` (+ unisex), not `category_id`. Rule collections use `rules` like `{"price_max": 2999}`.
+- Order numbers are sequential (`HVX-10001`), easy to read out on a phone call; `track_order` still needs the matching phone. Limits: 20 lines, 10 per line, 3 orders/phone/hour, 10/IP/hour (shared carrier IPs).
+- `order_rejected` is deliberately the same for blocked phones and the honeypot.
