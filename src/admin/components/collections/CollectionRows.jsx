@@ -78,17 +78,17 @@ function CollectionRow({ collection, index, total, categoryNames, busy, onMove, 
     <li className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:gap-4">
       <div className="flex min-w-0 flex-1 items-center gap-3">
         <div className="flex shrink-0 flex-col">
-          <IconButton label={t.moveUp(collection.title)} variant="ghost" className="h-9 w-9" disabled={busy || index === 0} onClick={() => onMove(collection.id, -1)}>
+          <IconButton label={t.moveUp(collection.title)} variant="ghost" disabled={busy || index === 0} onClick={() => onMove(collection.id, -1)}>
             <ArrowUp aria-hidden="true" size={18} strokeWidth={1.5} />
           </IconButton>
-          <IconButton label={t.moveDown(collection.title)} variant="ghost" className="h-9 w-9" disabled={busy || index === total - 1} onClick={() => onMove(collection.id, 1)}>
+          <IconButton label={t.moveDown(collection.title)} variant="ghost" disabled={busy || index === total - 1} onClick={() => onMove(collection.id, 1)}>
             <ArrowDown aria-hidden="true" size={18} strokeWidth={1.5} />
           </IconButton>
         </div>
         <Thumb collection={collection} />
         <div className="flex min-w-0 flex-col gap-1">
-          <p className="truncate text-body font-semibold text-fg">{collection.title}</p>
-          <p className="truncate text-small text-muted">
+          <p className="break-words text-body font-semibold text-fg">{collection.title}</p>
+          <p className="break-words text-small text-muted">
             /{collection.slug} · {t.modes[collection.mode]} · {summary}
           </p>
           <div>
@@ -102,10 +102,12 @@ function CollectionRow({ collection, index, total, categoryNames, busy, onMove, 
         <IconButton label={t.edit(collection.title)} variant="ghost" onClick={() => onEdit(collection)}>
           <Pencil aria-hidden="true" size={20} strokeWidth={1.5} />
         </IconButton>
-        {viewable && (
+        {viewable ? (
           <IconButton as={Link} to={`/collection/${collection.slug}`} target="_blank" rel="noreferrer" label={`${t.viewOnStore}: ${collection.title}`} variant="ghost">
             <ExternalLink aria-hidden="true" size={20} strokeWidth={1.5} />
           </IconButton>
+        ) : (
+          <span aria-hidden="true" className="hidden w-11 sm:block" />
         )}
         <RemoveControl collection={collection} busy={busy} onRemove={onRemove} />
       </div>

@@ -68,10 +68,10 @@ function ContentRow({ row, index, total, busy, copy, nameOf, thumb, info, active
           <GripVertical aria-hidden="true" size={20} strokeWidth={1.5} />
         </button>
         <div className="flex shrink-0 flex-col">
-          <IconButton label={copy.moveUp(name)} variant="ghost" className="h-9 w-9" disabled={busy || index === 0} onClick={() => onMove(row.id, -1)}>
+          <IconButton label={copy.moveUp(name)} variant="ghost" disabled={busy || index === 0} onClick={() => onMove(row.id, -1)}>
             <ArrowUp aria-hidden="true" size={18} strokeWidth={1.5} />
           </IconButton>
-          <IconButton label={copy.moveDown(name)} variant="ghost" className="h-9 w-9" disabled={busy || index === total - 1} onClick={() => onMove(row.id, 1)}>
+          <IconButton label={copy.moveDown(name)} variant="ghost" disabled={busy || index === total - 1} onClick={() => onMove(row.id, 1)}>
             <ArrowDown aria-hidden="true" size={18} strokeWidth={1.5} />
           </IconButton>
         </div>

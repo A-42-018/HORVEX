@@ -46,10 +46,10 @@ function SectionRow({ row, index, total, busy, onMove, onToggle, onEdit }) {
           <GripVertical aria-hidden="true" size={20} strokeWidth={1.5} />
         </button>
         <div className="flex shrink-0 flex-col">
-          <IconButton label={t.moveUp(label)} variant="ghost" className="h-9 w-9" disabled={busy || index === 0} onClick={() => onMove(row.id, -1)}>
+          <IconButton label={t.moveUp(label)} variant="ghost" disabled={busy || index === 0} onClick={() => onMove(row.id, -1)}>
             <ArrowUp aria-hidden="true" size={18} strokeWidth={1.5} />
           </IconButton>
-          <IconButton label={t.moveDown(label)} variant="ghost" className="h-9 w-9" disabled={busy || index === total - 1} onClick={() => onMove(row.id, 1)}>
+          <IconButton label={t.moveDown(label)} variant="ghost" disabled={busy || index === total - 1} onClick={() => onMove(row.id, 1)}>
             <ArrowDown aria-hidden="true" size={18} strokeWidth={1.5} />
           </IconButton>
         </div>
@@ -58,7 +58,7 @@ function SectionRow({ row, index, total, busy, onMove, onToggle, onEdit }) {
         </span>
         <div className="min-w-0">
           <p className="flex flex-wrap items-center gap-2 text-body font-semibold text-fg">
-            <span className="truncate">{label}</span>
+            <span className="break-words">{label}</span>
             {!row.is_visible && <Badge>{t.hiddenBadge}</Badge>}
           </p>
           {about && <p className="text-small text-muted">{about}</p>}

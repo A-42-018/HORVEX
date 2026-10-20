@@ -74,10 +74,10 @@ export default function CollectionPicks({ initial, onChange }) {
           {picked.map((product, index) => (
             <li key={product.id} className="flex items-center gap-2 p-2">
               <div className="flex shrink-0 flex-col">
-                <IconButton label={t.up(product.name)} variant="ghost" className="h-9 w-9" disabled={index === 0} onClick={() => move(product.id, -1)}>
+                <IconButton label={t.up(product.name)} variant="ghost" disabled={index === 0} onClick={() => move(product.id, -1)}>
                   <ArrowUp aria-hidden="true" size={16} strokeWidth={1.5} />
                 </IconButton>
-                <IconButton label={t.down(product.name)} variant="ghost" className="h-9 w-9" disabled={index === picked.length - 1} onClick={() => move(product.id, 1)}>
+                <IconButton label={t.down(product.name)} variant="ghost" disabled={index === picked.length - 1} onClick={() => move(product.id, 1)}>
                   <ArrowDown aria-hidden="true" size={16} strokeWidth={1.5} />
                 </IconButton>
               </div>

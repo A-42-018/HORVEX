@@ -63,7 +63,7 @@ export function MainFields({ form, errors, set, setSpec, isNew, categories, vari
       <Section id="pricing" title={t.sections.pricing}>
         <div className="grid gap-4 sm:grid-cols-3">
           <Input label={t.fields.price} {...numeric} {...field("price")} />
-          <Input label={t.fields.compareAt} hint={t.hints.compareAt} optional {...numeric} {...field("compareAtPrice")} />
+          <Input label={t.fields.compareAt} hint={variantCount > 0 ? t.hints.compareAtVariants : t.hints.compareAt} optional {...numeric} {...field("compareAtPrice")} />
           <Input label={t.fields.cost} hint={t.hints.cost} optional {...numeric} {...field("costPrice")} />
         </div>
         <div className="grid gap-4 sm:grid-cols-2">

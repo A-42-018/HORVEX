@@ -50,6 +50,12 @@ export async function uploadImage(file, { bucket, folder, ...options }) {
 /** Deletes files by path. */
 export const removeFiles = (bucket, paths) => query(() => bucketOf(bucket).remove(paths));
 
+/** Paths of the files directly inside `folder` (up to 1000). */
+export async function listFiles(bucket, folder) {
+  const files = await query(() => bucketOf(bucket).list(folder, { limit: 1000 }));
+  return (files ?? []).filter((file) => file.id).map((file) => `${folder}/${file.name}`);
+}
+
 /** Public URL for a stored path. */
 export const publicUrl = (bucket, path) => bucketOf(bucket).getPublicUrl(path).data.publicUrl;
 

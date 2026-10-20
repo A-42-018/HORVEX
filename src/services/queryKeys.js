@@ -24,6 +24,7 @@ export const queryKeys = {
     adminDetail: (id) => ["products", "admin", "detail", id],
     adminImages: (id) => ["products", "admin", "images", id],
     adminVariants: (id) => ["products", "admin", "variants", id],
+    adminInOrders: (ids) => ["products", "admin", "inOrders", [...ids].sort()],
   },
   categories: {
     all: ["categories"],

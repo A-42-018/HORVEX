@@ -39,7 +39,7 @@ function Activity() {
     <div className="flex flex-col gap-6">
       <title>{`${t.title} | WRISTORY Admin`}</title>
       <div>
-        <h1 className="text-h3 text-fg">{t.title}</h1>
+        <h1 className="text-title text-fg">{t.title}</h1>
         <p className="text-small text-muted">{t.intro}</p>
       </div>
 
@@ -75,7 +75,7 @@ function Activity() {
             {isFetching ? t.filters.updating : t.filters.showing(items.length)}
           </p>
           {items.length === 0 ? (
-            <Card className="px-6 py-12 text-center">
+            <Card className="admin-empty px-6 py-12 text-center">
               <p className="text-body text-fg">{entity ? t.emptyFiltered : t.empty}</p>
             </Card>
           ) : (

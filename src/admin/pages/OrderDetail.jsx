@@ -63,7 +63,7 @@ function OrderDetail() {
         <title>{`${t.notFound} | WRISTORY Admin`}</title>
         <BackLink />
         <Card className="flex flex-col gap-2 px-6 py-12 text-center">
-          <h1 className="text-h3 text-fg">{t.notFound}</h1>
+          <h1 className="text-title text-fg">{t.notFound}</h1>
           <p className="text-small text-muted">{t.notFoundBody}</p>
         </Card>
       </div>
@@ -77,7 +77,7 @@ function OrderDetail() {
       <BackLink />
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-h3 tabular-nums text-fg">{data.order_number}</h1>
+          <h1 className="text-title tabular-nums text-fg">{data.order_number}</h1>
           <p className="text-small text-muted">{t.placed(formatDateTime(data.created_at))}</p>
         </div>
         <div className="flex flex-wrap gap-3">

@@ -1,6 +1,6 @@
 import { lazy, Suspense } from "react";
 import { Link } from "react-router";
-import { RefreshCw } from "lucide-react";
+import { CircleCheck, Clock, RefreshCw, ShoppingBag, Wallet } from "lucide-react";
 import { Badge, Button, Card, Skeleton } from "../../components/common";
 import { formatDateTime, formatTaka } from "../../lib/format";
 import { strings } from "../strings";
@@ -14,26 +14,31 @@ const rowLink = `flex min-h-11 items-center justify-between gap-3 rounded-contro
 
 const STATUS_VARIANT = { delivered: "success", cancelled: "sale", returned: "sale" };
 
-function Kpi({ label, value, hint, to }) {
+function Kpi({ label, value, hint, to, icon: Icon }) {
   const body = (
     <>
-      <p className="text-badge text-muted">{label}</p>
-      <p className="mt-2 text-h3 text-fg">{value}</p>
+      <div className="flex items-start justify-between gap-3">
+        <p className="text-badge text-muted">{label}</p>
+        <span aria-hidden="true" className="-mt-1 hidden h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand sm:flex">
+          <Icon size={16} strokeWidth={1.5} />
+        </span>
+      </div>
+      <p className="mt-1 text-title tabular-nums text-fg">{value}</p>
       {hint && <p className="mt-1 text-small text-muted">{hint}</p>}
     </>
   );
   return to ? (
-    <Card as={Link} to={to} hoverable className={`block p-5 ${focusRing}`}>
+    <Card as={Link} to={to} hoverable className={`block p-4 sm:p-5 ${focusRing}`}>
       {body}
     </Card>
   ) : (
-    <Card className="p-5">{body}</Card>
+    <Card className="p-4 sm:p-5">{body}</Card>
   );
 }
 
 function Panel({ title, hint, action, children, className = "" }) {
   return (
-    <Card as="section" className={`p-5 ${className}`}>
+    <Card as="section" className={`p-4 sm:p-5 ${className}`}>
       <div className="mb-3 flex items-start justify-between gap-3">
         <div>
           <h2 className="text-body font-semibold text-fg">{title}</h2>
@@ -76,7 +81,7 @@ function Dashboard() {
     <div className="flex flex-col gap-6">
       <title>{`${t.title} | WRISTORY Admin`}</title>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-h3 text-fg">{t.title}</h1>
+        <h1 className="text-title text-fg">{t.title}</h1>
         <div className="flex items-center gap-3">
           {data && (
             <p className="text-small text-muted">
@@ -106,10 +111,11 @@ function Dashboard() {
           {data.truncated && <p className="text-small text-warning">{t.truncated}</p>}
 
           <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-            <Kpi label={t.kpi.ordersToday} value={data.today.orders} />
-            <Kpi label={t.kpi.revenueToday} value={formatTaka(data.today.revenue)} />
-            <Kpi label={t.kpi.pending} value={data.pending} hint={t.kpi.pendingHint} to="/admin/orders" />
+            <Kpi icon={ShoppingBag} label={t.kpi.ordersToday} value={data.today.orders} />
+            <Kpi icon={Wallet} label={t.kpi.revenueToday} value={formatTaka(data.today.revenue)} />
+            <Kpi icon={Clock} label={t.kpi.pending} value={data.pending} hint={t.kpi.pendingHint} to="/admin/orders" />
             <Kpi
+              icon={CircleCheck}
               label={t.kpi.deliveredRate}
               value={rate.resolved ? `${Math.round((rate.delivered / rate.resolved) * 100)}%` : "—"}
               hint={rate.resolved ? t.kpi.deliveredHint(rate.delivered, rate.resolved) : t.kpi.none}

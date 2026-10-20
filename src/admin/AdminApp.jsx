@@ -7,6 +7,7 @@ import AdminLayout from "./layout/AdminLayout";
 import AdminStatus from "./components/AdminStatus";
 import Login from "./pages/Login";
 import { strings } from "./strings";
+import "./admin.css";
 
 // Everything under /admin lives behind this module, which the router loads as
 // a separate chunk, so storefront visitors never download admin code. Each page

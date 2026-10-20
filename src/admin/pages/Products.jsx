@@ -1,9 +1,10 @@
-import { useMemo, useState } from "react";
-import { Link, useSearchParams } from "react-router";
-import { Plus } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router";
+import { Plus, Trash2, X } from "lucide-react";
 import { Button, Card, Input, Select, Skeleton } from "../../components/common";
 import { strings } from "../strings";
-import { ProductCards, ProductTable } from "../components/products/ProductRows";
+import { ProductCards, ProductTable, SelectBox } from "../components/products/ProductRows";
+import ProductRemoveDialog from "../components/products/ProductRemoveDialog";
 import {
   NO_CATEGORY,
   SORTS,
@@ -36,6 +37,18 @@ function Products() {
   const [visible, setVisible] = useState(PAGE_SIZE);
   const [announcement, setAnnouncement] = useState("");
   const [failure, setFailure] = useState("");
+  const [selected, setSelected] = useState(() => new Set());
+  const [removing, setRemoving] = useState(false);
+  // Frozen when the dialog opens, so its text doesn't change while it closes.
+  const [removeList, setRemoveList] = useState([]);
+  const location = useLocation();
+  const navigate = useNavigate();
+  // A removal from the editor lands here with its summary.
+  const [notice, setNotice] = useState(location.state?.removed ?? "");
+  // Drop it from history so a reload doesn't show it again.
+  useEffect(() => {
+    if (location.state?.removed) navigate(`${location.pathname}${location.search}`, { replace: true, state: null });
+  }, [location, navigate]);
 
   const update = useUpdateProduct({
     onSaved: () => setFailure(""),
@@ -69,6 +82,7 @@ function Products() {
       { replace: true },
     );
     setVisible(PAGE_SIZE);
+    setSelected(new Set());
   };
 
   const clearFilters = () => {
@@ -81,6 +95,7 @@ function Products() {
       { replace: true },
     );
     setVisible(PAGE_SIZE);
+    setSelected(new Set());
   };
 
   const items = data?.items;
@@ -88,8 +103,32 @@ function Products() {
   const results = useMemo(() => (items ? filterProducts(items, filters) : []), [items, filters]);
   const shown = results.slice(0, visible);
 
+  // Only products still in the list count (a removed one drops out on refetch).
+  const selectedProducts = useMemo(() => (items ?? []).filter((item) => selected.has(item.id)), [items, selected]);
+  const shownSelected = shown.filter((item) => selected.has(item.id)).length;
+  const selection = {
+    has: (id) => selected.has(id),
+    all: shown.length > 0 && shownSelected === shown.length,
+    some: shownSelected > 0,
+    toggle: (id) =>
+      setSelected((prev) => {
+        const next = new Set(prev);
+        if (next.has(id)) next.delete(id);
+        else next.add(id);
+        return next;
+      }),
+    toggleAll: (on) => setSelected(on ? new Set(shown.map((item) => item.id)) : new Set()),
+  };
+
+  const onRemoved = ({ deleted, archived }) => {
+    setRemoving(false);
+    setSelected(new Set());
+    setNotice(t.remove.done(deleted.length, archived.length));
+  };
+
   const onChange = (product, patch, message) => {
     setFailure("");
+    setNotice("");
     setAnnouncement(message);
     update.mutate({ product, patch });
   };
@@ -100,7 +139,7 @@ function Products() {
 
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-h3 text-fg">{t.title}</h1>
+          <h1 className="text-title text-fg">{t.title}</h1>
           {items && <p className="text-small text-muted">{t.count(items.length)}</p>}
         </div>
         <Button as={Link} to="/admin/products/new" size="sm" className="gap-2">
@@ -124,13 +163,13 @@ function Products() {
         <>
           {data.truncated && <p className="text-small text-warning">{t.truncated}</p>}
 
-          <div role="search" aria-label={t.filters.label} className="grid grid-cols-2 gap-3 lg:grid-cols-6">
+          <div role="search" aria-label={t.filters.label} className="grid grid-cols-2 gap-3 md:grid-cols-4 2xl:grid-cols-6">
             <Input
               type="search"
               label={t.filters.search}
               value={filters.q}
               onChange={(event) => setFilter("q", event.target.value)}
-              className="col-span-2"
+              className="col-span-2 md:col-span-4 2xl:col-span-2"
             />
             <Select
               label={t.filters.status}
@@ -167,7 +206,23 @@ function Products() {
           </div>
 
           <div className="flex min-h-11 flex-wrap items-center justify-between gap-3">
-            <p className="text-small text-muted">{t.filters.showing(shown.length, results.length)}</p>
+            <div className="flex items-center gap-1">
+              {/* Cards have no header row, so select-all lives here below xl. */}
+              {shown.length > 0 && (
+                <span className="-ml-3 flex items-center xl:hidden">
+                  <SelectBox
+                    checked={selection.all}
+                    indeterminate={selection.some && !selection.all}
+                    onChange={selection.toggleAll}
+                    label={t.select.all}
+                  />
+                  <span aria-hidden="true" className="text-small text-fg">
+                    {t.select.allShort} ·
+                  </span>
+                </span>
+              )}
+              <p className="text-small text-muted">{t.filters.showing(shown.length, results.length)}</p>
+            </div>
             {hasFilters && (
               <Button variant="ghost" size="sm" onClick={clearFilters}>
                 {t.filters.clear}
@@ -178,6 +233,11 @@ function Products() {
           <p role="status" className="sr-only">
             {announcement}
           </p>
+          {notice && (
+            <p role="status" className="text-small text-positive">
+              {notice}
+            </p>
+          )}
           {failure && (
             <p role="alert" className="text-small text-danger">
               {failure}
@@ -185,7 +245,7 @@ function Products() {
           )}
 
           {results.length === 0 ? (
-            <Card className="flex flex-col items-center gap-3 px-6 py-12 text-center">
+            <Card className="admin-empty flex flex-col items-center gap-3 px-6 py-12 text-center">
               <p className="text-body text-fg">{items.length === 0 ? t.empty.none : t.empty.matches}</p>
               {items.length === 0 ? (
                 <p className="text-small text-muted">{t.empty.noneHint}</p>
@@ -197,8 +257,8 @@ function Products() {
             </Card>
           ) : (
             <Card as="section" aria-label={t.title} className="overflow-hidden">
-              <ProductTable products={shown} onChange={onChange} />
-              <ProductCards products={shown} onChange={onChange} />
+              <ProductTable products={shown} onChange={onChange} selection={selection} />
+              <ProductCards products={shown} onChange={onChange} selection={selection} />
             </Card>
           )}
 
@@ -209,6 +269,44 @@ function Products() {
           )}
         </>
       )}
+
+      {selectedProducts.length > 0 && (
+        // Floats above the mobile bottom bar (3.5rem + home-bar inset).
+        <div className="sticky bottom-[calc(4.25rem+env(safe-area-inset-bottom))] z-20 flex animate-route-enter items-center gap-2 rounded-card border border-line bg-raised px-3 py-2 shadow-surface lg:bottom-6">
+          <p className="mr-auto pl-1 text-small font-semibold text-fg" aria-live="polite">
+            {t.select.count(selectedProducts.length)}
+          </p>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="gap-2 px-3"
+            aria-label={t.select.clearLabel}
+            onClick={() => setSelected(new Set())}
+          >
+            <X aria-hidden="true" size={16} strokeWidth={1.5} />
+            {t.select.clear}
+          </Button>
+          <Button
+            variant="danger"
+            size="sm"
+            className="gap-2"
+            onClick={() => {
+              setRemoveList(selectedProducts);
+              setRemoving(true);
+            }}
+          >
+            <Trash2 aria-hidden="true" size={16} strokeWidth={1.5} />
+            {t.remove.delete}
+          </Button>
+        </div>
+      )}
+
+      <ProductRemoveDialog
+        products={removeList}
+        open={removing}
+        onClose={() => setRemoving(false)}
+        onDone={onRemoved}
+      />
     </div>
   );
 }

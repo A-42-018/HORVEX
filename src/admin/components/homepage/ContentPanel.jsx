@@ -109,7 +109,7 @@ export default function ContentPanel({ config }) {
 
       {rows &&
         (rows.length === 0 ? (
-          <Card className="flex flex-col items-center gap-3 px-6 py-12 text-center">
+          <Card className="admin-empty flex flex-col items-center gap-3 px-6 py-12 text-center">
             <p className="text-body text-fg">{copy.empty.none}</p>
             <p className="text-small text-muted">{copy.empty.noneHint}</p>
           </Card>

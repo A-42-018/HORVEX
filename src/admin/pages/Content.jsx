@@ -29,7 +29,7 @@ function Content() {
       <title>{`${t.title} | WRISTORY Admin`}</title>
 
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-h3 text-fg">{t.title}</h1>
+        <h1 className="text-title text-fg">{t.title}</h1>
         <Button as={Link} to="/" target="_blank" rel="noreferrer" variant="secondary" size="sm" className="gap-2">
           <ExternalLink aria-hidden="true" size={16} strokeWidth={1.5} />
           {t.viewStore}
