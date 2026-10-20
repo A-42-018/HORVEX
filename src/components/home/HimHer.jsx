@@ -142,7 +142,7 @@ function HimHer() {
           id={`${uid}-title`}
         />
         <Reveal>
-          <div className="grid gap-14 lg:grid-cols-2 lg:gap-10">
+          <div className="grid grid-cols-1 gap-14 lg:grid-cols-2 lg:gap-10">
             <Side side="him" config={section?.config?.him} gender="men" count={count} />
             <Side side="her" config={section?.config?.her} gender="women" count={count} />
           </div>
