@@ -110,6 +110,7 @@ const en = {
     paymentNote: "Check your watch, then pay at your door.",
     fallbackText: "Premium watches, checked by hand and paid for at your door.",
     whatsapp: "WhatsApp",
+    facebook: "Facebook page",
     shopLinks: { all: "All watches", men: "Men", women: "Women", couple: "Couple sets" },
     helpLinks: {
       track: "Track order",
@@ -652,6 +653,8 @@ const en = {
     call: "Call us",
     whatsapp: "WhatsApp",
     email: "Email",
+    facebook: "Facebook",
+    facebookValue: "Message us on our page",
     visit: "Visit us",
     noDetails: "Our contact details will appear here soon. Use the form and we'll get back to you.",
     formTitle: "Send us a message",

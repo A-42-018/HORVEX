@@ -1,20 +1,13 @@
 import { Link } from "react-router";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { Container } from "../common";
-import { InstagramIcon } from "./icons";
+import { FacebookIcon, InstagramIcon } from "./icons";
+import { WhatsAppGlyph } from "./WhatsAppFab";
 import { useSiteSettings } from "../../hooks/useContent";
 import { formatPhone, normalizePhone } from "../../lib/format";
 import { strings } from "../../lib/strings";
 
 const t = strings.footer;
-
-function FacebookIcon({ className = "w-5 h-5" }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
-      <path d="M14 9h2.5V6.5H14C12 6.5 11 7.7 11 9.5V11H9v2.5h2V21h2.5v-7.5H16l.5-2.5H13.5v-1c0-.6.3-1 1-1Z" />
-    </svg>
-  );
-}
 
 function TikTokIcon({ className = "w-5 h-5" }) {
   return (
@@ -29,14 +22,6 @@ function YouTubeIcon({ className = "w-5 h-5" }) {
     <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
       <rect x="2.5" y="6" width="19" height="12" rx="3" fill="none" stroke="currentColor" strokeWidth="1.75" />
       <path d="M10.5 9.5v5l4.5-2.5-4.5-2.5Z" />
-    </svg>
-  );
-}
-
-function WhatsAppIcon({ className = "w-5 h-5" }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
-      <path d="M12.04 2a9.9 9.9 0 0 0-8.5 14.97L2 22l5.2-1.36A9.9 9.9 0 1 0 12.04 2Zm0 18.1c-1.5 0-2.9-.4-4.1-1.1l-.3-.18-3.08.8.82-3-.2-.31a8.1 8.1 0 1 1 6.86 3.8Zm4.45-6.07c-.24-.12-1.44-.71-1.66-.79-.22-.08-.39-.12-.55.12-.16.24-.63.79-.77.95-.14.16-.28.18-.52.06-.24-.12-1.02-.38-1.94-1.2-.72-.64-1.2-1.43-1.34-1.67-.14-.24-.01-.37.1-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.55-1.32-.75-1.8-.2-.47-.4-.41-.55-.42h-.47c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2 0 1.18.86 2.32.98 2.48.12.16 1.7 2.6 4.1 3.64.57.25 1.02.4 1.37.5.58.18 1.1.16 1.51.1.46-.07 1.44-.59 1.64-1.16.2-.57.2-1.06.14-1.16-.06-.1-.22-.16-.46-.28Z" />
     </svg>
   );
 }
@@ -94,21 +79,24 @@ function LinkList({ heading, links }) {
   );
 }
 
+// Icon sits in a small gold-tinted chip that lights up when the row is hovered.
 function ContactRow({ icon: Icon, href, children, external }) {
   const body = (
     <>
-      <Icon className="mt-0.5 h-5 w-5 shrink-0 text-brand" aria-hidden="true" />
+      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-line bg-surface text-brand transition-colors duration-fast group-hover:border-brand group-hover:bg-brand group-hover:text-obsidian">
+        <Icon className="h-5 w-5" aria-hidden="true" />
+      </span>
       <span className="min-w-0 break-words">{children}</span>
     </>
   );
-  const cls = "flex items-start gap-3 text-small text-muted";
+  const cls = "group flex items-center gap-3 text-small text-muted";
   if (!href) return <li className={cls}>{body}</li>;
   return (
     <li>
       <a
         href={href}
         {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-        className={`${cls} min-h-11 items-center transition-colors duration-fast hover:text-fg focus-visible:text-fg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus lg:min-h-0`}
+        className={`${cls} min-h-11 transition-colors duration-fast hover:text-fg focus-visible:text-fg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus`}
       >
         {body}
       </a>
@@ -129,7 +117,8 @@ function Footer() {
   const address = clean(data?.address);
   const socials = SOCIALS.filter(({ key }) => isHttpUrl(data?.socials?.[key]));
   const couriers = (data?.courier_partners ?? []).map(clean).filter(Boolean);
-  const hasContact = Boolean(phoneRaw || whatsapp || email || address);
+  const facebook = isHttpUrl(data?.socials?.facebook) ? clean(data.socials.facebook) : null;
+  const hasContact = Boolean(phoneRaw || whatsapp || email || facebook || address);
 
   return (
     <footer className="section-dark border-t border-line">
@@ -179,20 +168,25 @@ function Footer() {
           {hasContact && (
             <div className="lg:col-span-3">
               <h2 className="text-eyebrow text-brand">{t.contact}</h2>
-              <ul className="mt-4 flex flex-col lg:gap-3">
+              <ul className="mt-4 flex flex-col gap-1 lg:gap-2">
                 {phoneRaw && (
                   <ContactRow icon={Phone} href={phoneHref}>
                     {phoneNormal ? formatPhone(phoneNormal) : phoneRaw}
                   </ContactRow>
                 )}
                 {whatsapp && (
-                  <ContactRow icon={WhatsAppIcon} href={`https://wa.me/${whatsapp.slice(1)}`} external>
+                  <ContactRow icon={WhatsAppGlyph} href={`https://wa.me/${whatsapp.slice(1)}`} external>
                     {t.whatsapp} {formatPhone(whatsapp)}
                   </ContactRow>
                 )}
                 {email && (
                   <ContactRow icon={Mail} href={`mailto:${email}`}>
                     {email}
+                  </ContactRow>
+                )}
+                {facebook && (
+                  <ContactRow icon={FacebookIcon} href={facebook} external>
+                    {t.facebook}
                   </ContactRow>
                 )}
                 {address && <ContactRow icon={MapPin}>{address}</ContactRow>}

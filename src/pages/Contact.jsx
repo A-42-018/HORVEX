@@ -2,6 +2,7 @@ import { Link } from "react-router";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { Container, SectionHeading } from "../components/common";
 import { WhatsAppGlyph } from "../components/layout/WhatsAppFab";
+import { FacebookIcon } from "../components/layout/icons";
 import ContactForm from "../components/contact/ContactForm";
 import { useSiteSettings } from "../hooks/useContent";
 import { formatPhone, normalizePhone } from "../lib/format";
@@ -10,6 +11,7 @@ import { Seo } from "../components/seo";
 
 const t = strings.contact;
 const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+const HTTP_URL = /^https?:\/\/\S+$/i;
 
 const cardClass =
   "flex min-h-11 items-start gap-4 rounded-card border border-line bg-surface p-5 transition-colors duration-fast";
@@ -39,8 +41,9 @@ function Contact() {
   const phone = normalizePhone(settings?.contact_phone);
   const whatsapp = normalizePhone(settings?.whatsapp_number);
   const email = EMAIL.test(settings?.contact_email ?? "") ? settings.contact_email.trim() : null;
+  const facebook = HTTP_URL.test(settings?.socials?.facebook?.trim() ?? "") ? settings.socials.facebook.trim() : null;
   const address = settings?.address?.trim() || null;
-  const hasDetails = Boolean(phone || whatsapp || email || address);
+  const hasDetails = Boolean(phone || whatsapp || email || facebook || address);
 
   return (
     <Container className="py-section-sm lg:py-section">
@@ -60,6 +63,7 @@ function Contact() {
             />
           )}
           {email && <Card icon={Mail} label={t.email} value={email} href={`mailto:${email}`} />}
+          {facebook && <Card icon={FacebookIcon} label={t.facebook} value={t.facebookValue} href={facebook} external />}
           {address && <Card icon={MapPin} label={t.visit} value={address} />}
           {!hasDetails && <p className="text-body text-muted">{t.noDetails}</p>}
           <p className="pt-2 text-small text-muted">
