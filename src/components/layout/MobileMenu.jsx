@@ -18,6 +18,7 @@ const PRICE_LINKS = [
 
 const HELP_LINKS = [
   { to: "/track-order", label: strings.mobileMenu.trackOrder },
+  { to: "/account", label: strings.mobileMenu.account },
   { to: "/about", label: strings.mobileMenu.about },
   { to: "/contact", label: strings.mobileMenu.contact },
   { to: "/faq", label: strings.mobileMenu.faq },

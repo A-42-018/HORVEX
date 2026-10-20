@@ -72,6 +72,13 @@ export const queryKeys = {
     all: ["coupons"],
     adminRows: () => ["coupons", "admin", "rows"],
   },
+  // The signed-in customer's own data (C6b); dropped on customer sign-out.
+  account: {
+    all: ["account"],
+    profile: (userId) => ["account", "profile", userId],
+    orders: (userId) => ["account", "orders", userId],
+    checkoutPrefill: () => ["account", "checkoutPrefill"],
+  },
   auth: {
     all: ["auth"],
     profile: (userId) => ["auth", "profile", userId],

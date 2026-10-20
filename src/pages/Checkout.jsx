@@ -4,7 +4,7 @@ import { ShoppingBag } from "lucide-react";
 import { Button, Container, SectionHeading, Skeleton } from "../components/common";
 import { CheckoutForm, OrderSummary } from "../components/checkout";
 import { useDeliveryZones } from "../hooks/useContent";
-import { useOrderQuote, usePlaceOrder } from "../hooks/useOrders";
+import { useCheckoutPrefill, useOrderQuote, usePlaceOrder } from "../hooks/useOrders";
 import { selectCartEstimate, useCart } from "../store/cart";
 import { useUI } from "../store/ui";
 import { formatTaka } from "../lib/format";
@@ -40,6 +40,7 @@ function CheckoutBody({ zones, lines, state }) {
   const [placeError, setPlaceError] = useState(null);
   const navigate = useNavigate();
   const placeOrder = usePlaceOrder();
+  const { data: prefill } = useCheckoutPrefill();
   const clearCart = useCart((s) => s.clear);
 
   const quoteQuery = useOrderQuote({ lines, zoneId, couponCode: applied });
@@ -178,7 +179,9 @@ function CheckoutBody({ zones, lines, state }) {
           confirmDisabled={quoteBlocked}
           submitting={placeOrder.isPending}
           onSubmit={submit}
+          prefill={prefill}
         >
+          {prefill && <p className="text-small text-muted">{t.signedInNote}</p>}
           {placeMessage && (
             <p className="text-small text-fg" role="alert">
               {placeMessage}

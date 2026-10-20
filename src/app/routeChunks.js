@@ -12,6 +12,8 @@ export const routeChunks = {
   contact: () => import("../pages/Contact"),
   faq: () => import("../pages/Faq"),
   policy: () => import("../pages/Policy"),
+  // Customer accounts: also the only chunk that loads the customer auth client.
+  account: () => import("../pages/account"),
   notFound: () => import("../pages/NotFound"),
 };
 
