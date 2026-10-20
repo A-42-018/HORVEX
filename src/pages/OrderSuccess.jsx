@@ -1,6 +1,7 @@
 import { Link, useLocation, useParams } from "react-router";
-import { Check, PackageSearch } from "lucide-react";
+import { PackageSearch } from "lucide-react";
 import { Button, Container, SectionHeading } from "../components/common";
+import { SuccessCheck } from "../components/motion";
 import { WhatsAppGlyph } from "../components/layout/WhatsAppFab";
 import { useSiteSettings } from "../hooks/useContent";
 import { loadLastOrder } from "../lib/lastOrder";
@@ -53,10 +54,7 @@ function OrderSuccess() {
       <title>{`${t.eyebrow} ${order.order_number} | WRISTORY`}</title>
       <div className="mx-auto max-w-2xl">
         <div className="flex flex-col items-center text-center">
-          {/* Static gold ring + check; the draw animation arrives in C2. */}
-          <span className="flex h-20 w-20 items-center justify-center rounded-full border-2 border-gold text-gold">
-            <Check size={36} strokeWidth={1.5} aria-hidden="true" />
-          </span>
+          <SuccessCheck />
           <SectionHeading
             as="h1"
             eyebrow={t.eyebrow}

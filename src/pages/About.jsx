@@ -3,6 +3,7 @@ import { Gem, HandCoins, ScanSearch, ShieldCheck } from "lucide-react";
 import { Button, Container, Reveal, SectionHeading, Skeleton } from "../components/common";
 import PageBody from "../components/pages/PageBody";
 import { usePage } from "../hooks/useContent";
+import { staggerDelay } from "../lib/motion";
 import { strings } from "../lib/strings";
 
 const t = strings.about;
@@ -43,7 +44,7 @@ function About() {
             {t.values.map((v, i) => {
               const Icon = ICONS[i];
               return (
-                <Reveal as="li" key={v.title} delay={i * 80} className="rounded-card border border-line bg-raised p-6">
+                <Reveal as="li" key={v.title} delay={staggerDelay(i)} className="rounded-card border border-line bg-raised p-6">
                   <Icon size={28} strokeWidth={1.5} aria-hidden="true" className="text-brand" />
                   <h3 className="mt-4 text-h3 text-fg">{v.title}</h3>
                   <p className="mt-2 text-small text-muted">{v.text}</p>

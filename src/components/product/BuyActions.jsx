@@ -1,5 +1,5 @@
-import { Heart } from "lucide-react";
 import { Button } from "../common";
+import { HeartBurst } from "../motion";
 import { useSiteSettings } from "../../hooks/useContent";
 import { useOrderNow } from "../../hooks/useOrderNow";
 import { addToBag } from "../../lib/cartActions";
@@ -36,7 +36,7 @@ function BuyActions({ product, selected, qty, inStock, orderRef }) {
       </Button>
 
       <div className="flex gap-3">
-        <Button variant="secondary" size="lg" className="flex-1" disabled={!inStock} onClick={() => addToBag(product, options)}>
+        <Button variant="secondary" size="lg" className="flex-1" disabled={!inStock} onClick={(e) => addToBag(product, options, { from: e.currentTarget })}>
           {strings.product.addToCart}
         </Button>
         <button
@@ -46,13 +46,7 @@ function BuyActions({ product, selected, qty, inStock, orderRef }) {
           aria-pressed={wishlisted}
           className="flex h-13 w-13 shrink-0 items-center justify-center rounded-control border border-line text-fg transition-colors duration-fast hover:border-fg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus sm:h-12 sm:w-12"
         >
-          <Heart
-            aria-hidden="true"
-            size={20}
-            strokeWidth={1.5}
-            fill={wishlisted ? "currentColor" : "none"}
-            className={wishlisted ? "text-oxblood-light" : undefined}
-          />
+          <HeartBurst active={wishlisted} className={wishlisted ? "text-oxblood-light" : ""} />
         </button>
       </div>
 

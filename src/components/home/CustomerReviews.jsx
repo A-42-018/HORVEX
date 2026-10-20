@@ -3,9 +3,11 @@ import { Link } from "react-router";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Card, Container, IconButton, Rating, Reveal, SectionHeading, Skeleton } from "../common";
+import { RollingNumber } from "../motion";
 import { useHomeSections, useRecentReviews, useReviewSummary } from "../../hooks/useContent";
 import { responsiveImage } from "../../lib/images";
 import { formatDate } from "../../lib/format";
+import { prefersReducedMotion } from "../../lib/motion";
 import { strings } from "../../lib/strings";
 
 // Reviews & UGC (roadmap §6.1 #12). Approved `reviews` rows only (RLS), newest
@@ -96,7 +98,9 @@ function CustomerReviews() {
 
         {summary?.count > 0 && (
           <div className="flex flex-col items-center gap-2 text-center">
-            <p className="text-h1 tabular-nums text-fg">{summary.average.toFixed(1)}</p>
+            <p className="text-h1 tabular-nums text-fg">
+              <RollingNumber value={summary.average.toFixed(1)} />
+            </p>
             <Rating value={summary.average} showValue={false} />
             <p className="text-small text-muted">{strings.reviews.summary(summary.count)}</p>
           </div>
@@ -120,10 +124,10 @@ function CustomerReviews() {
           </div>
           {(canPrev || canNext) && (
             <div className="hidden items-center justify-end gap-2 md:flex">
-              <IconButton label={strings.reviews.prev} disabled={!canPrev} onClick={() => embla?.scrollPrev()}>
+              <IconButton label={strings.reviews.prev} disabled={!canPrev} onClick={() => embla?.scrollPrev(prefersReducedMotion())}>
                 <ChevronLeft aria-hidden="true" size={20} strokeWidth={1.5} />
               </IconButton>
-              <IconButton label={strings.reviews.next} disabled={!canNext} onClick={() => embla?.scrollNext()}>
+              <IconButton label={strings.reviews.next} disabled={!canNext} onClick={() => embla?.scrollNext(prefersReducedMotion())}>
                 <ChevronRight aria-hidden="true" size={20} strokeWidth={1.5} />
               </IconButton>
             </div>

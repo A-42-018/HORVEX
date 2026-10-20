@@ -197,6 +197,27 @@ export default {
         },
         fadeIn: { "0%": { opacity: "0" }, "100%": { opacity: "1" } },
         fadeOut: { "0%": { opacity: "1" }, "100%": { opacity: "0" } },
+        // Signature motion (C2): transform / opacity only.
+        heartPop: {
+          "0%": { transform: "scale(0.6)" },
+          "50%": { transform: "scale(1.2)" },
+          "100%": { transform: "none" },
+        },
+        heartParticle: {
+          "0%": { opacity: "1", transform: "rotate(var(--angle)) translateY(0) scale(1)" },
+          "100%": { opacity: "0", transform: "rotate(var(--angle)) translateY(-1.5rem) scale(0.2)" },
+        },
+        // SVG line draw (paths use pathLength="1"). The one non-transform/opacity
+        // animation: stroke-dashoffset on a small inline SVG (§7 #11, #15).
+        strokeDraw: {
+          "0%": { strokeDashoffset: "1" },
+          "100%": { strokeDashoffset: "0" },
+        },
+        checkPop: {
+          "0%": { opacity: "0", transform: "scale(0.4)" },
+          "60%": { opacity: "1", transform: "scale(1.15)" },
+          "100%": { opacity: "1", transform: "none" },
+        },
       },
       animation: {
         "fade-up": `fadeUp ${DURATION.reveal}ms ${toCubicBezier(EASE.outExpo)} both`,
@@ -207,6 +228,10 @@ export default {
         "light-sweep": `lightSweep ${MOTION.sweepEvery}ms ${toCubicBezier(EASE.inOutCubic)} infinite`,
         "fade-in": `fadeIn ${DURATION.slow}ms ${toCubicBezier(EASE.outExpo)} both`,
         "fade-out": `fadeOut ${DURATION.slow}ms ${toCubicBezier(EASE.inOutCubic)} both`,
+        "heart-pop": `heartPop ${DURATION.slow}ms ${toCubicBezier(EASE.outExpo)} both`,
+        "heart-particle": `heartParticle ${DURATION.slow + 150}ms ${toCubicBezier(EASE.outExpo)} both`,
+        "stroke-draw": `strokeDraw ${DURATION.reveal}ms ${toCubicBezier(EASE.inOutCubic)} both`,
+        "check-pop": `checkPop ${DURATION.slow}ms ${toCubicBezier(EASE.outExpo)} both`,
       },
     },
   },

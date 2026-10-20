@@ -30,6 +30,12 @@ export const MOTION = {
   sweepEvery: 6000, // light sweep period
   preloaderTicks: 60, // ticks fill in ≤ 1.2s (one every ~15ms)
   preloaderTickStep: 15,
+  // C2
+  flyDuration: 650, // fly-to-bag arc
+  flySize: 64, // px, the flying thumbnail
+  heartParticles: 6,
+  counterStagger: 90, // ms between rolling digits
+  anatomyPinVh: 220, // pinned anatomy section height (vh) on desktop
 };
 
 // Media queries the motion layer keys off. Lenis needs a fine pointer; parallax
@@ -38,6 +44,8 @@ export const MEDIA = {
   reducedMotion: "(prefers-reduced-motion: reduce)",
   finePointer: "(hover: hover) and (pointer: fine)",
   desktopPointer: "(min-width: 1024px) and (hover: hover) and (pointer: fine)",
+  // Pinned scroll stories need room: a short laptop screen gets the static layout.
+  pinned: "(min-width: 1024px) and (min-height: 700px) and (hover: hover) and (pointer: fine)",
 };
 
 export const prefersReducedMotion = () =>

@@ -11,11 +11,12 @@ const ITEM =
 
 const tone = (active) => (active ? "text-gold" : "text-muted hover:text-fg");
 
-function Count({ value }) {
+function Count({ value, bag = false }) {
   if (value < 1) return null;
   return (
     <span
       aria-hidden="true"
+      data-bag-count={bag || undefined}
       className="absolute -right-2 -top-1.5 flex h-[1.125rem] min-w-[1.125rem] items-center justify-center rounded-pill bg-gold px-1 text-badge tracking-normal text-obsidian tabular-nums"
     >
       {value > 99 ? "99+" : value}
@@ -70,11 +71,12 @@ function MobileTabBar() {
           onClick={openCart}
           aria-label={strings.nav.bag(cartCount)}
           aria-haspopup="dialog"
+          data-bag-target
           className={`${ITEM} ${tone(cartOpen)}`}
         >
           <span className="relative">
             <ShoppingBag {...ICON} />
-            <Count value={cartCount} />
+            <Count value={cartCount} bag />
           </span>
           {strings.tabBar.bag}
         </button>
