@@ -80,7 +80,7 @@ function Customers() {
 
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-h3 text-fg">{t.title}</h1>
+          <h1 className="text-title text-fg">{t.title}</h1>
           <p className="text-small text-muted">{data ? t.count(data.total) : t.intro}</p>
         </div>
         <ExportButton mutation={exportCustomers} copy={t.export} filters={filters} disabled={nothingAtAll || noBlocked} />
@@ -135,7 +135,7 @@ function Customers() {
           </div>
 
           {items.length === 0 ? (
-            <Card className="flex flex-col items-center gap-3 px-6 py-12 text-center">
+            <Card className="admin-empty flex flex-col items-center gap-3 px-6 py-12 text-center">
               <p className="text-body text-fg">{nothingAtAll ? t.empty.none : noBlocked ? t.empty.blocked : t.empty.matches}</p>
               {(nothingAtAll || noBlocked) && <p className="text-small text-muted">{nothingAtAll ? t.empty.noneHint : t.empty.blockedHint}</p>}
             </Card>

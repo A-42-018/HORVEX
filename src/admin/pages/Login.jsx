@@ -45,11 +45,11 @@ function Login() {
   const errorMessage = errorCode ? (t.errors[errorCode] ?? t.errors.fallback) : null;
 
   return (
-    <main className="flex min-h-dvh items-center justify-center px-gutter py-12">
+    <main className="admin-ui flex min-h-dvh items-center justify-center bg-gold-glow px-gutter py-12">
       <title>Sign in | WRISTORY Admin</title>
-      <div className="w-full max-w-sm">
+      <div className="w-full max-w-sm rounded-card border border-line bg-surface px-6 py-8 shadow-surface sm:px-8">
         <p className="text-center font-logo text-h3 tracking-wordmark text-fg">WRISTORY</p>
-        <h1 className="mt-6 text-center text-h3 text-fg">{t.title}</h1>
+        <h1 className="mt-6 text-center text-title text-fg">{t.title}</h1>
         <p className="mt-2 text-center text-small text-muted">{t.intro}</p>
 
         <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4" aria-describedby="login-error">

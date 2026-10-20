@@ -50,7 +50,7 @@ function Coupons() {
 
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-h3 text-fg">{t.title}</h1>
+          <h1 className="text-title text-fg">{t.title}</h1>
           {rows && <p className="text-small text-muted">{t.count(rows.length, live)}</p>}
         </div>
         <Button size="sm" className="gap-2" onClick={() => open(null)}>
@@ -93,7 +93,7 @@ function Coupons() {
 
       {rows &&
         (rows.length === 0 ? (
-          <Card className="flex flex-col items-center gap-3 px-6 py-12 text-center">
+          <Card className="admin-empty flex flex-col items-center gap-3 px-6 py-12 text-center">
             <p className="text-body text-fg">{t.empty.none}</p>
             <p className="text-small text-muted">{t.empty.noneHint}</p>
           </Card>

@@ -68,7 +68,7 @@ function OrderPrint() {
           <title>{`${d.notFound} | WRISTORY Admin`}</title>
           <BackLink to="/admin/orders">{d.back}</BackLink>
           <Card className="flex flex-col gap-2 px-6 py-12 text-center">
-            <h1 className="text-h3 text-fg">{d.notFound}</h1>
+            <h1 className="text-title text-fg">{d.notFound}</h1>
             <p className="text-small text-muted">{d.notFoundBody}</p>
           </Card>
         </div>

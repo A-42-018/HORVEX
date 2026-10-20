@@ -5,6 +5,8 @@ import {
   getAdminProduct,
   listAdminCategories,
   listAdminProducts,
+  productsInOrders,
+  removeAdminProducts,
   saveProductCost,
 } from "../../services/adminProducts";
 import { queryKeys } from "../../services/queryKeys";
@@ -107,5 +109,37 @@ export function useDuplicateProduct(options = {}) {
       entityId: copy.id,
       diff: { from: source.id, slug: copy.slug },
     }),
+  });
+}
+
+/** Which of these products appear in past orders (they get archived, not deleted). */
+export function useProductsInOrders(ids, { enabled = true } = {}) {
+  return useQuery({
+    queryKey: queryKeys.products.adminInOrders(ids),
+    queryFn: () => productsInOrders(ids),
+    enabled: enabled && ids.length > 0,
+    staleTime: 0,
+  });
+}
+
+/**
+ * Deletes products (archives the ones in past orders). Takes the product rows
+ * so the log keeps their names; `onSuccess` gets `{ deleted, archived }` ids.
+ */
+export function useRemoveProducts(options = {}) {
+  return useAdminMutation({
+    ...options,
+    mutationFn: (products) => removeAdminProducts(products.map((product) => product.id)),
+    // Cascades also drop reviews and collection links.
+    invalidate: [...PRODUCT_DOMAINS, queryKeys.reviews.all, queryKeys.collections.all],
+    activity: ({ deleted, archived }, products) => {
+      const named = (ids) => products.filter((product) => ids.includes(product.id)).map(({ id, name }) => ({ id, name }));
+      return {
+        action: deleted.length ? "delete" : "archive",
+        entity: "products",
+        entityId: products.length === 1 ? products[0].id : null,
+        diff: { deleted: named(deleted), archived: named(archived) },
+      };
+    },
   });
 }

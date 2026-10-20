@@ -63,6 +63,8 @@ const typography = plugin(({ addComponents }) => {
     // Serif card titles in narrow tiles (category row on lg+).
     ".text-h4": typeRole("display", "clamp(1.5rem, 1vw + 0.875rem, 2rem)", "1.1", "0", "500"),
     ".text-h3": typeRole("sans", "1.375rem", "1.3", "-0.01em", "600"),
+    // Admin page titles (C6a): one step above the h3 card headings.
+    ".text-title": typeRole("sans", "clamp(1.5rem, 0.75vw + 1.25rem, 1.875rem)", "1.2", "-0.02em", "600"),
     ".text-eyebrow": typeRole("sans", "0.75rem", "1", "0.28em", "600", {
       textTransform: "uppercase",
       color: "var(--accent-text)",
@@ -128,8 +130,9 @@ export default {
         wordmark: "0.32em",
       },
       borderRadius: {
-        control: "2px", // buttons, inputs
-        card: "4px", // cards, images
+        // Vars so a scope can soften them: the admin sets 6px / 12px (admin.css).
+        control: "var(--radius-control, 2px)", // buttons, inputs
+        card: "var(--radius-card, 4px)", // cards, images
         pill: "999px", // chips, counters only
         // Template aliases, tightened to the luxury scale
         sm: "2px",
@@ -150,9 +153,11 @@ export default {
       },
       maxWidth: {
         container: "1320px",
+        admin: "1600px", // admin content column
       },
       width: {
         drawer: "420px",
+        "admin-nav": "16rem", // admin sidebar
       },
       spacing: {
         13: "3.25rem", // 52px mobile CTA

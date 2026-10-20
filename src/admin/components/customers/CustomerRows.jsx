@@ -61,10 +61,10 @@ function Actions({ customer, onBlock, onUnblock }) {
   );
 }
 
-/** md+: a real table with one row per phone number. */
+/** xl+: a real table with one row per phone number (seven columns need the room). */
 export function CustomerTable({ customers, onBlock, onUnblock }) {
   return (
-    <div className="hidden overflow-x-auto md:block">
+    <div className="hidden overflow-x-auto xl:block">
       <table className="w-full min-w-[56rem] border-collapse text-left">
         <caption className="sr-only">{t.table.caption}</caption>
         <thead>
@@ -106,10 +106,10 @@ export function CustomerTable({ customers, onBlock, onUnblock }) {
   );
 }
 
-/** Below md: one card per customer. */
+/** Below xl: one card per customer. */
 export function CustomerCards({ customers, onBlock, onUnblock }) {
   return (
-    <ul className="divide-y divide-line md:hidden">
+    <ul className="divide-y divide-line xl:hidden">
       {customers.map((customer) => (
         <li key={customer.phone} className="flex flex-col gap-1 px-4 py-3">
           <div className="flex items-center justify-between gap-3">

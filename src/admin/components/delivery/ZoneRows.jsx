@@ -49,10 +49,10 @@ function ZoneRow({ zone, index, total, rows, busy, onMove, onToggle, onEdit, onR
     <li className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:gap-4">
       <div className="flex min-w-0 flex-1 items-center gap-3">
         <div className="flex shrink-0 flex-col">
-          <IconButton label={t.moveUp(zone.name)} variant="ghost" className="h-9 w-9" disabled={busy || index === 0} onClick={() => onMove(zone.id, -1)}>
+          <IconButton label={t.moveUp(zone.name)} variant="ghost" disabled={busy || index === 0} onClick={() => onMove(zone.id, -1)}>
             <ArrowUp aria-hidden="true" size={18} strokeWidth={1.5} />
           </IconButton>
-          <IconButton label={t.moveDown(zone.name)} variant="ghost" className="h-9 w-9" disabled={busy || index === total - 1} onClick={() => onMove(zone.id, 1)}>
+          <IconButton label={t.moveDown(zone.name)} variant="ghost" disabled={busy || index === total - 1} onClick={() => onMove(zone.id, 1)}>
             <ArrowDown aria-hidden="true" size={18} strokeWidth={1.5} />
           </IconButton>
         </div>

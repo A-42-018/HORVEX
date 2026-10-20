@@ -202,7 +202,7 @@ const admin = {
     system: "System",
     changed: "Changed",
     details: "Details",
-    actions: { create: "created", update: "updated", delete: "deleted", reorder: "reordered", status: "changed status of" },
+    actions: { create: "created", update: "updated", delete: "deleted", archive: "archived", reorder: "reordered", status: "changed status of" },
     table: { caption: "Activity log", when: "When", who: "Who", what: "What", details: "Details" },
   },
   customers: {
@@ -511,6 +511,40 @@ const admin = {
       none: "No products yet.",
       noneHint: "Products you add will appear here.",
       matches: "No products match these filters.",
+    },
+    select: {
+      one: (name) => `Select ${name}`,
+      all: "Select all shown products",
+      allShort: "Select all",
+      count: (n) => `${n} selected`,
+      clear: "Clear",
+      clearLabel: "Clear selection",
+    },
+    remove: {
+      delete: "Delete",
+      deleteProduct: "Delete product",
+      title: (n) => (n === 1 ? "Delete this product?" : `Delete ${n} products?`),
+      checking: "Checking past orders…",
+      checkFailed: "Couldn't check past orders, so nothing can be removed yet.",
+      deleteNote: (n) =>
+        `${n === 1 ? "This product is" : `${n} products are`} deleted for good, with ${n === 1 ? "its" : "their"} photos, variants, reviews and collection links. This can't be undone.`,
+      archiveNote: (n) =>
+        `${n === 1 ? "1 product is" : `${n} products are`} in past orders, so ${n === 1 ? "it is" : "they are"} archived instead: hidden from the store and kept so those orders stay complete.`,
+      deleteHeading: "Deleted",
+      archiveHeading: "Archived (in past orders)",
+      more: (n) => `and ${n} more`,
+      confirm: (del, arch) => {
+        if (del && arch) return `Delete ${del}, archive ${arch}`;
+        if (del) return del === 1 ? "Delete product" : `Delete ${del} products`;
+        return arch === 1 ? "Archive product" : `Archive ${arch} products`;
+      },
+      cancel: "Cancel",
+      working: "Removing…",
+      done: (del, arch) =>
+        [del && `${del} ${del === 1 ? "product" : "products"} deleted`, arch && `${arch} archived (in past orders)`]
+          .filter(Boolean)
+          .join(", ") + ".",
+      failed: "Couldn't finish removing. Check your connection and try again; the list shows what changed.",
     },
   },
   categories: {
@@ -1367,6 +1401,7 @@ const admin = {
       slugNew: "Filled in from the name; edit it if you like.",
       sku: "Optional. Must be unique.",
       compareAt: "Shown struck through. Leave empty for no discount.",
+      compareAtVariants: "Not shown on the store while the product has variants (each variant can have its own price).",
       cost: "Only admins see this. Never shown on the store.",
       stock: "Whole units available to sell.",
       stockVariants: (count) =>

@@ -22,7 +22,8 @@ function Thumb({ category }) {
 
 function RemoveControl({ category, childCount, busy, onRemove }) {
   const [confirming, setConfirming] = useState(false);
-  if (isProtected(category)) return null;
+  // Keeps the action column aligned with rows that can be deleted.
+  if (isProtected(category)) return <span aria-hidden="true" className="hidden w-11 sm:block" />;
   if (!confirming) {
     return (
       <IconButton label={`${t.remove}: ${category.name}`} variant="ghost" disabled={busy} onClick={() => setConfirming(true)}>
@@ -62,17 +63,17 @@ function CategoryRow({ category, index, total, rows, busy, onMove, onToggle, onE
     <li className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:gap-4">
       <div className="flex min-w-0 flex-1 items-center gap-3">
         <div className="flex shrink-0 flex-col">
-          <IconButton label={t.moveUp(category.name)} variant="ghost" className="h-9 w-9" disabled={busy || index === 0} onClick={() => onMove(category.id, -1)}>
+          <IconButton label={t.moveUp(category.name)} variant="ghost" disabled={busy || index === 0} onClick={() => onMove(category.id, -1)}>
             <ArrowUp aria-hidden="true" size={18} strokeWidth={1.5} />
           </IconButton>
-          <IconButton label={t.moveDown(category.name)} variant="ghost" className="h-9 w-9" disabled={busy || index === total - 1} onClick={() => onMove(category.id, 1)}>
+          <IconButton label={t.moveDown(category.name)} variant="ghost" disabled={busy || index === total - 1} onClick={() => onMove(category.id, 1)}>
             <ArrowDown aria-hidden="true" size={18} strokeWidth={1.5} />
           </IconButton>
         </div>
         <Thumb category={category} />
         <div className="min-w-0">
-          <p className="truncate text-body font-semibold text-fg">{category.name}</p>
-          <p className="truncate text-small text-muted">
+          <p className="break-words text-body font-semibold text-fg">{category.name}</p>
+          <p className="break-words text-small text-muted">
             /{category.slug} · {t.products(category.productCount)}
             {parent && ` · ${t.in(parent.name)}`}
           </p>
@@ -90,7 +91,7 @@ function CategoryRow({ category, index, total, rows, busy, onMove, onToggle, onE
         <IconButton label={t.edit(category.name)} variant="ghost" onClick={() => onEdit(category)}>
           <Pencil aria-hidden="true" size={20} strokeWidth={1.5} />
         </IconButton>
-        {category.is_visible && (
+        {category.is_visible ? (
           <IconButton
             as={Link}
             to={`/category/${category.slug}`}
@@ -101,6 +102,8 @@ function CategoryRow({ category, index, total, rows, busy, onMove, onToggle, onE
           >
             <ExternalLink aria-hidden="true" size={20} strokeWidth={1.5} />
           </IconButton>
+        ) : (
+          <span aria-hidden="true" className="hidden w-11 sm:block" />
         )}
         <RemoveControl category={category} childCount={childCount} busy={busy} onRemove={onRemove} />
       </div>

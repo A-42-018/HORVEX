@@ -122,7 +122,7 @@ export default function AnnouncementsPanel() {
 
       {messages &&
         (messages.length === 0 ? (
-          <Card className="flex flex-col items-center gap-3 px-6 py-12 text-center">
+          <Card className="admin-empty flex flex-col items-center gap-3 px-6 py-12 text-center">
             <p className="text-body text-fg">{t.empty.none}</p>
             <p className="text-small text-muted">{t.empty.noneHint}</p>
           </Card>
@@ -134,10 +134,10 @@ export default function AnnouncementsPanel() {
                   <div className="flex min-w-0 flex-1 items-center gap-3">
                     {canEdit && (
                       <div className="flex shrink-0 flex-col">
-                        <IconButton label={t.moveUp(message.text)} variant="ghost" className="h-9 w-9" disabled={save.isPending || index === 0} onClick={() => onMove(index, -1)}>
+                        <IconButton label={t.moveUp(message.text)} variant="ghost" disabled={save.isPending || index === 0} onClick={() => onMove(index, -1)}>
                           <ArrowUp aria-hidden="true" size={18} strokeWidth={1.5} />
                         </IconButton>
-                        <IconButton label={t.moveDown(message.text)} variant="ghost" className="h-9 w-9" disabled={save.isPending || index === messages.length - 1} onClick={() => onMove(index, 1)}>
+                        <IconButton label={t.moveDown(message.text)} variant="ghost" disabled={save.isPending || index === messages.length - 1} onClick={() => onMove(index, 1)}>
                           <ArrowDown aria-hidden="true" size={18} strokeWidth={1.5} />
                         </IconButton>
                       </div>

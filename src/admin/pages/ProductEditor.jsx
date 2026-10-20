@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useLocation, useNavigate, useParams } from "react-router";
-import { ArrowLeft, Copy, ExternalLink } from "lucide-react";
+import { Link, Navigate, useLocation, useNavigate, useParams } from "react-router";
+import { ArrowLeft, Copy, ExternalLink, Trash2 } from "lucide-react";
 import { Button, Skeleton } from "../../components/common";
 import { strings } from "../strings";
 import { slugify } from "../../lib/slug";
 import { MainFields, MediaFields, SideFields } from "../components/products/ProductFields";
+import ProductRemoveDialog from "../components/products/ProductRemoveDialog";
 import {
   changedColumns,
   costOf,
@@ -45,7 +46,7 @@ function describeFailure(error) {
   return { message: t.messages.saveFailed };
 }
 
-function EditorForm({ productId, loaded }) {
+function EditorForm({ productId, loaded, onRemoved }) {
   const isNew = !productId;
   const navigate = useNavigate();
   const location = useLocation();
@@ -69,6 +70,7 @@ function EditorForm({ productId, loaded }) {
     location.state?.notice === "created" ? { kind: "ok", text: t.messages.created } : null,
   );
   const slugEdited = useRef(!isNew);
+  const [removing, setRemoving] = useState(false);
 
   const dirty = isDirty(form, base.form);
   const saving = crud.create.isPending || crud.update.isPending || saveCost.isPending;
@@ -217,9 +219,9 @@ function EditorForm({ productId, loaded }) {
           {t.back}
         </Link>
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h1 className="text-h3 text-fg">{title}</h1>
+          <h1 className="text-title text-fg">{title}</h1>
           {!isNew && (
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2">
               {base.status === "active" && (
                 <Button
                   as="a"
@@ -237,7 +239,7 @@ function EditorForm({ productId, loaded }) {
               <Button
                 variant="secondary"
                 size="sm"
-                className="gap-2"
+                className="gap-2 !px-3 sm:!px-5"
                 onClick={onDuplicate}
                 loading={duplicate.isPending}
                 disabled={dirty || saving}
@@ -245,6 +247,16 @@ function EditorForm({ productId, loaded }) {
               >
                 {!duplicate.isPending && <Copy aria-hidden="true" size={16} strokeWidth={1.5} />}
                 {duplicate.isPending ? t.actions.duplicating : t.actions.duplicate}
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="gap-2 !px-3 !text-danger sm:!px-5"
+                onClick={() => setRemoving(true)}
+                disabled={saving}
+              >
+                <Trash2 aria-hidden="true" size={16} strokeWidth={1.5} />
+                {strings.admin.products.remove.deleteProduct}
               </Button>
             </div>
           )}
@@ -293,25 +305,35 @@ function EditorForm({ productId, loaded }) {
           </div>
         </div>
 
-        {/* Sits above the mobile bottom bar (3.5rem + home-bar inset). */}
-        <div className="sticky bottom-[calc(3.5625rem+env(safe-area-inset-bottom))] z-20 -mx-gutter flex flex-wrap items-center gap-3 border-t border-line bg-surface px-gutter py-3 lg:bottom-0">
-          <Button type="submit" size="sm" loading={saving} disabled={!isNew && !dirty}>
+        {/* Floats above the mobile bottom bar (3.5rem + home-bar inset). */}
+        <div className="sticky bottom-[calc(4.25rem+env(safe-area-inset-bottom))] z-20 flex flex-wrap items-center gap-3 rounded-card border border-line bg-raised/95 px-3 py-2.5 shadow-surface backdrop-blur-md sm:px-4 lg:bottom-4">
+          <Button type="submit" size="sm" loading={saving} disabled={!isNew && !dirty} className="min-w-0 flex-1 !px-2 sm:flex-none sm:!px-5">
             {saving ? t.actions.saving : isNew ? t.actions.create : t.actions.save}
           </Button>
           {form.status !== "active" && (
-            <Button variant="secondary" size="sm" disabled={saving} onClick={() => save("active")}>
+            <Button variant="secondary" size="sm" disabled={saving} onClick={() => save("active")} className="min-w-0 flex-1 !px-2 sm:flex-none sm:!px-5">
               {isNew ? t.actions.createPublish : t.actions.publishNow}
             </Button>
           )}
           {!isNew && base.status === "active" && (
-            <Button variant="ghost" size="sm" disabled={saving} onClick={() => save("draft")}>
+            <Button variant="ghost" size="sm" disabled={saving} onClick={() => save("draft")} className="min-w-0 flex-1 !px-2 sm:flex-none sm:!px-5">
               {t.actions.unpublish}
             </Button>
           )}
-          {dirty && <span className="text-small text-muted">{t.messages.unsaved}</span>}
+          {dirty && <span className="w-full text-small text-muted sm:w-auto">{t.messages.unsaved}</span>}
         </div>
       </form>
       <MediaFields isNew={isNew} productId={productId} />
+      {!isNew && (
+        <ProductRemoveDialog
+          products={[{ id: productId, name: base.form.name }]}
+          open={removing}
+          onClose={() => setRemoving(false)}
+          onDone={({ deleted, archived }) =>
+            onRemoved(strings.admin.products.remove.done(deleted.length, archived.length))
+          }
+        />
+      )}
     </div>
   );
 }
@@ -319,7 +341,10 @@ function EditorForm({ productId, loaded }) {
 function ProductEditor() {
   const { productId } = useParams();
   const { data, isPending, isError, refetch } = useAdminProduct(productId);
+  // Set after a delete / archive; this component stays mounted while the form unmounts.
+  const [removed, setRemoved] = useState(null);
 
+  if (removed) return <Navigate to="/admin/products" replace state={{ removed }} />;
   if (!productId) return <EditorForm key="new" productId={null} loaded={null} />;
   if (isPending) return <EditorSkeleton />;
 
@@ -336,7 +361,7 @@ function ProductEditor() {
   if (!data) {
     return (
       <div className="flex flex-col items-start gap-3">
-        <h1 className="text-h3 text-fg">{t.notFound.title}</h1>
+        <h1 className="text-title text-fg">{t.notFound.title}</h1>
         <p className="text-small text-muted">{t.notFound.body}</p>
         <Button as={Link} to="/admin/products" variant="secondary" size="sm">
           {t.back}
@@ -345,7 +370,7 @@ function ProductEditor() {
     );
   }
   // Keyed by id only: a background refetch must never overwrite unsaved edits.
-  return <EditorForm key={productId} productId={productId} loaded={data} />;
+  return <EditorForm key={productId} productId={productId} loaded={data} onRemoved={setRemoved} />;
 }
 
 export default ProductEditor;

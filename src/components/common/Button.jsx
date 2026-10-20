@@ -8,6 +8,8 @@ const VARIANTS = {
     "bg-gold text-obsidian hover:bg-gold-light before:pointer-events-none before:absolute before:-z-10 before:inset-y-0 before:-left-1/2 before:w-1/2 before:-translate-x-full before:skew-x-[-20deg] before:bg-gradient-to-r before:from-transparent before:via-ivory/40 before:to-transparent before:transition-transform before:duration-slow hover:before:translate-x-[400%]",
   secondary: "border border-fg text-fg hover:bg-fg hover:text-on-fg",
   ghost: "text-fg hover:bg-fg/10",
+  // Destructive actions (admin deletes); ivory on oxblood is ≥ 6:1.
+  danger: "bg-oxblood text-ivory hover:bg-oxblood/90",
   link: "!h-auto min-h-11 !px-0 text-brand after:absolute after:inset-x-0 after:bottom-2.5 after:h-px after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-base hover:after:scale-x-100",
 };
 VARIANTS.outline = VARIANTS.secondary;

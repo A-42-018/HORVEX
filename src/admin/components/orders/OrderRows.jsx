@@ -49,7 +49,7 @@ const courierText = (order) => (order.courier ? t.table.courier(order.courier, o
 export function OrderTable({ orders }) {
   return (
     <div className="hidden overflow-x-auto md:block">
-      <table className="w-full min-w-[46rem] border-collapse text-left">
+      <table className="w-full min-w-[40rem] border-collapse text-left">
         <caption className="sr-only">{t.table.caption}</caption>
         <thead>
           <tr className="border-b border-line text-badge text-muted">

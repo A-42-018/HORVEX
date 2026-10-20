@@ -1,0 +1,35 @@
+/* Admin look (C6a). Everything is scoped to .admin-ui (the layout root and the
+   login page), and this file loads with the admin chunk, so the storefront's
+   sharper 2px / 4px corners and its CSS bundle are untouched. */
+.admin-ui {
+  --radius-control: 6px;
+  --radius-card: 12px;
+}
+
+/* Data tables: tinted header row and a quiet row hover on every admin table. */
+.admin-ui table thead tr {
+  background-color: color-mix(in srgb, var(--fg) 3%, transparent);
+}
+.admin-ui table tbody tr:hover {
+  background-color: color-mix(in srgb, var(--fg) 2.5%, transparent);
+}
+
+/* Empty states: dashed outline and a small dial (ring + gold centre) above the text. */
+.admin-ui .admin-empty {
+  border-style: dashed;
+  background-color: transparent;
+  box-shadow: none;
+}
+.admin-ui .admin-empty::before {
+  content: "";
+  display: block;
+  width: 3rem;
+  height: 3rem;
+  margin-inline: auto;
+  margin-bottom: 0.25rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle, var(--accent-text) 0 3px, transparent 3.5px),
+    color-mix(in srgb, var(--accent-text) 8%, transparent);
+}
