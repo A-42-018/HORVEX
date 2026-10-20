@@ -37,8 +37,9 @@ update public.products set
   short_desc  = replace(short_desc, 'HORVEX', 'WRISTORY'),
   description = replace(description, 'HORVEX', 'WRISTORY'),
   seo_title   = replace(seo_title, 'HORVEX', 'WRISTORY'),
-  seo_desc    = replace(seo_desc, 'HORVEX', 'WRISTORY')
-where concat_ws(' ', short_desc, description, seo_title, seo_desc) ilike '%horvex%';
+  seo_desc    = replace(seo_desc, 'HORVEX', 'WRISTORY'),
+  specs       = replace(specs::text, 'HORVEX', 'WRISTORY')::jsonb
+where concat_ws(' ', short_desc, description, seo_title, seo_desc, specs::text) ilike '%horvex%';
 
 update public.faqs set
   question = replace(question, 'HORVEX', 'WRISTORY'),
