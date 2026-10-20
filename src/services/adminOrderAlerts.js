@@ -9,14 +9,18 @@ import { adminSupabase } from "./adminClient";
  * `onStatus` gets "live" or "offline"; the client re-joins by itself after a drop.
  * Returns an unsubscribe function.
  */
+let subscriptions = 0;
+
 export function subscribeToNewOrders({ onOrder, onStatus }) {
   if (!adminSupabase) {
     onStatus?.("offline");
     return () => {};
   }
 
+  // A unique topic per call: channel() returns an existing channel for the same
+  // topic, so a quick re-subscribe (StrictMode, remount) would reuse one that's closing.
   const channel = adminSupabase
-    .channel("admin-new-orders")
+    .channel(`admin-new-orders:${++subscriptions}`)
     .on("postgres_changes", { event: "INSERT", schema: "public", table: "orders" }, ({ new: row }) => {
       if (!row?.id) return;
       onOrder({

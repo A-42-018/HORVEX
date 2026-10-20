@@ -99,7 +99,8 @@ function Product() {
   }
   if (!product) return <NotFound />;
 
-  return <ProductDetail product={product} />;
+  // Keyed so the picked variant and qty reset when moving to another cached PDP.
+  return <ProductDetail key={product.id} product={product} />;
 }
 
 export default Product;

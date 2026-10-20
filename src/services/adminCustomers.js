@@ -15,12 +15,13 @@ function applyFilters(builder, { q, view }) {
   return next;
 }
 
-/** First `limit` customers (most recent order first) plus the total match count. */
-export async function listAdminCustomers({ limit, ...filters }) {
+/** One page of customers (`limit` rows from `offset`, most recent order first) plus the total match count. */
+export async function listAdminCustomers({ offset = 0, limit, ...filters }) {
   const { data, count } = await queryWithCount((db) =>
     applyFilters(db.from("admin_customers").select(FIELDS, { count: "exact" }), filters)
       .order("last_order_at", { ascending: false })
-      .range(0, limit - 1),
+      .order("phone", { ascending: true })
+      .range(offset, offset + limit - 1),
   );
   return { items: data, total: count ?? data.length };
 }

@@ -21,6 +21,3 @@ export function diffText(diff, max = 1500) {
   const text = JSON.stringify(diff, null, 2);
   return text.length > max ? `${text.slice(0, max)}…` : text;
 }
-
-/** Whether another page may exist: the server returned a full page and we're under the cap. */
-export const mayHaveMore = (shown, limit) => shown >= limit && limit < MAX_ACTIVITY;

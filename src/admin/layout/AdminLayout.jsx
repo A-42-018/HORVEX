@@ -170,7 +170,7 @@ function AdminLayout() {
                 to={to}
                 end={end}
                 className={({ isActive }) =>
-                  `flex min-h-14 flex-col items-center justify-center gap-1 px-1 text-[0.6875rem] font-semibold ${focusRing} ${
+                  `flex min-h-14 flex-col items-center justify-center gap-1 px-1 text-badge ${focusRing} ${
                     isActive ? "text-brand" : "text-muted"
                   }`
                 }
@@ -188,7 +188,7 @@ function AdminLayout() {
               type="button"
               onClick={() => setMoreOpen(true)}
               aria-haspopup="dialog"
-              className={`flex min-h-14 w-full flex-col items-center justify-center gap-1 px-1 text-[0.6875rem] font-semibold text-muted ${focusRing}`}
+              className={`flex min-h-14 w-full flex-col items-center justify-center gap-1 px-1 text-badge text-muted ${focusRing}`}
             >
               <Menu aria-hidden="true" size={20} strokeWidth={1.5} />
               {t.more}

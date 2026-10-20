@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-import { lineKey, useCart } from "../store/cart";
+import { useCart } from "../store/cart";
 import { useUI } from "../store/ui";
 import { strings } from "./strings";
 
@@ -24,16 +24,13 @@ export function addToBag(product, options) {
 /**
  * "Order now": puts exactly `qty` of this item in the bag (replacing any earlier
  * qty of the same line, so it never doubles up) without opening the drawer.
- * The caller navigates to /checkout on { ok: true }. Other bag lines stay.
+ * The line's snapshot (price, image, stock cap) is refreshed from `product`;
+ * if stock caps the qty, it toasts. The caller navigates to /checkout on
+ * { ok: true }. Other bag lines stay.
  */
 export function buyNow(product, { variant = null, qty = 1 } = {}) {
-  const { lines, add, setQty } = useCart.getState();
-  const key = lineKey(product.id, variant?.id);
-  if (lines.some((l) => l.key === key)) {
-    setQty(key, qty);
-    return { ok: true };
-  }
-  const result = add(product, { variant, qty });
+  const result = useCart.getState().replace(product, { variant, qty });
   if (!result.ok) toast.error(FAILURE_COPY[result.reason] ?? strings.product.addFailed);
+  else if (result.clamped) toast(strings.product.qtyClamped(result.qty));
   return result;
 }

@@ -1,9 +1,8 @@
-import { useState } from "react";
 import { useSearchParams } from "react-router";
 import { Button, Card, Select, Skeleton } from "../../components/common";
 import { formatDateTime } from "../../lib/format";
 import { strings } from "../../lib/strings";
-import { ACTIVITY_PAGE_SIZE, diffKeys, diffText, mayHaveMore, targetOf } from "../components/activity/activityRules";
+import { diffKeys, diffText, targetOf } from "../components/activity/activityRules";
 import { useActivity, useActivityEntities } from "../hooks/useActivityAdmin";
 
 const t = strings.admin.activity;
@@ -28,15 +27,13 @@ function Details({ entry }) {
 function Activity() {
   const [params, setParams] = useSearchParams();
   const entity = params.get("area") ?? "";
-  const [limit, setLimit] = useState(ACTIVITY_PAGE_SIZE);
-  const { data, isPending, isError, isFetching, refetch } = useActivity({ entity, limit });
+  const { data, isPending, isError, isFetching, isFetchingNextPage, hasNextPage, more, refetch } = useActivity({ entity });
   const entities = useActivityEntities();
 
   const setEntity = (value) => {
     setParams(value ? { area: value } : {}, { replace: true });
-    setLimit(ACTIVITY_PAGE_SIZE);
   };
-  const items = data ?? [];
+  const items = data?.items ?? [];
 
   return (
     <div className="flex flex-col gap-6">
@@ -98,8 +95,8 @@ function Activity() {
               </ul>
             </Card>
           )}
-          {mayHaveMore(items.length, limit) && (
-            <Button variant="secondary" size="sm" className="self-center" onClick={() => setLimit((n) => n + ACTIVITY_PAGE_SIZE)}>
+          {hasNextPage && (
+            <Button variant="secondary" size="sm" className="self-center" loading={isFetchingNextPage} onClick={more}>
               {t.filters.more}
             </Button>
           )}

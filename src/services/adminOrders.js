@@ -17,12 +17,15 @@ function applyFilters(builder, { q, from, to }) {
   return next;
 }
 
-/** First `limit` orders matching the filters, newest first, plus the total match count. */
-export async function listAdminOrders({ status = "", limit, ...filters }) {
+/** One page of orders matching the filters (`limit` rows from `offset`), newest first, plus the total match count. */
+export async function listAdminOrders({ status = "", offset = 0, limit, ...filters }) {
   const { data, count } = await queryWithCount((db) => {
     let builder = db.from("orders").select(LIST_FIELDS, { count: "exact" });
     if (status) builder = builder.eq("status", status);
-    return applyFilters(builder, filters).order("created_at", { ascending: false }).range(0, limit - 1);
+    return applyFilters(builder, filters)
+      .order("created_at", { ascending: false })
+      .order("id", { ascending: true })
+      .range(offset, offset + limit - 1);
   });
   return {
     items: data.map(({ items, ...order }) => ({ ...order, itemCount: items?.[0]?.count ?? 0 })),

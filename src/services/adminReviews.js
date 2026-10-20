@@ -7,12 +7,15 @@ export const REVIEW_FOLDER = "reviews";
 export const REVIEW_STATUSES = ["pending", "approved", "rejected"];
 const FIELDS = "id, product_id, name, rating, text, photo_url, status, created_at, product:products(name, slug)";
 
-/** First `limit` reviews (newest first) for a status tab ("all" = every status) plus the total. */
-export async function listAdminReviews({ status, limit }) {
+/** One page of reviews (`limit` rows from `offset`, newest first) for a status tab ("all" = every status) plus the total. */
+export async function listAdminReviews({ status, offset = 0, limit }) {
   const { data, count } = await queryWithCount((db) => {
     let builder = db.from("reviews").select(FIELDS, { count: "exact" });
     if (status !== "all") builder = builder.eq("status", status);
-    return builder.order("created_at", { ascending: false }).range(0, limit - 1);
+    return builder
+      .order("created_at", { ascending: false })
+      .order("id", { ascending: true })
+      .range(offset, offset + limit - 1);
   });
   return { items: data, total: count ?? data.length };
 }

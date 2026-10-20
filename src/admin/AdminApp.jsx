@@ -25,8 +25,6 @@ import Users from "./pages/Users";
 
 // Everything under /admin lives behind this module, which the router loads as
 // a separate chunk, so storefront visitors never download admin code.
-// [path, title, phase, minRole]: staff = orders + customers (roadmap §10).
-const PAGES = [];
 
 function AdminApp() {
   return (
@@ -171,17 +169,6 @@ function AdminApp() {
               element={
                 <RequireRole minRole="manager">
                   <ProductEditor />
-                </RequireRole>
-              }
-            />
-          ))}
-          {PAGES.map(([path, title, phase, minRole]) => (
-            <Route
-              key={path}
-              path={path}
-              element={
-                <RequireRole minRole={minRole}>
-                  <AdminPlaceholder title={title} phase={phase} />
                 </RequireRole>
               }
             />

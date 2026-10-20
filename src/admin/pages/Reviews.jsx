@@ -5,7 +5,7 @@ import { Button, Card, Skeleton } from "../../components/common";
 import { strings } from "../../lib/strings";
 import ReviewCard from "../components/reviews/ReviewCard";
 import ReviewModal from "../components/reviews/ReviewModal";
-import { ACTION_STATUS, REVIEW_PAGE_SIZE, REVIEW_TABS, readReviewFilters } from "../components/reviews/reviewRules";
+import { ACTION_STATUS, REVIEW_TABS, readReviewFilters } from "../components/reviews/reviewRules";
 import { useAdminReviews, useRemoveReview, useReviewCounts, useSetReviewStatus } from "../hooks/useReviewAdmin";
 
 const t = strings.admin.reviews;
@@ -15,20 +15,18 @@ const forbidden = (error) => error?.code === "42501" || error?.code === "PGRST11
 function Reviews() {
   const [params, setParams] = useSearchParams();
   const filters = useMemo(() => readReviewFilters(params), [params]);
-  const [limit, setLimit] = useState(REVIEW_PAGE_SIZE);
   const [notice, setNotice] = useState("");
   const [problem, setProblem] = useState("");
   const [adding, setAdding] = useState(0); // 0 = closed; bumps remount the modal
   const [busyId, setBusyId] = useState(null);
 
-  const { data, isPending, isError, isFetching, refetch } = useAdminReviews(filters, limit);
+  const { data, isPending, isError, isFetching, isFetchingNextPage, hasNextPage, more, refetch } = useAdminReviews(filters);
   const { data: counts } = useReviewCounts();
   const setStatus = useSetReviewStatus();
   const remove = useRemoveReview();
 
   const select = (status) => {
     setParams(status === "pending" ? {} : { status }, { replace: true });
-    setLimit(REVIEW_PAGE_SIZE);
     setNotice("");
     setProblem("");
   };
@@ -139,8 +137,8 @@ function Reviews() {
               </ul>
             </Card>
           )}
-          {data.total > items.length && (
-            <Button variant="secondary" size="sm" className="self-center" onClick={() => setLimit((n) => n + REVIEW_PAGE_SIZE)}>
+          {hasNextPage && (
+            <Button variant="secondary" size="sm" className="self-center" loading={isFetchingNextPage} onClick={more}>
               {t.more}
             </Button>
           )}

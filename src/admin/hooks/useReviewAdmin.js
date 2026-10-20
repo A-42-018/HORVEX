@@ -1,20 +1,21 @@
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { deleteRow, insertRow, updateRow } from "../../services/admin";
 import { getReviewCounts, listAdminReviews, listReviewProducts, removeReviewPhoto } from "../../services/adminReviews";
 import { queryKeys } from "../../services/queryKeys";
+import { REVIEW_PAGE_SIZE } from "../components/reviews/reviewRules";
 import { useAdminMutation } from "./useAdminMutation";
+import { usePagedList } from "./usePagedList";
 
 // The store reads reviews through the products domain (PDP) and the content
 // domain (home carousel + summary), so every write refreshes all three.
 const invalidate = [queryKeys.reviews.all, queryKeys.products.all, queryKeys.content.all];
 
-export function useAdminReviews(filters, limit) {
-  const key = { ...filters, limit };
-  return useQuery({
-    queryKey: queryKeys.reviews.adminList(key),
-    queryFn: () => listAdminReviews(key),
-    placeholderData: keepPreviousData,
-    staleTime: 15_000,
+/** Reviews for a status tab, a page at a time (`more()` fetches only the next page). */
+export function useAdminReviews(filters) {
+  return usePagedList({
+    queryKey: queryKeys.reviews.adminList(filters),
+    fetchPage: (page) => listAdminReviews({ ...filters, ...page }),
+    pageSize: REVIEW_PAGE_SIZE,
   });
 }
 

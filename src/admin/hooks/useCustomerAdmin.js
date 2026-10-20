@@ -1,16 +1,17 @@
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { blockPhone, getCustomerByPhone, listAdminCustomers, unblockPhone } from "../../services/adminCustomers";
 import { queryKeys } from "../../services/queryKeys";
+import { CUSTOMER_PAGE_SIZE } from "../components/customers/customerRules";
 import { useAdminMutation } from "./useAdminMutation";
+import { usePagedList } from "./usePagedList";
 
-/** Customers for the current filters, `limit` rows. Keeps the old rows while a new view loads. */
-export function useAdminCustomers(filters, limit) {
-  const key = { ...filters, limit };
-  return useQuery({
-    queryKey: queryKeys.customers.adminList(key),
-    queryFn: () => listAdminCustomers(key),
-    placeholderData: keepPreviousData,
-    staleTime: 15_000,
+/** Customers for the current filters, a page at a time (`more()` fetches only the next page). */
+export function useAdminCustomers(filters) {
+  return usePagedList({
+    queryKey: queryKeys.customers.adminList(filters),
+    fetchPage: (page) => listAdminCustomers({ ...filters, ...page }),
+    pageSize: CUSTOMER_PAGE_SIZE,
+    idOf: (row) => row.phone,
   });
 }
 

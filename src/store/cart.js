@@ -65,6 +65,36 @@ export const useCart = create(
         return { ok: true, qty: total };
       },
 
+      /**
+       * Sets a line to exactly `qty` (clamped to stock and the per-line cap),
+       * refreshing its snapshot from the current product/variant; adds it if
+       * missing. Returns { ok, reason?, qty?, clamped? }.
+       */
+      replace(product, { variant = null, qty = 1 } = {}) {
+        const next = snapshot(product, variant);
+        if (next.maxQty < 1) return { ok: false, reason: "out_of_stock" };
+
+        const lines = get().lines;
+        const existing = lines.find((l) => l.key === next.key);
+        if (!existing && lines.length >= MAX_LINES) return { ok: false, reason: "max_lines" };
+
+        const total = clampQty(qty, next);
+        const line = { ...next, qty: total };
+        set({ lines: existing ? lines.map((l) => (l.key === next.key ? line : l)) : [...lines, line] });
+
+        const added = total - (existing?.qty ?? 0);
+        if (added > 0) {
+          track(EVENTS.addToCart, {
+            item_id: product.id,
+            item_name: product.name,
+            item_variant: next.variantName,
+            price: next.price,
+            quantity: added,
+          });
+        }
+        return { ok: true, qty: total, clamped: total < qty };
+      },
+
       setQty(key, qty) {
         set({ lines: get().lines.map((l) => (l.key === key ? { ...l, qty: clampQty(qty, l) } : l)) });
       },

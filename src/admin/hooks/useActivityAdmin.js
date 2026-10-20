@@ -1,15 +1,17 @@
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { ACTIVITY_PAGE_SIZE, MAX_ACTIVITY } from "../components/activity/activityRules";
 import { listActivity, listActivityEntities } from "../../services/adminUsers";
 import { queryKeys } from "../../services/queryKeys";
+import { usePagedList } from "./usePagedList";
 
-/** Latest `limit` log entries, optionally for one entity. Keeps old rows while a new view loads. */
-export function useActivity({ entity, limit }) {
-  const key = { entity: entity || "", limit };
-  return useQuery({
-    queryKey: queryKeys.activity.adminList(key),
-    queryFn: () => listActivity({ entity, limit }),
-    placeholderData: keepPreviousData,
-    staleTime: 15_000,
+/** Log entries, optionally for one entity, a page at a time (up to MAX_ACTIVITY rows). */
+export function useActivity({ entity }) {
+  const filters = { entity: entity || "" };
+  return usePagedList({
+    queryKey: queryKeys.activity.adminList(filters),
+    fetchPage: async (page) => ({ items: await listActivity({ ...filters, ...page }) }),
+    pageSize: ACTIVITY_PAGE_SIZE,
+    max: MAX_ACTIVITY,
   });
 }
 

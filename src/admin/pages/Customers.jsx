@@ -4,10 +4,11 @@ import { Button, Card, Input, Skeleton } from "../../components/common";
 import { strings } from "../../lib/strings";
 import BlockModal from "../components/customers/BlockModal";
 import { CustomerCards, CustomerTable } from "../components/customers/CustomerRows";
-import { CUSTOMER_PAGE_SIZE, CUSTOMER_VIEWS, readCustomerFilters } from "../components/customers/customerRules";
+import { CUSTOMER_VIEWS, readCustomerFilters } from "../components/customers/customerRules";
 import ExportButton from "../components/export/ExportButton";
 import { useAdminCustomers } from "../hooks/useCustomerAdmin";
 import { useExportCustomers } from "../hooks/useExport";
+import { useSearchDraft } from "../hooks/useSearchDraft";
 
 const t = strings.admin.customers;
 const focusRing = "focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus";
@@ -47,13 +48,12 @@ function ViewTabs({ active, onSelect }) {
 
 function Customers() {
   const [params, setParams] = useSearchParams();
-  const [limit, setLimit] = useState(CUSTOMER_PAGE_SIZE);
   const [dialog, setDialog] = useState(null); // { customer, mode }
   const [notice, setNotice] = useState("");
   const filters = useMemo(() => readCustomerFilters(params), [params]);
   const exportCustomers = useExportCustomers();
 
-  const { data, isPending, isError, isFetching, refetch } = useAdminCustomers(filters, limit);
+  const { data, isPending, isError, isFetching, isFetchingNextPage, hasNextPage, more, refetch } = useAdminCustomers(filters);
 
   const setFilter = (key, value) => {
     setParams(
@@ -65,9 +65,10 @@ function Customers() {
       },
       { replace: true },
     );
-    setLimit(CUSTOMER_PAGE_SIZE);
     setNotice("");
   };
+  // Typing updates the box at once; the URL and the query follow after a pause.
+  const [search, setSearch] = useSearchDraft(filters.q, (value) => setFilter("q", value));
 
   const items = data?.items ?? [];
   const nothingAtAll = data && data.total === 0 && !filters.q && filters.view === "all";
@@ -90,8 +91,8 @@ function Customers() {
         <Input
           type="search"
           label={t.filters.search}
-          value={filters.q}
-          onChange={(event) => setFilter("q", event.target.value)}
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
           maxLength={40}
         />
       </div>
@@ -120,7 +121,14 @@ function Customers() {
               {isFetching ? t.filters.updating : t.filters.showing(items.length, data.total)}
             </p>
             {filters.q && (
-              <Button variant="ghost" size="sm" onClick={() => setFilter("q", "")}>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setSearch("");
+                  setFilter("q", "");
+                }}
+              >
                 {t.filters.clear}
               </Button>
             )}
@@ -146,8 +154,8 @@ function Customers() {
             </Card>
           )}
 
-          {data.total > items.length && (
-            <Button variant="secondary" size="sm" className="self-center" onClick={() => setLimit((n) => n + CUSTOMER_PAGE_SIZE)}>
+          {hasNextPage && (
+            <Button variant="secondary" size="sm" className="self-center" loading={isFetchingNextPage} onClick={more}>
               {t.filters.more}
             </Button>
           )}

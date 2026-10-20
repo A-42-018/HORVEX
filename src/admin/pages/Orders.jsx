@@ -1,12 +1,13 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useSearchParams } from "react-router";
 import { Button, Card, Input, Skeleton } from "../../components/common";
 import { strings } from "../../lib/strings";
 import ExportButton from "../components/export/ExportButton";
 import { OrderCards, OrderTable } from "../components/orders/OrderRows";
-import { ORDER_STATUSES, PAGE_SIZE, hasExtraFilters, isBackwards, readFilters } from "../components/orders/orderFilters";
+import { ORDER_STATUSES, hasExtraFilters, isBackwards, readFilters } from "../components/orders/orderFilters";
 import { useExportOrders } from "../hooks/useExport";
 import { useAdminOrderCounts, useAdminOrders } from "../hooks/useAdminOrders";
+import { useSearchDraft } from "../hooks/useSearchDraft";
 
 const t = strings.admin.orders;
 const TABS = ["all", ...ORDER_STATUSES];
@@ -49,13 +50,12 @@ function StatusTabs({ active, counts, onSelect }) {
 
 function Orders() {
   const [params, setParams] = useSearchParams();
-  const [limit, setLimit] = useState(PAGE_SIZE);
   const filters = useMemo(() => readFilters(params), [params]);
   const backwards = isBackwards(filters);
   // A backwards range can't match anything: query with no date bounds is wrong too, so skip the date filters and warn.
   const effective = backwards ? { ...filters, from: "", to: "" } : filters;
 
-  const { data, isPending, isError, isFetching, refetch } = useAdminOrders(effective, limit);
+  const { data, isPending, isError, isFetching, isFetchingNextPage, hasNextPage, more, refetch } = useAdminOrders(effective);
   const { data: counts } = useAdminOrderCounts(effective);
   const exportOrders = useExportOrders();
 
@@ -69,8 +69,9 @@ function Orders() {
       },
       { replace: true },
     );
-    setLimit(PAGE_SIZE);
   };
+  // Typing updates the box at once; the URL and the list + count queries follow after a pause.
+  const [search, setSearch] = useSearchDraft(filters.q, (value) => setFilter("q", value));
 
   const clearFilters = () => {
     setParams(
@@ -81,7 +82,7 @@ function Orders() {
       },
       { replace: true },
     );
-    setLimit(PAGE_SIZE);
+    setSearch("");
   };
 
   const items = data?.items ?? [];
@@ -104,8 +105,8 @@ function Orders() {
         <Input
           type="search"
           label={t.filters.search}
-          value={filters.q}
-          onChange={(event) => setFilter("q", event.target.value)}
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
           maxLength={40}
           className="col-span-2"
         />
@@ -176,8 +177,8 @@ function Orders() {
             </Card>
           )}
 
-          {data.total > items.length && (
-            <Button variant="secondary" size="sm" className="self-center" onClick={() => setLimit((n) => n + PAGE_SIZE)}>
+          {hasNextPage && (
+            <Button variant="secondary" size="sm" className="self-center" loading={isFetchingNextPage} onClick={more}>
               {t.filters.more}
             </Button>
           )}
