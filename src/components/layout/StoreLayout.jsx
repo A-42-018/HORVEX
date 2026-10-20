@@ -1,6 +1,7 @@
 import { Outlet, ScrollRestoration } from "react-router";
 import { useEffect } from "react";
 import { useSiteSettings } from "../../hooks/useContent";
+import { useStoreAnalytics } from "../../hooks/useStoreAnalytics";
 import { useUI } from "../../store/ui";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
@@ -19,6 +20,7 @@ import { Preloader, RouteTransition, SmoothScroll } from "../motion";
 function StoreLayout() {
   const { data: settings } = useSiteSettings();
   const faviconUrl = settings?.favicon_url?.trim();
+  useStoreAnalytics();
   // Favicon from settings: point the existing <link rel="icon"> at it (the file in index.html stays the fallback).
   useEffect(() => {
     if (!/^https?:\/\//i.test(faviconUrl ?? "")) return undefined;

@@ -103,7 +103,7 @@ export const useCart = create(
         const line = get().lines.find((l) => l.key === key);
         if (!line) return;
         set({ lines: get().lines.filter((l) => l.key !== key) });
-        track(EVENTS.removeFromCart, { item_id: line.productId, item_name: line.name, quantity: line.qty });
+        track(EVENTS.removeFromCart, { item_id: line.productId, item_name: line.name, price: line.price, quantity: line.qty });
       },
 
       clear: () => set({ lines: [] }),

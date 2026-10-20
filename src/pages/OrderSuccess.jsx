@@ -7,6 +7,7 @@ import { useSiteSettings } from "../hooks/useContent";
 import { loadLastOrder } from "../lib/lastOrder";
 import { formatTaka, normalizePhone } from "../lib/format";
 import { strings } from "../lib/strings";
+import { Seo } from "../components/seo";
 
 const t = strings.orderSuccess;
 
@@ -30,7 +31,7 @@ function OrderSuccess() {
   if (!order) {
     return (
       <Container className="flex flex-col items-center gap-6 py-section-sm text-center lg:py-section">
-        <title>{`${t.missingTitle} | WRISTORY`}</title>
+        <Seo title={t.missingTitle} noindex />
         <PackageSearch size={48} strokeWidth={1} aria-hidden="true" className="text-gold" />
         <SectionHeading as="h1" title={t.missingTitle} subtitle={t.missingBody} />
         <div className="flex flex-wrap justify-center gap-3">
@@ -51,7 +52,7 @@ function OrderSuccess() {
 
   return (
     <Container className="py-section-sm lg:py-section">
-      <title>{`${t.eyebrow} ${order.order_number} | WRISTORY`}</title>
+      <Seo title={`${t.eyebrow} ${order.order_number}`} noindex />
       <div className="mx-auto max-w-2xl">
         <div className="flex flex-col items-center text-center">
           <SuccessCheck />

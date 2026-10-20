@@ -4,6 +4,8 @@ import { Button, Container, SectionHeading, Skeleton } from "../components/commo
 import FaqItem from "../components/faq/FaqItem";
 import { useFaqs } from "../hooks/useContent";
 import { strings } from "../lib/strings";
+import { faqLd } from "../lib/seo";
+import { JsonLd, Seo } from "../components/seo";
 
 const t = strings.faqPage;
 
@@ -26,8 +28,8 @@ function Faq() {
 
   return (
     <section className="py-section-sm lg:py-section">
-      <title>{`${t.title} | WRISTORY`}</title>
-      <meta name="description" content={t.subtitle} />
+      <Seo title={t.title} description={t.subtitle} />
+      {faqs?.length > 0 && <JsonLd data={faqLd(faqs)} />}
       <Container className="flex max-w-3xl flex-col gap-10 lg:gap-12">
         <SectionHeading as="h1" eyebrow={t.eyebrow} title={t.title} subtitle={t.subtitle} />
 

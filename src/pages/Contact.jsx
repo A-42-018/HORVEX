@@ -6,6 +6,7 @@ import ContactForm from "../components/contact/ContactForm";
 import { useSiteSettings } from "../hooks/useContent";
 import { formatPhone, normalizePhone } from "../lib/format";
 import { strings } from "../lib/strings";
+import { Seo } from "../components/seo";
 
 const t = strings.contact;
 const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
@@ -43,7 +44,7 @@ function Contact() {
 
   return (
     <Container className="py-section-sm lg:py-section">
-      <title>{`${t.eyebrow} | WRISTORY`}</title>
+      <Seo title={t.eyebrow} description={t.subtitle} />
       <SectionHeading as="h1" eyebrow={t.eyebrow} title={t.title} subtitle={t.subtitle} />
 
       <div className="mt-10 grid gap-10 lg:mt-14 lg:grid-cols-[2fr_3fr] lg:gap-16">

@@ -8,6 +8,7 @@ import { useOrderQuote } from "../hooks/useOrders";
 import { MAX_LINES, selectCartCount, selectCartEstimate, useCart } from "../store/cart";
 import { formatTaka } from "../lib/format";
 import { strings } from "../lib/strings";
+import { Seo } from "../components/seo";
 
 const t = strings.cart;
 const copy = t.page;
@@ -211,7 +212,7 @@ function Cart() {
 
   return (
     <Container className="py-section-sm lg:py-section">
-      <title>{`${t.title} | WRISTORY`}</title>
+      <Seo title={t.title} noindex />
       <SectionHeading as="h1" eyebrow={copy.eyebrow} title={copy.title} align="left" className="mb-10" />
       {body}
     </Container>

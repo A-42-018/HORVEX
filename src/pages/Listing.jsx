@@ -7,6 +7,8 @@ import { useCategory, useCollection, useCollectionProducts, useProducts } from "
 import { useListingParams } from "../hooks/useListingParams";
 import { categoryScope } from "../services/products";
 import { strings } from "../lib/strings";
+import { breadcrumbLd } from "../lib/seo";
+import { JsonLd, SITE_URL, Seo } from "../components/seo";
 
 // Result count for a draft filter set (mobile "Apply (n)"), per listing type.
 const useShopTotal = (filters) => useProducts({ ...filters, limit: 1 }).data?.total;
@@ -23,7 +25,8 @@ function ListingBody({ title, description, crumbs, query, view, useTotal, showCa
 
   return (
     <>
-      <title>{`${title} | WRISTORY`}</title>
+      <Seo title={title} description={description || strings.listing.shopIntro} />
+      <JsonLd data={breadcrumbLd(crumbs.map((c) => ({ name: c.label, path: c.to })), SITE_URL)} />
       <ListingHeader title={title} description={description} crumbs={crumbs} count={data?.total} />
       <Container className="py-8 lg:py-12">
         <div className="lg:grid lg:grid-cols-[16rem_1fr] lg:gap-12">
