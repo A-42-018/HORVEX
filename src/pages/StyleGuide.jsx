@@ -171,7 +171,7 @@ function StyleGuide() {
 
   return (
     <div className="section-dark min-h-screen">
-      <title>Style guide | HORVEX</title>
+      <title>Style guide | WRISTORY</title>
       <header className="py-12">
         <Container className="flex flex-col gap-4">
           <p className="text-eyebrow">Dev only · Phase A2</p>

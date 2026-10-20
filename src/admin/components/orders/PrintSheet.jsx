@@ -11,7 +11,7 @@ const sheet =
   "mx-auto flex w-full max-w-[210mm] flex-col gap-6 bg-white p-5 text-fg sm:p-[12mm] print:max-w-none print:p-0";
 
 function Letterhead({ settings, title, order }) {
-  const brand = settings?.brand_name || "HORVEX";
+  const brand = settings?.brand_name || "WRISTORY";
   return (
     <header className="flex flex-wrap items-start justify-between gap-6 border-b border-fg pb-4">
       <div className="flex flex-col gap-1">
@@ -184,7 +184,7 @@ export function InvoiceSheet({ order, settings }) {
       </div>
 
       <footer className="mt-4 border-t border-line pt-4 text-center text-small text-muted">
-        <p>{settings?.footer_text?.trim() || t.thanks(settings?.brand_name || "HORVEX")}</p>
+        <p>{settings?.footer_text?.trim() || t.thanks(settings?.brand_name || "WRISTORY")}</p>
       </footer>
     </article>
   );

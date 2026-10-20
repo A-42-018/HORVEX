@@ -13,7 +13,7 @@ function RequireRole({ minRole, children }) {
 
   return (
     <div className="flex flex-col items-start gap-2">
-      <title>{`${t.title} | HORVEX Admin`}</title>
+      <title>{`${t.title} | WRISTORY Admin`}</title>
       <h1 className="text-h3 text-fg">{t.title}</h1>
       <p className="text-small text-muted">{t.body(strings.admin.roles[profile?.role] ?? profile?.role)}</p>
       <Link

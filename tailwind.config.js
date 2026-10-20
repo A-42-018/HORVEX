@@ -1,7 +1,7 @@
 import plugin from "tailwindcss/plugin";
 import { DURATION, EASE, toCubicBezier } from "./src/lib/motion.js";
 
-// HORVEX design tokens (roadmap §3.1–3.3, §7).
+// WRISTORY design tokens (roadmap §3.1–3.3, §7).
 // Old template names (bg, ink-secondary, border, accent, success, sale) are kept
 // as aliases onto the new palette so the template sections keep rendering until
 // block B rebuilds them; new code should use the palette names directly.

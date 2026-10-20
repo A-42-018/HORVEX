@@ -43,7 +43,7 @@ function Contact() {
 
   return (
     <Container className="py-section-sm lg:py-section">
-      <title>{`${t.eyebrow} | HORVEX`}</title>
+      <title>{`${t.eyebrow} | WRISTORY`}</title>
       <SectionHeading as="h1" eyebrow={t.eyebrow} title={t.title} subtitle={t.subtitle} />
 
       <div className="mt-10 grid gap-10 lg:mt-14 lg:grid-cols-[2fr_3fr] lg:gap-16">

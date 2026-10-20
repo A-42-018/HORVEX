@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { persistOptions, syncAcrossTabs } from "./persist";
 
-// Admin new-order alerts. Only `soundOn` is persisted (key horvex-admin-alerts);
+// Admin new-order alerts. Only `soundOn` is persisted (key wristory-admin-alerts);
 // the badge count and the on-screen cards live for this session only, because
 // the dashboard's "Pending confirmations" is the durable source of truth.
 // Imported only from admin code, so it stays in the admin chunk.

@@ -46,9 +46,9 @@ function Login() {
 
   return (
     <main className="flex min-h-dvh items-center justify-center px-gutter py-12">
-      <title>Sign in | HORVEX Admin</title>
+      <title>Sign in | WRISTORY Admin</title>
       <div className="w-full max-w-sm">
-        <p className="text-center font-logo text-h3 tracking-wordmark text-fg">HORVEX</p>
+        <p className="text-center font-logo text-h3 tracking-wordmark text-fg">WRISTORY</p>
         <h1 className="mt-6 text-center text-h3 text-fg">{t.title}</h1>
         <p className="mt-2 text-center text-small text-muted">{t.intro}</p>
 

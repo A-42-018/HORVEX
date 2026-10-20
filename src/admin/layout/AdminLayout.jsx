@@ -109,7 +109,7 @@ function AdminLayout() {
 
   return (
     <div className={`${light ? "section-ivory" : "bg-obsidian text-fg"} min-h-dvh lg:flex`}>
-      <title>{`${unseen > 0 ? `(${unseen}) ` : ""}Admin | HORVEX`}</title>
+      <title>{`${unseen > 0 ? `(${unseen}) ` : ""}Admin | WRISTORY`}</title>
       <a
         href="#admin-main"
         className="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2 focus:z-50 focus:rounded-control focus:bg-raised focus:px-4 focus:py-3 focus:text-small focus:text-fg"
@@ -120,7 +120,7 @@ function AdminLayout() {
       {/* Desktop sidebar */}
       <aside className="hidden w-60 shrink-0 border-r border-line bg-surface lg:block">
         <div className="sticky top-0 flex h-dvh flex-col gap-6 overflow-y-auto px-3 py-6">
-          <p className="px-3 font-logo text-small tracking-wordmark text-fg">HORVEX</p>
+          <p className="px-3 font-logo text-small tracking-wordmark text-fg">WRISTORY</p>
           <nav aria-label={t.nav} className="flex-1">
             <GroupedNav groups={groups} unseen={unseen} />
           </nav>
@@ -130,7 +130,7 @@ function AdminLayout() {
 
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="sticky top-0 z-20 flex items-center gap-3 border-b border-line bg-surface px-gutter py-2">
-          <p className="font-logo text-small tracking-wordmark text-fg lg:hidden">HORVEX</p>
+          <p className="font-logo text-small tracking-wordmark text-fg lg:hidden">WRISTORY</p>
           <span className="hidden text-eyebrow lg:inline">{t.nav}</span>
           <div className="ml-auto flex items-center gap-2">
             <a

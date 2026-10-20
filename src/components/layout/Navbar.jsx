@@ -37,13 +37,13 @@ function Wordmark() {
       className="group flex items-center gap-4 rounded-control px-2 py-3"
     >
       <span aria-hidden="true" className="hidden h-px w-8 bg-gold/60 transition-[width] duration-base group-hover:w-12 lg:block" />
-      <span className="font-logo text-body uppercase tracking-wordmark text-fg">HORVEX</span>
+      <span className="font-logo text-body uppercase tracking-wordmark text-fg">WRISTORY</span>
       <span aria-hidden="true" className="hidden h-px w-8 bg-gold/60 transition-[width] duration-base group-hover:w-12 lg:block" />
     </Link>
   );
 }
 
-// Mobile: [☰] HORVEX [Search] [Bag] (menu = MobileMenu drawer). Desktop (lg+): [Men] [Women] [Collections ▾ mega menu]  — HORVEX —  [Search] [Wishlist] [Bag].
+// Mobile: [☰] WRISTORY [Search] [Bag] (menu = MobileMenu drawer). Desktop (lg+): [Men] [Women] [Collections ▾ mega menu]  — WRISTORY —  [Search] [Wishlist] [Bag].
 // Transparent over the top of the home page, solid after 80px, hides on scroll
 // down. Below lg it is a plain solid bar that stays visible.
 function Navbar() {

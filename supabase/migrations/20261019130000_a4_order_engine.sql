@@ -1,4 +1,4 @@
--- HORVEX · Phase A4 — order engine (roadmap §6.7, §6.8, §9.4 Security)
+-- WRISTORY · Phase A4 — order engine (roadmap §6.7, §6.8, §9.4 Security)
 -- Public RPCs (anon + authenticated):
 --   quote_order(...)  → server-calculated totals for the checkout summary and coupon field
 --   place_order(...)  → validates, re-prices, decrements stock, writes the order

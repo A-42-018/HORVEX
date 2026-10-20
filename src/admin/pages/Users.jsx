@@ -98,7 +98,7 @@ function Users() {
 
   return (
     <div className="flex flex-col gap-6">
-      <title>{`${t.title} | HORVEX Admin`}</title>
+      <title>{`${t.title} | WRISTORY Admin`}</title>
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="text-h3 text-fg">{t.title}</h1>

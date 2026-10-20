@@ -37,7 +37,7 @@ function Activity() {
 
   return (
     <div className="flex flex-col gap-6">
-      <title>{`${t.title} | HORVEX Admin`}</title>
+      <title>{`${t.title} | WRISTORY Admin`}</title>
       <div>
         <h1 className="text-h3 text-fg">{t.title}</h1>
         <p className="text-small text-muted">{t.intro}</p>

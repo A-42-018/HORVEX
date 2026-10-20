@@ -23,7 +23,7 @@ function ListingBody({ title, description, crumbs, query, view, useTotal, showCa
 
   return (
     <>
-      <title>{`${title} | HORVEX`}</title>
+      <title>{`${title} | WRISTORY`}</title>
       <ListingHeader title={title} description={description} crumbs={crumbs} count={data?.total} />
       <Container className="py-8 lg:py-12">
         <div className="lg:grid lg:grid-cols-[16rem_1fr] lg:gap-12">

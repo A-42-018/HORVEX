@@ -1,4 +1,4 @@
--- HORVEX · Phase A3 · 2/3 — role helpers, grants, Row Level Security
+-- WRISTORY · Phase A3 · 2/3 — role helpers, grants, Row Level Security
 -- Roles (roadmap §10): owner = everything · manager = all except users/settings · staff = orders only.
 -- Anyone signed in without an admin_profiles row is treated like anon.
 -- Policies wrap helpers in (select …) so Postgres evaluates them once per statement.

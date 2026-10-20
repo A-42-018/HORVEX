@@ -1,4 +1,4 @@
-# HORVEX
+# WRISTORY
 
 Premium watch e-commerce storefront with Cash on Delivery checkout and an admin panel.
 

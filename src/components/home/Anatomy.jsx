@@ -3,7 +3,7 @@ import { Container, SectionHeading, Reveal } from "../common";
 import { useHomeSections } from "../../hooks/useContent";
 import { strings } from "../../lib/strings";
 
-// "Anatomy of a HORVEX" (roadmap §6.1 #7), static stacked version: the pinned
+// "Anatomy of a WRISTORY" (roadmap §6.1 #7), static stacked version: the pinned
 // scroll story and line-draw animation come in C2. Heading and callouts come
 // from `home_sections.anatomy` (config.callouts), falling back to strings.anatomy.
 // Mobile: drawing on top, callouts stacked. lg+: drawing centred, callouts split

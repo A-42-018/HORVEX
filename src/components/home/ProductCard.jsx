@@ -8,7 +8,7 @@ import { strings } from "../../lib/strings";
 import { addToBag } from "../../lib/cartActions";
 import { selectInWishlist, useWishlist } from "../../store/wishlist";
 
-// HORVEX product card (roadmap §6.2), wired to the cart and wishlist stores.
+// WRISTORY product card (roadmap §6.2), wired to the cart and wishlist stores.
 // Quick View and "Notify me" are not built yet (no modal / no back-in-stock
 // table), so sold-out cards simply drop the add controls.
 

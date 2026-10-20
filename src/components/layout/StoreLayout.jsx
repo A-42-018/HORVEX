@@ -2,7 +2,6 @@ import { Outlet, ScrollRestoration } from "react-router";
 import { useEffect } from "react";
 import { useSiteSettings } from "../../hooks/useContent";
 import { useUI } from "../../store/ui";
-import AnnouncementBar from "./AnnouncementBar";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import SearchOverlay from "./SearchOverlay";
@@ -49,7 +48,6 @@ function StoreLayout() {
       >
         Skip to main content
       </a>
-      <AnnouncementBar />
       <Navbar />
       <main id="main-content">
         <Outlet />

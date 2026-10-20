@@ -1,6 +1,6 @@
-# HORVEX — Premium Watch E-Commerce: Master Plan & Roadmap
+# WRISTORY — Premium Watch E-Commerce: Master Plan & Roadmap
 
-> Brand: **HORVEX** · Product: premium wristwatches (men, women, couple sets, accessories)
+> Brand: **WRISTORY** · Product: premium wristwatches (men, women, couple sets, accessories)
 > Market: Bangladesh (৳ BDT, Cash on Delivery first) · Devices: mobile-first, desktop-premium
 > Starting point: `ecommerce-landing_v22` template (React 19 + Vite 8 + Tailwind 3)
 > References: pronoun.pro (light, minimal luxury) · zero7.com.bd (dark, sale-driven)
@@ -40,7 +40,7 @@
 | **"Order → Confirm → Receive"** strip, very good for COD trust | Product photos have inconsistent backgrounds and lighting |
 | Black-glove product photography gives a strong signature look | Quick actions (compare/search/heart) only appear on hover, so mobile users never see them |
 
-### 1.3 The HORVEX direction (combining both)
+### 1.3 The WRISTORY direction (combining both)
 
 **"Dark Luxury, Light Breathing."** The base is a cinematic dark theme (zero7's mood, refined). Ivory/parchment sections are placed between dark ones so the page breathes (pronoun's whitespace). One accent, champagne gold, is used sparingly. Sales get their own slot and never take over the brand. Every section either **builds desire**, **builds trust**, or **drives an action**.
 
@@ -54,7 +54,7 @@
 - **Promise strip:** Cash on Delivery · Check Before You Pay · 7-Day Replacement · Delivery All Over Bangladesh.
 
 ### 2.2 Logo (placeholder until client supplies one)
-- Wordmark `HORVEX`, uppercase, wide letter-spacing (0.32em).
+- Wordmark `WRISTORY`, uppercase, wide letter-spacing (0.32em).
 - Placeholder font: **Michroma** (wide, bezel-numeral feel). Final logo should be vector (SVG) and custom.
 - Monogram: an **"H" inside a thin bezel ring** with 12 tick marks, used for favicon, preloader and app icon.
 - Required files: `logo-light.svg`, `logo-dark.svg`, `monogram.svg`, `favicon.ico/svg`, `apple-touch-icon 180×180`, `og-image 1200×630`.
@@ -224,7 +224,7 @@ Admin uploads are **auto-compressed in the browser** (`browser-image-compression
   `[Men] [Women] [Collections ▾]   —  H O R V E X  —   [Search] [Wishlist •] [Bag • ৳]`
   - "Collections" opens a **mega menu**: columns By Style / By Strap / By Price, plus a featured image card on the right.
   - Header is transparent over the hero, turns solid obsidian with blur after 80px of scroll, hides on scroll-down and shows on scroll-up.
-- **Mobile header:** `[☰]  HORVEX  [Search] [Bag]`
+- **Mobile header:** `[☰]  WRISTORY  [Search] [Bag]`
 - **Mobile bottom tab bar** (sticky, 64px, safe-area aware): `Home · Shop · Wishlist · Bag · Track`. This keeps the main actions within thumb reach and is something neither reference has.
 - **Search:** full-screen overlay with instant results (thumbnail + name + price), recent searches, and popular chips.
 - **Floating WhatsApp button:** bottom right on desktop; on mobile it sits above the tab bar so the two don't overlap.
@@ -239,11 +239,11 @@ Admin uploads are **auto-compressed in the browser** (`browser-image-compression
 |---|---|---|---|---|
 | 1 | **Announcement bar** | Gold text on obsidian, 36px | Offer | Rotating or marquee messages from admin: "Free delivery over ৳2,999 · Cash on Delivery · 7-Day Replacement" (zero7) |
 | 2 | **Header** | Transparent → solid | Navigate | 5.3 |
-| 3 | **Hero (cinematic)** | Dark | Desire + CTA | Full viewport (`100svh`). Left: eyebrow "HORVEX · NEW COLLECTION", serif headline "Time, *Refined.*", one-line sub, CTAs **Shop the Collection** (gold) + **Explore Men / Women** (outline). Right: hero watch with parallax and light sweep. Admin slider (max 3) with a 01—02—03 progress indicator (zero7). Mobile: image on top, text below, CTA full width |
+| 3 | **Hero (cinematic)** | Dark | Desire + CTA | Full viewport (`100svh`). Left: eyebrow "WRISTORY · NEW COLLECTION", serif headline "Time, *Refined.*", one-line sub, CTAs **Shop the Collection** (gold) + **Explore Men / Women** (outline). Right: hero watch with parallax and light sweep. Admin slider (max 3) with a 01—02—03 progress indicator (zero7). Mobile: image on top, text below, CTA full width |
 | 4 | **Trust marquee** | Carbon strip | Trust | Icons with: Cash on Delivery · Check Before You Pay · 7-Day Replacement · 64-District Delivery · Quality Checked |
 | 5 | **Shop by Category** | Dark | Navigate | 4–5 tall tiles (pronoun). Hover: image zoom 1.06, label slides up, gold arrow. Mobile: horizontal snap scroll at 1.3 tiles visible |
 | 6 | **Featured products (tabs)** | **Ivory** | Convert | Tabs: Best Sellers · New Arrivals · On Sale. 8 products, "View all" button. Mobile: 2-column grid |
-| 7 | **Signature: "Anatomy of a HORVEX"** | Black | Desire + quality | Pinned scroll story (desktop). A watch in the center, and four spec callouts draw in with gold lines: *Crystal* (sapphire-coated), *Case* (316L stainless), *Movement* (Japanese quartz/automatic), *Water resistance* (3–5 ATM). Mobile: a simple stacked version, not pinned. All text editable in admin |
+| 7 | **Signature: "Anatomy of a WRISTORY"** | Black | Desire + quality | Pinned scroll story (desktop). A watch in the center, and four spec callouts draw in with gold lines: *Crystal* (sapphire-coated), *Case* (316L stainless), *Movement* (Japanese quartz/automatic), *Water resistance* (3–5 ATM). Mobile: a simple stacked version, not pinned. All text editable in admin |
 | 8 | **Shop for Him / Shop for Her** | Dark | Convert | Split editorial banner, each side with a lifestyle image and a 4-product mini carousel. Replaces zero7's repeated grids |
 | 9 | **Brand film** | Black | Story | pronoun's video block, upgraded: a looped muted background clip, a play button that opens the full film in a modal, and a short brand statement plus CTA |
 | 10 | **Promo / Flash sale** | Ivory | Urgency | One or two admin banners in a consistent style; optional **countdown timer** and progress bar showing "62% claimed". Hidden automatically when no promo is active |
@@ -252,7 +252,7 @@ Admin uploads are **auto-compressed in the browser** (`browser-image-compression
 | 13 | **Instagram / Facebook grid** | Dark | Community | 6 tiles linked to the posts |
 | 14 | **Join the Circle** | Lifestyle image + overlay | Retention | pronoun's "With You" band: collect **phone (WhatsApp) or email** for early access to drops |
 | 15 | **FAQ** | Dark | Remove doubt | COD, delivery time (Dhaka 1–2 days, outside 2–4), warranty, replacement, original box |
-| 16 | **Footer** | Obsidian | Trust + links | Logo + statement · Shop links · Help links · Contact (WhatsApp, phone, email, address) · Courier partners · Payment (COD now; bKash/Nagad later) · Socials · © HORVEX |
+| 16 | **Footer** | Obsidian | Trust + links | Logo + statement · Shop links · Help links · Contact (WhatsApp, phone, email, address) · Courier partners · Payment (COD now; bKash/Nagad later) · Socials · © WRISTORY |
 
 Every section can be **shown/hidden, reordered and edited** from Admin → Homepage.
 
@@ -281,7 +281,7 @@ Every section can be **shown/hidden, reordered and edited** from Admin → Homep
   - **[ Order via WhatsApp ]** (text link, prefilled message with product name and link)
 - **Trust row under the buttons:** COD · Check before pay · 7-day replacement · Delivery estimate ("Dhaka: by Thu, 23 Oct").
 - **Tabs/accordion:** Description · Specifications (table: case size, case material, strap, movement, glass, water resistance, weight, warranty, box contents) · Delivery & Returns · Reviews.
-- **What's in the box** visual row (watch, HORVEX box, warranty card, extra links).
+- **What's in the box** visual row (watch, WRISTORY box, warranty card, extra links).
 - **"Complete the look" / "You may also like"** carousel.
 - **Mobile sticky bottom bar** shows the price plus an "Order Now" button once the main button scrolls out of view.
 - Recently viewed strip (localStorage).
@@ -393,7 +393,7 @@ Every section can be **shown/hidden, reordered and edited** from Admin → Homep
 | **Backend** | **Supabase**: Postgres, Auth, Storage, Realtime, Edge Functions | Full database + admin auth + image storage without writing a server; free tier is enough to launch |
 | Admin extras | `@tanstack/react-table`, `recharts`, `@dnd-kit` (reorder), `tiptap` (rich text), `browser-image-compression` | Lazy-loaded, admin only |
 | Hosting | **Vercel** (frontend) + Supabase (backend) | Free/cheap, HTTPS, CI deploy from Git |
-| Domain | e.g. `horvex.com.bd` or `horvex.shop` | Client purchase |
+| Domain | e.g. `wristory.com.bd` or `wristory.shop` | Client purchase |
 
 > **SEO trade-off:** a Vite SPA is weaker for Google than Next.js. It's acceptable here because most traffic will come from Facebook/Instagram ads. We mitigate it with per-page meta, prerendering of key pages (home, categories, top products), `sitemap.xml`, `robots.txt` and Product JSON-LD. If organic SEO becomes a priority later, migrating to Next.js is a phase-2 option.
 
@@ -422,11 +422,11 @@ src/
 
 ### 9.3 Template reuse map
 
-| Template file | HORVEX use | Change level |
+| Template file | WRISTORY use | Change level |
 |---|---|---|
 | `AnnouncementBar` | Admin-driven rotating/marquee offers | Restyle + data |
 | `Navbar` | Split-logo header, mega menu, counters, scroll hide/show | Major extend |
-| `Footer` | HORVEX footer + courier/payment rows | Restyle + data |
+| `Footer` | WRISTORY footer + courier/payment rows | Restyle + data |
 | `Hero` | Cinematic slider | Rebuild visuals, keep structure |
 | `TrustFeatures` | COD / replacement / delivery strip (marquee) | Restyle |
 | `CategoryShowcase` | Image category tiles | Restyle + real images |

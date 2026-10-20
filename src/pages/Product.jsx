@@ -56,7 +56,7 @@ function ProductDetail({ product }) {
 
   return (
     <>
-      <title>{`${product.name} | HORVEX`}</title>
+      <title>{`${product.name} | WRISTORY`}</title>
       <Container className="py-8 lg:py-12">
         <div className="lg:grid lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-12">
           <ProductGallery

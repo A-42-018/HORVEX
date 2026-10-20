@@ -1,4 +1,4 @@
--- HORVEX · Phase A4 — starter content. Run once in the SQL Editor after the migrations.
+-- WRISTORY · Phase A4 — starter content. Run once in the SQL Editor after the migrations.
 -- Catalog: 7 categories, 24 watches (3 with variants), 2 collections, approved reviews.
 -- Store: 3 delivery zones, site settings, homepage sections, hero slides, a promo banner,
 -- FAQs, testimonials and policy pages.
@@ -54,15 +54,15 @@ select
   d.slug, d.name, format('HX-%s', lpad(d.ord::text, 3, '0')),
   (select c.id from public.categories c where c.slug = d.cat),
   d.gender, d.short_desc,
-  d.short_desc || ' Every HORVEX is quality-checked before it ships, arrives in a gift box with a warranty card, and is paid for only after you have checked it at your door.',
+  d.short_desc || ' Every WRISTORY is quality-checked before it ships, arrives in a gift box with a warranty card, and is paid for only after you have checked it at your door.',
   d.price, d.compare_at, d.stock, 3, 'active', d.badges,
   jsonb_build_object(
     'case_size', d.case_size, 'case_material', d.case_material, 'strap', d.strap,
     'movement', d.movement, 'glass', d.glass, 'water_resistance', d.wr, 'weight', d.weight,
     'warranty', case when d.movement like '%automatic%' then '2-year movement warranty'
                      else '1-year movement warranty' end,
-    'box_contents', case when d.cat = 'couple' then 'HORVEX pair box, 2 warranty cards, link-removal tool'
-                         else 'HORVEX gift box, warranty card, care guide' end),
+    'box_contents', case when d.cat = 'couple' then 'WRISTORY pair box, 2 warranty cards, link-removal tool'
+                         else 'WRISTORY gift box, warranty card, care guide' end),
   d.featured, d.bestseller, d.ord
 from (values
   -- ord, slug, name, cat, gender, price, compare_at, stock, badges, featured, bestseller,
@@ -272,7 +272,7 @@ insert into public.delivery_zones (name, charge, eta_text, sort_order) values
 
 -- announcements: [{ text, link? }]
 update public.site_settings set
-  brand_name = 'HORVEX',
+  brand_name = 'WRISTORY',
   announcements = '[
     {"text": "Free delivery on orders over ৳4,999"},
     {"text": "Cash on Delivery all over Bangladesh"},
@@ -280,7 +280,7 @@ update public.site_settings set
   ]'::jsonb,
   footer_text = 'Premium watches, quality-checked in Dhaka and delivered to all 64 districts. Check before you pay.',
   free_delivery_threshold = 5000,
-  seo_title = 'HORVEX — Premium Watches in Bangladesh',
+  seo_title = 'WRISTORY — Premium Watches in Bangladesh',
   seo_desc = 'Shop premium men''s, women''s and couple watches. Cash on Delivery, check before you pay, 7-day replacement, delivery all over Bangladesh.'
 where id;
 
@@ -304,7 +304,7 @@ insert into public.home_sections (key, title, subtitle, config, sort_order) valu
        {"key": "bestsellers", "label": "Best Sellers"},
        {"key": "new", "label": "New Arrivals"},
        {"key": "sale", "label": "On Sale"}]}', 4),
-  ('anatomy', 'Anatomy of a HORVEX', 'What you are paying for, part by part.',
+  ('anatomy', 'Anatomy of a WRISTORY', 'What you are paying for, part by part.',
     '{"callouts": [
        {"key": "crystal", "title": "Crystal", "text": "Sapphire-coated mineral glass that shrugs off everyday scratches."},
        {"key": "case", "title": "Case", "text": "316L stainless steel, the same grade used in surgical tools."},
@@ -314,7 +314,7 @@ insert into public.home_sections (key, title, subtitle, config, sort_order) valu
     '{"him": {"title": "Shop for Him", "link": "/category/men", "image": "https://images.unsplash.com/photo-1533139502658-0198f920d8e8?auto=format&fit=crop&w=1200&h=1500&q=80"},
       "her": {"title": "Shop for Her", "link": "/category/women", "image": "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1200&h=1500&q=80"},
       "products_per_side": 4}', 6),
-  ('brand_film', 'Made to be looked at', 'Every HORVEX is checked by hand in Dhaka before it reaches you.',
+  ('brand_film', 'Made to be looked at', 'Every WRISTORY is checked by hand in Dhaka before it reaches you.',
     '{"video_url": null, "poster": "https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?auto=format&fit=crop&w=2560&h=1440&q=80",
       "cta_label": "Our story", "cta_link": "/about"}', 7),
   ('promo', null, null, '{"placement": "home_promo"}', 8),
@@ -325,14 +325,14 @@ insert into public.home_sections (key, title, subtitle, config, sort_order) valu
        {"title": "Check and pay", "text": "Open the box, check your watch, then pay the rider."}]}', 9),
   ('reviews', 'From Our Customers', null, '{"limit": 8}', 10),
   -- Hidden until real post links are added in Admin → Homepage.
-  ('social_grid', 'Follow HORVEX', null, '{"posts": []}', 11),
+  ('social_grid', 'Follow WRISTORY', null, '{"posts": []}', 11),
   ('newsletter', 'Join the Circle', 'Early access to new drops and members-only offers, on WhatsApp or email.',
     '{"image": "https://images.unsplash.com/photo-1495856458515-0637185db551?auto=format&fit=crop&w=2560&h=1440&q=80"}', 12),
   ('faq', 'Questions, Answered', null, '{"limit": 6}', 13);
 update public.home_sections set is_visible = false where key = 'social_grid';
 
 insert into public.hero_slides (eyebrow, title, subtitle, cta_label, cta_link, image_desktop, image_mobile, sort_order) values
-  ('HORVEX · NEW COLLECTION', 'Time, *Refined.*', 'Premium watches, checked by hand and paid for at your door.',
+  ('WRISTORY · NEW COLLECTION', 'Time, *Refined.*', 'Premium watches, checked by hand and paid for at your door.',
     'Shop the Collection', '/shop',
     pg_temp.img('1614164185128-e4ec99c436d7', 2560, 1440), pg_temp.img('1614164185128-e4ec99c436d7', 1080, 1350), 1),
   ('AUTOMATIC & SKELETON', 'Watch it *work.*', 'Self-winding movements with open dials and exhibition casebacks.',
@@ -364,7 +364,7 @@ insert into public.faqs (question, answer, topic, sort_order) values
   ('What is the 7-day replacement policy?',
    'If your watch has a manufacturing fault, tell us within 7 days of delivery and we will replace it. The watch should be unworn, with its box and tags.', 'Returns', 6),
   ('Does the watch come with a box?',
-   'Every HORVEX arrives in a gift box with a warranty card and a care guide.', 'Product', 7),
+   'Every WRISTORY arrives in a gift box with a warranty card and a care guide.', 'Product', 7),
   ('How do I track my order?',
    'Go to Track Order and enter your phone number and order number (it starts with HVX-).', 'Delivery', 8);
 
@@ -377,11 +377,11 @@ insert into public.testimonials (name, location, text, rating, sort_order) value
   ('Mim Akter', 'Rajshahi', 'Bought the couple set for our anniversary. Both fit perfectly.', 5, 6);
 
 insert into public.pages (slug, title, content, seo_desc) values
-  ('about', 'About HORVEX',
-   'HORVEX began with a simple idea: a well-made watch should not be a gamble. Every piece we sell is checked by hand in Dhaka before it ships, and you pay only after you have seen it.
+  ('about', 'About WRISTORY',
+   'WRISTORY began with a simple idea: a well-made watch should not be a gamble. Every piece we sell is checked by hand in Dhaka before it ships, and you pay only after you have seen it.
 
 We choose stainless steel cases, sapphire-coated crystals and reliable Japanese movements, and we stand behind them with a written warranty and a 7-day replacement promise.',
-   'The story behind HORVEX: premium watches, checked by hand and paid for at your door.'),
+   'The story behind WRISTORY: premium watches, checked by hand and paid for at your door.'),
   ('shipping', 'Shipping Policy',
    'We deliver to all 64 districts of Bangladesh.
 
@@ -390,24 +390,24 @@ We choose stainless steel cases, sapphire-coated crystals and reliable Japanese 
 - Outside Dhaka: ৳130, 2–4 days
 
 Delivery is free on orders over ৳4,999. Times start once we have confirmed your order by phone.',
-   'Delivery charges and times for HORVEX orders across Bangladesh.'),
+   'Delivery charges and times for WRISTORY orders across Bangladesh.'),
   ('returns-replacement', 'Returns & Replacement',
    'Check your watch in front of the rider before paying. If it is not right, return it on the spot and pay only the delivery charge.
 
 After delivery, you have 7 days to request a replacement for a manufacturing fault. The watch must be unworn, with its original box, tags and warranty card. Contact us with your order number to start a replacement.',
-   'How returns and the 7-day replacement work at HORVEX.'),
+   'How returns and the 7-day replacement work at WRISTORY.'),
   ('warranty', 'Warranty',
    'Quartz watches carry a 1-year movement warranty; automatic watches carry a 2-year movement warranty, from the delivery date.
 
 The warranty covers the movement. It does not cover the strap, crystal, battery, water damage beyond the rated resistance, or damage from drops and misuse. Keep your warranty card and order number.',
-   'What the HORVEX watch warranty covers.'),
+   'What the WRISTORY watch warranty covers.'),
   ('privacy', 'Privacy Policy',
    'We collect the details you enter at checkout (name, phone, address and, if given, email) to deliver your order and contact you about it. We do not sell your information.
 
 Our site uses analytics to understand how it is used. You can ask us to delete your details at any time by contacting us.',
-   'How HORVEX handles your personal information.'),
+   'How WRISTORY handles your personal information.'),
   ('terms', 'Terms & Conditions',
    'Prices are in Bangladeshi taka and include VAT where applicable. An order is accepted once we confirm it by phone. We may cancel orders we cannot confirm or that appear fraudulent.
 
 Product photos are for illustration; small differences in colour may occur.',
-   'Terms for buying from HORVEX.');
+   'Terms for buying from WRISTORY.');

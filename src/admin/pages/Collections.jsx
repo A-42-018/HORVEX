@@ -58,7 +58,7 @@ function Collections() {
 
   return (
     <div className="flex flex-col gap-6">
-      <title>{`${t.title} | HORVEX Admin`}</title>
+      <title>{`${t.title} | WRISTORY Admin`}</title>
 
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>

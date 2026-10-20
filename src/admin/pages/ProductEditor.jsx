@@ -206,7 +206,7 @@ function EditorForm({ productId, loaded }) {
 
   return (
     <div className="flex flex-col gap-6">
-      <title>{`${isNew ? t.titleNew : t.titleEdit} | HORVEX Admin`}</title>
+      <title>{`${isNew ? t.titleNew : t.titleEdit} | WRISTORY Admin`}</title>
 
       <div className="flex flex-col gap-3">
         <Link

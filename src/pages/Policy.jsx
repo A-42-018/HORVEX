@@ -26,7 +26,7 @@ function Policy() {
   if (isError || !page) {
     return (
       <Container className="flex flex-col items-center gap-6 py-section-sm text-center lg:py-section">
-        <title>{`${isError ? t.failed : t.notFoundTitle} | HORVEX`}</title>
+        <title>{`${isError ? t.failed : t.notFoundTitle} | WRISTORY`}</title>
         <SectionHeading
           eyebrow={isError ? undefined : strings.notFound.eyebrow}
           title={isError ? t.failed : t.notFoundTitle}
@@ -47,7 +47,7 @@ function Policy() {
 
   return (
     <section className="py-section-sm lg:py-section">
-      <title>{`${page.title} | HORVEX`}</title>
+      <title>{`${page.title} | WRISTORY`}</title>
       {page.seo_desc && <meta name="description" content={page.seo_desc} />}
       <Container className="max-w-3xl">
         <SectionHeading as="h1" eyebrow={t.eyebrow} title={page.title} />

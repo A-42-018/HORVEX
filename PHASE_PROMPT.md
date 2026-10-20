@@ -1,9 +1,9 @@
 # Phase starter prompt
 
-Open a **new session** in the `HORVEX` folder, pick the model shown for the next phase in `plan.md`, and paste this. It is written to keep token use low, so free-tier sessions can finish a block B sub-phase.
+Open a **new session** in the `WRISTORY` folder, pick the model shown for the next phase in `plan.md`, and paste this. It is written to keep token use low, so free-tier sessions can finish a block B sub-phase.
 
 ```text
-Start the next HORVEX phase. Keep token use low: read only what this phase needs.
+Start the next WRISTORY phase. Keep token use low: read only what this phase needs.
 
 1. Read plan.md (it is short). Take the phase under "Next Up"; if one is "in progress", resume it from its session note. Don't read docs/history.md, and don't re-read CLAUDE.md (it's already loaded).
 2. Tell me the phase ID, name and model in one line. If you aren't on that model, stop and tell me to switch.

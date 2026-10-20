@@ -50,7 +50,7 @@ function TrackOrder() {
 
   return (
     <Container className="py-section-sm lg:py-section">
-      <title>{`${t.eyebrow} | HORVEX`}</title>
+      <title>{`${t.eyebrow} | WRISTORY`}</title>
       <div className="mx-auto max-w-2xl">
         <SectionHeading as="h1" eyebrow={t.eyebrow} title={t.title} subtitle={t.subtitle} className="text-center" />
 

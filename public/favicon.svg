@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <!-- Placeholder HORVEX monogram: "H" inside a bezel ring with 12 ticks (roadmap §2.2). -->
+  <!-- Placeholder WRISTORY monogram: "W" inside a bezel ring with 12 ticks (roadmap §2.2). -->
   <circle cx="32" cy="32" r="32" fill="#0B0B0C"/>
   <g fill="none" stroke="#C9A96E" stroke-linecap="round">
     <circle cx="32" cy="32" r="27" stroke-width="1.75"/>
@@ -18,5 +18,5 @@
     <line x1="32" y1="9" x2="32" y2="11.5" transform="rotate(300 32 32)"/>
     <line x1="32" y1="9" x2="32" y2="11.5" transform="rotate(330 32 32)"/>
   </g>
-  <path d="M24 21v22M40 21v22M24 32h16" fill="none" stroke="#C9A96E" stroke-width="3.5" stroke-linecap="square"/>
+  <path d="M19 22l5 20 8-13 8 13 5-20" fill="none" stroke="#C9A96E" stroke-width="3.5" stroke-linecap="square" stroke-linejoin="miter"/>
 </svg>

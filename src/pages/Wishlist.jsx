@@ -127,7 +127,7 @@ function Wishlist() {
 
   return (
     <Container className="py-section-sm lg:py-section">
-      <title>{`${copy.title} | HORVEX`}</title>
+      <title>{`${copy.title} | WRISTORY`}</title>
       <SectionHeading as="h1" eyebrow={copy.eyebrow} title={copy.title} align="left" className="mb-10" />
       {body}
     </Container>

@@ -1,4 +1,4 @@
-# HORVEX — project rules for Claude
+# WRISTORY — project rules for Claude
 
 Premium watch store for Bangladesh: React 19 + Vite 8 + Tailwind 3.4 + React Router 7, Supabase backend, Cash on Delivery checkout, admin panel at `/admin`.
 
@@ -25,8 +25,8 @@ Premium watch store for Bangladesh: React 19 + Vite 8 + Tailwind 3.4 + React Rou
 - **Query keys only come from `services/queryKeys.js`**: `[domain, kind, ...params]`. Writes invalidate a whole domain (`queryKeys.products.all`). Content/settings/categories use a 5-minute `staleTime`, products the 60 s default.
 - Services return DB rows in snake_case (`compare_at_price`), with `images` / `variants` already sorted. Listings return `{ items, total }`; single lookups return `null` when not found.
 - Order-engine failures surface as `error.code` = the engine token (`out_of_stock`, `invalid_coupon`, …). Map tokens to `strings.js` copy in the UI. Checkout totals come only from `useOrderQuote` / `usePlaceOrder`.
-- Client state is Zustand in `store/`: `useCart`, `useWishlist`, `useRecentlyViewed` (persisted as `horvex-<name>`, synced across tabs) and `useUI` (overlays, not persisted). Subscribe with selectors (`useCart(selectCartCount)`), not the whole store. Wishlist and recently viewed hold ids only; load products with `useProductsByIds`. Cart lines are display snapshots capped at the engine limits (20 lines, 10 per line, stock).
-- **Admin data** goes through `services/adminClient.js` (its own session, storage key `horvex-admin-auth`); never import it, `auth.js`, `admin.js` or `storage.js` from storefront code, and never give the storefront client a session. Admin reads use keys `[domain, "admin", …]`. Admin writes use `useAdminMutation` / `useAdminCrud` (`admin/hooks/useAdminMutation.js`): invalidate domains + an activity_log entry. Uploads use `useImageUpload`. Gate pages with `RequireRole` (`admin/auth/roles.js`); RLS is the real enforcement.
+- Client state is Zustand in `store/`: `useCart`, `useWishlist`, `useRecentlyViewed` (persisted as `wristory-<name>`, synced across tabs) and `useUI` (overlays, not persisted). Subscribe with selectors (`useCart(selectCartCount)`), not the whole store. Wishlist and recently viewed hold ids only; load products with `useProductsByIds`. Cart lines are display snapshots capped at the engine limits (20 lines, 10 per line, stock).
+- **Admin data** goes through `services/adminClient.js` (its own session, storage key `wristory-admin-auth`); never import it, `auth.js`, `admin.js` or `storage.js` from storefront code, and never give the storefront client a session. Admin reads use keys `[domain, "admin", …]`. Admin writes use `useAdminMutation` / `useAdminCrud` (`admin/hooks/useAdminMutation.js`): invalidate domains + an activity_log entry. Uploads use `useImageUpload`. Gate pages with `RequireRole` (`admin/auth/roles.js`); RLS is the real enforcement.
 - Analytics: call `track(EVENTS.x, params)` from `lib/analytics.js` (GA4 event names). The cart and wishlist stores already track their own events.
 
 ## Code rules

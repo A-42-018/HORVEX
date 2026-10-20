@@ -60,7 +60,7 @@ function OrderDetail() {
   if (!validId || !order.data) {
     return (
       <div className="flex flex-col gap-4">
-        <title>{`${t.notFound} | HORVEX Admin`}</title>
+        <title>{`${t.notFound} | WRISTORY Admin`}</title>
         <BackLink />
         <Card className="flex flex-col gap-2 px-6 py-12 text-center">
           <h1 className="text-h3 text-fg">{t.notFound}</h1>
@@ -73,7 +73,7 @@ function OrderDetail() {
   const data = order.data;
   return (
     <div className="flex flex-col gap-6">
-      <title>{`${data.order_number} | HORVEX Admin`}</title>
+      <title>{`${data.order_number} | WRISTORY Admin`}</title>
       <BackLink />
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>

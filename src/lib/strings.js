@@ -30,7 +30,7 @@ const en = {
     home: "Home",
     shop: "Shop",
     collections: "Collections",
-    shopIntro: "Every HORVEX watch, in one place.",
+    shopIntro: "Every WRISTORY watch, in one place.",
     count: (n) => `${n} ${n === 1 ? "watch" : "watches"}`,
     sortLabel: "Sort by",
     sorts: {
@@ -76,7 +76,7 @@ const en = {
   },
   nav: {
     label: "Primary",
-    home: "HORVEX home",
+    home: "WRISTORY home",
     men: "Men",
     women: "Women",
     collections: "Collections",
@@ -95,10 +95,10 @@ const en = {
   },
   whatsapp: {
     label: "Chat with us on WhatsApp",
-    message: "Hi HORVEX, I have a question about your watches.",
+    message: "Hi WRISTORY, I have a question about your watches.",
   },
   footer: {
-    about: "About HORVEX",
+    about: "About WRISTORY",
     shop: "Shop",
     help: "Help",
     contact: "Contact",
@@ -118,7 +118,7 @@ const en = {
       returns: "Returns & replacement",
       warranty: "Warranty",
     },
-    legal: { privacy: "Privacy policy", terms: "Terms & conditions" },
+    legal: { privacy: "Privacy policy", terms: "Terms & conditions", admin: "Admin" },
     rights: "All rights reserved.",
     back: "Back to top",
   },
@@ -254,9 +254,9 @@ const en = {
     viewAll: "View all watches",
   },
   anatomy: {
-    eyebrow: "Anatomy of a HORVEX",
+    eyebrow: "Anatomy of a WRISTORY",
     title: "What you are paying for, part by part.",
-    figureLabel: "Line drawing of a HORVEX watch with four numbered parts",
+    figureLabel: "Line drawing of a WRISTORY watch with four numbered parts",
     callouts: [
       { key: "crystal", title: "Crystal", text: "Sapphire-coated mineral glass that shrugs off everyday scratches." },
       { key: "case", title: "Case", text: "316L stainless steel, the same grade used in surgical tools." },
@@ -265,12 +265,12 @@ const en = {
     ],
   },
   brandFilm: {
-    eyebrow: "The HORVEX Film",
+    eyebrow: "The WRISTORY Film",
     title: "Made to be looked at.",
-    subtitle: "Every HORVEX is checked by hand in Dhaka before it reaches you.",
+    subtitle: "Every WRISTORY is checked by hand in Dhaka before it reaches you.",
     play: "Play the brand film",
-    modalTitle: "HORVEX brand film",
-    iframeTitle: "HORVEX brand film player",
+    modalTitle: "WRISTORY brand film",
+    iframeTitle: "WRISTORY brand film player",
     ctaLabel: "Our story",
     ctaLink: "/about",
   },
@@ -304,7 +304,7 @@ const en = {
   },
   social: {
     eyebrow: "Community",
-    title: "Follow HORVEX",
+    title: "Follow WRISTORY",
     viewPost: (n) => `View post ${n} on Instagram`,
     follow: "Follow us on Instagram",
   },
@@ -341,7 +341,7 @@ const en = {
     her: { title: "Shop for Her", link: "/category/women", carouselLabel: "Watches for her" },
   },
   trust: {
-    label: "Why shop with HORVEX",
+    label: "Why shop with WRISTORY",
     items: ["Cash on Delivery", "Check Before You Pay", "7-Day Replacement", "64-District Delivery", "Quality Checked"],
   },
   price: {
@@ -385,7 +385,7 @@ const en = {
     orderNowShort: "Order now",
     whatsappOrder: "Order via WhatsApp",
     whatsappMessage: (name, variant, qty, url) =>
-      `Hi HORVEX, I'd like to order:\n${name}${variant ? ` (${variant})` : ""} × ${qty}\n${url}`,
+      `Hi WRISTORY, I'd like to order:\n${name}${variant ? ` (${variant})` : ""} × ${qty}\n${url}`,
     delivery: {
       label: "Delivery estimate",
       dhaka: (zone, by) => `${zone}: ${by}`,
@@ -534,7 +534,7 @@ const en = {
     eta: (text) => `Estimated delivery: ${text}`,
     nextTitle: "What happens next",
     whatsapp: "WhatsApp us",
-    whatsappMessage: (number) => `Hi HORVEX, I just placed order ${number}.`,
+    whatsappMessage: (number) => `Hi WRISTORY, I just placed order ${number}.`,
     trackOrder: "Track this order",
     continueShopping: "Continue shopping",
     missingTitle: "We couldn't show this order",
@@ -560,7 +560,7 @@ const en = {
       confirmed: { title: "Confirmed", text: "Our team has confirmed it." },
       packed: { title: "Packed", text: "Your watch is boxed and ready to go." },
       shipped: { title: "Shipped", text: "On its way to you." },
-      delivered: { title: "Delivered", text: "Delivered. Enjoy your HORVEX." },
+      delivered: { title: "Delivered", text: "Delivered. Enjoy your WRISTORY." },
     },
     cancelled: { title: "Cancelled", text: "This order was cancelled." },
     returned: { title: "Returned", text: "This order was returned." },
@@ -579,7 +579,7 @@ const en = {
     another: "Track another order",
     help: "Need help with this order?",
     whatsapp: "WhatsApp us",
-    whatsappMessage: (number) => `Hi HORVEX, I need help with order ${number}.`,
+    whatsappMessage: (number) => `Hi WRISTORY, I need help with order ${number}.`,
   },
   faqPage: {
     eyebrow: "Help centre",
@@ -628,7 +628,7 @@ const en = {
   },
   about: {
     eyebrow: "Our story",
-    title: "About HORVEX",
+    title: "About WRISTORY",
     fallbackIntro: "Premium watches, checked by hand in Dhaka and paid for at your door.",
     valuesEyebrow: "What we stand for",
     valuesTitle: "Made to be checked, not just sold.",
@@ -1048,7 +1048,7 @@ const en = {
           whatsapp: "WhatsApp",
           callLabel: (name) => `Call ${name}`,
           whatsappLabel: (name) => `WhatsApp ${name} (opens in a new tab)`,
-          message: (name, number) => `Hello ${name}, this is HORVEX about your order ${number}.`,
+          message: (name, number) => `Hello ${name}, this is WRISTORY about your order ${number}.`,
           invalid: "This phone number isn't a valid mobile number, so Call and WhatsApp are unavailable.",
         },
         actions: {
@@ -1521,7 +1521,7 @@ const en = {
         trust_marquee: { label: "Trust strip", about: "Scrolling strip of trust points." },
         categories: { label: "Shop by category", about: "Tiles for your top-level categories (edit those under Categories).", fields: "labelHeading" },
         featured: { label: "Featured products", about: "Best sellers, new arrivals and sale tabs.", fields: "labelHeading" },
-        anatomy: { label: "Anatomy of a HORVEX", about: "Story with four part callouts.", fields: "labelHeading" },
+        anatomy: { label: "Anatomy of a WRISTORY", about: "Story with four part callouts.", fields: "labelHeading" },
         him_her: { label: "Shop for Him / Her", about: "Two editorial banners with mini carousels.", fields: "labelHeading" },
         brand_film: { label: "Brand film", about: "Film band with a play button.", fields: "headingText" },
         promo: { label: "Promo banner", about: "Shows only while a promo banner is live. Edit the banners in the Promo banners tab.", fields: "headingText" },
@@ -2192,7 +2192,7 @@ const en = {
       },
     },
     login: {
-      title: "Sign in to HORVEX admin",
+      title: "Sign in to WRISTORY admin",
       intro: "For store staff only.",
       email: "Email",
       password: "Password",

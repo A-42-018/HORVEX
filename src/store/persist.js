@@ -1,10 +1,10 @@
 import { createJSONStorage } from "zustand/middleware";
 
 // Shared persist options for client stores: versioned localStorage keys
-// ("horvex-<name>"), and other tabs pick up changes via the storage event.
+// ("wristory-<name>"), and other tabs pick up changes via the storage event.
 export function persistOptions(name, { version = 1, partialize, migrate } = {}) {
   return {
-    name: `horvex-${name}`,
+    name: `wristory-${name}`,
     version,
     storage: createJSONStorage(() => localStorage),
     partialize,

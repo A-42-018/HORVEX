@@ -11,7 +11,7 @@ const linkClass =
 function MaintenanceScreen({ settings }) {
   const phone = normalizePhone(settings?.contact_phone);
   const whatsapp = normalizePhone(settings?.whatsapp_number);
-  const brand = settings?.brand_name?.trim() || "HORVEX";
+  const brand = settings?.brand_name?.trim() || "WRISTORY";
 
   return (
     <main id="main-content" className="flex min-h-screen flex-col items-center justify-center gap-6 bg-surface px-6 py-16 text-center">

@@ -1,4 +1,4 @@
--- HORVEX · Phase A3 — RLS check. Paste into the Supabase SQL Editor and Run.
+-- WRISTORY · Phase A3 — RLS check. Paste into the Supabase SQL Editor and Run.
 -- Creates throwaway fixtures (slugs/names start with "zz-a3"), impersonates
 -- anon / a signed-in non-admin / staff / manager / owner, and checks what each can
 -- see and change. Fixtures are deleted at the end; if any check fails, the whole

@@ -26,7 +26,7 @@ function Faq() {
 
   return (
     <section className="py-section-sm lg:py-section">
-      <title>{`${t.title} | HORVEX`}</title>
+      <title>{`${t.title} | WRISTORY`}</title>
       <meta name="description" content={t.subtitle} />
       <Container className="flex max-w-3xl flex-col gap-10 lg:gap-12">
         <SectionHeading as="h1" eyebrow={t.eyebrow} title={t.title} subtitle={t.subtitle} />

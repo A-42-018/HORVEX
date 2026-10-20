@@ -1,4 +1,4 @@
--- HORVEX · Phase A4 — order engine check. Paste into the Supabase SQL Editor and Run.
+-- WRISTORY · Phase A4 — order engine check. Paste into the Supabase SQL Editor and Run.
 -- Creates throwaway fixtures ("zz-a4" slugs/names, phones +88017110040xx), then calls
 -- quote_order / place_order / track_order as anon, the way the storefront will.
 -- Fixtures and test orders are deleted at the end and the order-number sequence is

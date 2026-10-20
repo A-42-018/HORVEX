@@ -14,7 +14,7 @@ function About() {
 
   return (
     <>
-      <title>{`${title} | HORVEX`}</title>
+      <title>{`${title} | WRISTORY`}</title>
       {page?.seo_desc && <meta name="description" content={page.seo_desc} />}
 
       <section className="py-section-sm lg:py-section">

@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 
-const KEY = "horvex-admin-theme";
+const KEY = "wristory-admin-theme";
 
 function read() {
   try {

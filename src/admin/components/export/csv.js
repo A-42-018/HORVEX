@@ -31,8 +31,8 @@ export function dhakaStamp(iso) {
   return Number.isNaN(date.getTime()) ? "" : date.toISOString().slice(0, 16).replace("T", " ");
 }
 
-/** "horvex-orders-2026-10-20.csv" (the day is Dhaka's). */
-export const exportFileName = (kind, now = new Date()) => `horvex-${kind}-${dhakaStamp(now.toISOString()).slice(0, 10)}.csv`;
+/** "wristory-orders-2026-10-20.csv" (the day is Dhaka's). */
+export const exportFileName = (kind, now = new Date()) => `wristory-${kind}-${dhakaStamp(now.toISOString()).slice(0, 10)}.csv`;
 
 /** Saves CSV text as a download (browser only). */
 export function downloadCsv(fileName, text) {

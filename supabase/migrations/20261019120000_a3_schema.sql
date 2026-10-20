@@ -1,4 +1,4 @@
--- HORVEX · Phase A3 · 1/3 — tables, constraints, indexes, triggers (roadmap §9.4)
+-- WRISTORY · Phase A3 · 1/3 — tables, constraints, indexes, triggers (roadmap §9.4)
 -- Money is whole taka (integer). Phones are stored as +8801XXXXXXXXX.
 -- Status-like fields use text + CHECK instead of enums so they're easy to extend.
 
@@ -323,7 +323,7 @@ create trigger home_sections_updated_at before update on public.home_sections
 -- Single row, enforced by a boolean primary key that can only be true.
 create table public.site_settings (
   id                      boolean primary key default true check (id),
-  brand_name              text not null default 'HORVEX',
+  brand_name              text not null default 'WRISTORY',
   logo_url                text,
   logo_light_url          text,
   favicon_url             text,

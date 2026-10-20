@@ -1,4 +1,4 @@
-# HORVEX — Progress Tracker
+# WRISTORY — Progress Tracker
 
 Phase specs: `roadmap.md` §14 · Session starter: `PHASE_PROMPT.md` · Project rules: `CLAUDE.md` · Archive: `docs/history.md` (old notes + decisions; don't read it for block B)
 
@@ -92,7 +92,7 @@ Statuses: `todo` · `in progress` · `blocked (👤 you)` · `done`
 - `lib/format.js` (`formatTaka`, phone helpers, dates), `lib/strings.js` for UI copy. Icons: `lucide-react`, `size={20} strokeWidth={1.5}`.
 - Data: services → hooks → components (see `CLAUDE.md`). Engine error tokens and limits: `supabase/README.md`. `/style-guide` (dev only) shows every primitive.
 - Admin: `RequireRole`, `useAdminMutation` / `useAdminCrud`, `useImageUpload` are written but untested against live writes until B22b/B23a.
-- Port 5173 busy? Use the `horvex-dev-alt` preview (5174).
+- Port 5173 busy? Use the `wristory-dev-alt` preview (5174).
 
 ## Session Notes
 Newest first, 3–5 lines each: what was done, anything deferred, anything the next phase must know. For an unfinished phase, list what's done and what's left. **Keep only the 5 newest entries here**; move older ones to `docs/history.md`.

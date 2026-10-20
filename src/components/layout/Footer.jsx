@@ -68,6 +68,7 @@ const HELP_LINKS = [
 const LEGAL_LINKS = [
   { to: "/policy/privacy", label: t.legal.privacy },
   { to: "/policy/terms", label: t.legal.terms },
+  { to: "/admin/login", label: t.legal.admin },
 ];
 
 const linkClass =
@@ -117,7 +118,7 @@ function ContactRow({ icon: Icon, href, children, external }) {
 
 function Footer() {
   const { data } = useSiteSettings();
-  const brand = clean(data?.brand_name) || "HORVEX";
+  const brand = clean(data?.brand_name) || "WRISTORY";
   const blurb = clean(data?.footer_text) || t.fallbackText;
 
   const phoneRaw = clean(data?.contact_phone);
