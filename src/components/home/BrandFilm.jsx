@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import { Play } from "lucide-react";
 import { Button, Container, Reveal } from "../common";
 import DialogShell from "../common/DialogShell";
+import { Parallax } from "../motion";
 import { useHomeSections } from "../../hooks/useContent";
 import { useInView } from "../../hooks/useInView";
 import { responsiveImage } from "../../lib/images";
@@ -77,31 +78,33 @@ function BrandFilm() {
       aria-labelledby={`${uid}-title`}
       className="section-dark relative isolate flex min-h-[32rem] items-center overflow-hidden bg-obsidian py-section-sm lg:min-h-[44rem] lg:py-section"
     >
-      {poster?.src && (
-        <img
-          src={poster.src}
-          srcSet={poster.srcSet}
-          sizes={poster.srcSet ? POSTER_SIZES : undefined}
-          alt=""
-          loading="lazy"
-          decoding="async"
-          className="absolute inset-0 -z-20 h-full w-full object-cover"
-        />
-      )}
-      {loopSrc && inView && canLoopVideo() && (
-        <video
-          src={loopSrc}
-          poster={poster?.src}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          aria-hidden="true"
-          tabIndex={-1}
-          className="absolute inset-0 -z-10 h-full w-full object-cover"
-        />
-      )}
+      <Parallax className="-z-20">
+        {poster?.src && (
+          <img
+            src={poster.src}
+            srcSet={poster.srcSet}
+            sizes={poster.srcSet ? POSTER_SIZES : undefined}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            className="absolute inset-0 -z-20 h-full w-full object-cover"
+          />
+        )}
+        {loopSrc && inView && canLoopVideo() && (
+          <video
+            src={loopSrc}
+            poster={poster?.src}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            aria-hidden="true"
+            tabIndex={-1}
+            className="absolute inset-0 -z-10 h-full w-full object-cover"
+          />
+        )}
+      </Parallax>
       <div aria-hidden="true" className="absolute inset-0 -z-10 bg-obsidian/60" />
 
       <Container>

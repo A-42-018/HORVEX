@@ -5,6 +5,8 @@ import { useHeroSlides } from "../../hooks/useContent";
 import { responsiveImage } from "../../lib/images";
 import { strings } from "../../lib/strings";
 import { Button, Container, Skeleton } from "../common";
+import { BezelRing, LightSweep, Magnetic, MaskReveal, Parallax } from "../motion";
+import { useReducedMotion } from "../../hooks/useMotionPrefs";
 
 const INTERVAL = 6500;
 const DESKTOP_WIDTHS = [1080, 1600, 2560];
@@ -13,17 +15,13 @@ const pad = (n) => String(n).padStart(2, "0");
 const fill = (t, vars) => t.replace(/\{(\w+)\}/g, (_, k) => vars[k]);
 
 // "Time, *Refined.*" → the starred part is set in italic gold.
-function Headline({ text }) {
-  return text.split(/(\*[^*]+\*)/).map((part, i) =>
-    part.startsWith("*") ? (
-      <em key={i} className="italic text-brand">
-        {part.slice(1, -1)}
-      </em>
-    ) : (
-      part
-    ),
-  );
-}
+const headlineSegments = (text) =>
+  text
+    .split(/(\*[^*]+\*)/)
+    .filter(Boolean)
+    .map((part) =>
+      part.startsWith("*") ? { text: part.slice(1, -1), em: true, className: "italic text-brand" } : { text: part },
+    );
 
 // Shared by SlideImage and the LCP preload so both request the same URLs.
 function slideSources(slide) {
@@ -72,15 +70,7 @@ function Hero() {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false); // user toggle
   const [hold, setHold] = useState(false); // hover / focus
-  const [reduced, setReduced] = useState(false);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReduced(mq.matches);
-    const on = (e) => setReduced(e.matches);
-    mq.addEventListener("change", on);
-    return () => mq.removeEventListener("change", on);
-  }, []);
+  const reduced = useReducedMotion();
 
   const playing = total > 1 && !paused && !hold && !reduced;
   const go = useCallback((i) => setIndex(((i % total) + total) % total), [total]);
@@ -106,7 +96,7 @@ function Hero() {
     <section
       aria-roledescription="carousel"
       aria-label={strings.hero.label}
-      className="section-dark relative"
+      className="section-dark relative overflow-hidden"
       onMouseEnter={() => setHold(true)}
       onMouseLeave={() => setHold(false)}
       onFocus={() => setHold(true)}
@@ -131,8 +121,11 @@ function Hero() {
               inert={!active}
               className={`col-start-1 row-start-1 flex flex-col transition-opacity duration-slow ease-out-expo lg:relative lg:min-h-svh ${active ? "opacity-100" : "pointer-events-none opacity-0"}`}
             >
-              <div className="aspect-[4/5] w-full sm:aspect-[4/3] lg:absolute lg:inset-0 lg:aspect-auto">
-                <SlideImage slide={slide} priority={i === 0} />
+              <div className="relative aspect-[4/5] w-full overflow-hidden sm:aspect-[4/3] lg:absolute lg:inset-0 lg:aspect-auto">
+                <Parallax>
+                  <SlideImage slide={slide} priority={i === 0} />
+                </Parallax>
+                {active && <LightSweep />}
                 <div className="absolute inset-0 hidden bg-gradient-to-r from-obsidian/85 via-obsidian/40 to-transparent lg:block" aria-hidden="true" />
               </div>
 
@@ -140,20 +133,21 @@ function Hero() {
                 <Container>
                   <div className="flex max-w-xl flex-col items-start gap-5 pb-14 lg:pb-0">
                     {slide.eyebrow && <p className="text-eyebrow text-brand">{slide.eyebrow}</p>}
-                    {i === 0 ? (
-                      <h1 className="text-display text-fg">
-                        <Headline text={slide.title} />
-                      </h1>
-                    ) : (
-                      <h2 className="text-display text-fg">
-                        <Headline text={slide.title} />
-                      </h2>
-                    )}
+                    {/* Remounts on activation so each slide's headline reveals as it comes in. */}
+                    <MaskReveal
+                      key={active ? "active" : "idle"}
+                      as={i === 0 ? "h1" : "h2"}
+                      segments={headlineSegments(slide.title)}
+                      play={active}
+                      className="text-display text-fg"
+                    />
                     {slide.subtitle && <p className="max-w-md text-body text-muted">{slide.subtitle}</p>}
                     {slide.cta_label && slide.cta_link && (
-                      <Button as={Link} to={slide.cta_link} size="lg" className="mt-2 w-full sm:w-auto">
-                        {slide.cta_label}
-                      </Button>
+                      <Magnetic className="mt-2 w-full sm:w-auto">
+                        <Button as={Link} to={slide.cta_link} size="lg" className="w-full sm:w-auto">
+                          {slide.cta_label}
+                        </Button>
+                      </Magnetic>
                     )}
                   </div>
                 </Container>
@@ -161,6 +155,11 @@ function Hero() {
             </div>
           );
         })}
+      </div>
+
+      {/* Minute-track ring around the hero watch (desktop). */}
+      <div aria-hidden="true" className="pointer-events-none absolute right-[8%] top-1/2 hidden w-[min(36vw,70svh)] -translate-y-1/2 opacity-40 lg:block">
+        <BezelRing className="aspect-square w-full" />
       </div>
 
       {total > 1 && (

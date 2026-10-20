@@ -109,6 +109,13 @@
   to { transform: scaleX(1); }
 }
 
+/* Headline mask reveal (C1, MaskReveal): each word clips its own slide-up. The
+   padding keeps italic overhangs and descenders inside the clip; the negative
+   margin cancels it so spacing is unchanged. Held while the preloader shows. */
+.mask-word { display: inline-block; overflow: hidden; vertical-align: top; padding: 0 0.1em 0.14em; margin: 0 -0.1em -0.14em; }
+.mask-word__inner { display: inline-block; }
+.is-preloading .mask-word__inner { animation-play-state: paused; }
+
 /* Trust marquee (B6b): transform only; pauses on hover/focus. */
 @keyframes trust-marquee {
   from { transform: translateX(0); }

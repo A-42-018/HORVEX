@@ -2,6 +2,7 @@ import { memo } from "react";
 import { Link } from "react-router";
 import { Heart, Plus } from "lucide-react";
 import { Badge, Button, Price } from "../common";
+import { LightSweep } from "../motion";
 import { discountPercent } from "../../lib/format";
 import { responsiveImage } from "../../lib/images";
 import { strings } from "../../lib/strings";
@@ -93,6 +94,7 @@ function ProductCard({ product }) {
             </span>
           )}
         </Link>
+        <LightSweep mode="hover" />
 
         {badge && (
           <Badge variant={badge.variant} className="absolute left-3 top-3 z-10 bg-obsidian/70 backdrop-blur-sm">

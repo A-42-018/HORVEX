@@ -1,5 +1,5 @@
 import plugin from "tailwindcss/plugin";
-import { DURATION, EASE, toCubicBezier } from "./src/lib/motion.js";
+import { DURATION, EASE, MOTION, toCubicBezier } from "./src/lib/motion.js";
 
 // WRISTORY design tokens (roadmap §3.1–3.3, §7).
 // Old template names (bg, ink-secondary, border, accent, success, sale) are kept
@@ -182,11 +182,31 @@ export default {
           "0%": { transform: "translateX(0)" },
           "100%": { transform: "translateX(-50%)" },
         },
+        // Signature motion (C1): transform / opacity only.
+        routeEnter: {
+          "0%": { opacity: "0", transform: "translateY(8px)" },
+          "100%": { opacity: "1", transform: "none" },
+        },
+        maskRise: {
+          "0%": { transform: "translateY(110%)" },
+          "100%": { transform: "none" },
+        },
+        lightSweep: {
+          "0%": { transform: "translateX(-100%)" },
+          "25%, 100%": { transform: "translateX(300%)" },
+        },
+        fadeIn: { "0%": { opacity: "0" }, "100%": { opacity: "1" } },
+        fadeOut: { "0%": { opacity: "1" }, "100%": { opacity: "0" } },
       },
       animation: {
         "fade-up": `fadeUp ${DURATION.reveal}ms ${toCubicBezier(EASE.outExpo)} both`,
         shimmer: "shimmer 1.8s ease-in-out infinite",
         marquee: "marquee var(--marquee-duration, 30s) linear infinite",
+        "route-enter": `routeEnter ${DURATION.base}ms ${toCubicBezier(EASE.inOutCubic)} backwards`,
+        "mask-rise": `maskRise ${DURATION.reveal}ms ${toCubicBezier(EASE.outExpo)} both`,
+        "light-sweep": `lightSweep ${MOTION.sweepEvery}ms ${toCubicBezier(EASE.inOutCubic)} infinite`,
+        "fade-in": `fadeIn ${DURATION.slow}ms ${toCubicBezier(EASE.outExpo)} both`,
+        "fade-out": `fadeOut ${DURATION.slow}ms ${toCubicBezier(EASE.inOutCubic)} both`,
       },
     },
   },

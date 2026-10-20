@@ -11,6 +11,7 @@ import MobileTabBar from "./MobileTabBar";
 import WhatsAppFab from "./WhatsAppFab";
 import Toaster from "./Toaster";
 import MaintenanceScreen from "./MaintenanceScreen";
+import { Preloader, RouteTransition, SmoothScroll } from "../motion";
 
 // Shell for every storefront route: skip link, header, routed page, footer.
 // The base is dark; template sections that are still light carry their own
@@ -50,7 +51,9 @@ function StoreLayout() {
       </a>
       <Navbar />
       <main id="main-content">
-        <Outlet />
+        <RouteTransition>
+          <Outlet />
+        </RouteTransition>
       </main>
       <Footer />
       <SearchOverlay />
@@ -60,6 +63,8 @@ function StoreLayout() {
       <WhatsAppFab />
       <Toaster />
       <ScrollRestoration />
+      <SmoothScroll />
+      <Preloader />
     </div>
   );
 }
