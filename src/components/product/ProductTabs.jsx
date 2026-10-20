@@ -152,7 +152,7 @@ function ProductTabs({ product }) {
         role="tablist"
         aria-label={strings.product.tabs.label}
         onKeyDown={onKeyDown}
-        className="-mx-5 flex gap-6 overflow-x-auto border-b border-line px-5 sm:mx-0 sm:gap-10 sm:px-0"
+        className="-mx-gutter flex gap-6 overflow-x-auto border-b border-line px-gutter sm:mx-0 sm:gap-10 sm:px-0"
       >
         {tabs.map(({ key }) => {
           const isActive = key === active;

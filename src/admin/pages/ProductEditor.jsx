@@ -4,7 +4,7 @@ import { ArrowLeft, Copy, ExternalLink } from "lucide-react";
 import { Button, Skeleton } from "../../components/common";
 import { strings } from "../../lib/strings";
 import { slugify } from "../../lib/slug";
-import { MainFields, SideFields } from "../components/products/ProductFields";
+import { MainFields, MediaFields, SideFields } from "../components/products/ProductFields";
 import {
   changedColumns,
   costOf,
@@ -283,7 +283,6 @@ function EditorForm({ productId, loaded }) {
               set={set}
               setSpec={setSpec}
               isNew={isNew}
-              productId={productId}
               categories={categories}
               variantCount={loaded?.variantCount ?? 0}
               onSlugEdit={onSlugEdit}
@@ -312,6 +311,7 @@ function EditorForm({ productId, loaded }) {
           {dirty && <span className="text-small text-muted">{t.messages.unsaved}</span>}
         </div>
       </form>
+      <MediaFields isNew={isNew} productId={productId} />
     </div>
   );
 }

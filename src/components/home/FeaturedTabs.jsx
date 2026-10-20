@@ -76,7 +76,7 @@ function FeaturedTabs() {
           role="tablist"
           aria-label={strings.featured.tabsLabel}
           onKeyDown={onKeyDown}
-          className="-mx-5 flex justify-start gap-2.5 overflow-x-auto px-5 pb-1 sm:mx-0 sm:flex-wrap sm:justify-center sm:overflow-visible sm:px-0"
+          className="-mx-gutter flex justify-start gap-2.5 overflow-x-auto px-gutter pb-1 sm:mx-0 sm:flex-wrap sm:justify-center sm:overflow-visible sm:px-0"
         >
           {tabs.map((tab) => {
             const isActive = tab.key === active;

@@ -22,7 +22,7 @@ function Section({ id, title, children, className = "" }) {
 const optionsOf = (keys, labels) => keys.map((value) => ({ value, label: labels[value] }));
 
 /** Left column: the product's own content. */
-export function MainFields({ form, errors, set, setSpec, isNew, productId, categories, variantCount, onSlugEdit }) {
+export function MainFields({ form, errors, set, setSpec, isNew, categories, variantCount, onSlugEdit }) {
   const field = (key, extra = {}) => ({
     id: fieldId(key),
     value: form[key],
@@ -140,6 +140,17 @@ export function MainFields({ form, errors, set, setSpec, isNew, productId, categ
           {...field("seoDesc")}
         />
       </Section>
+    </>
+  );
+}
+
+/** Images and variants. Rendered outside the editor <form>: variant rows are forms of their own, and forms can't nest. */
+export function MediaFields({ isNew, productId }) {
+  return (
+    <>
+      <Section id="media" title={t.sections.media}>
+        {isNew ? <p className="text-small text-muted">{t.hints.imagesNew}</p> : <ProductImages productId={productId} />}
+      </Section>
 
       <Section id="variants" title={strings.admin.productEditor.variants.title}>
         <ProductVariants productId={isNew ? null : productId} />
@@ -211,14 +222,6 @@ export function SideFields({ form, errors, set, toggleBadge }) {
             />
           ))}
         </div>
-      </Section>
-
-      <Section id="media" title={t.sections.media}>
-        {isNew ? <p className="text-small text-muted">{t.hints.imagesNew}</p> : <ProductImages productId={productId} />}
-      </Section>
-
-      <Section id="variants" title={strings.admin.productEditor.variants.title}>
-        <ProductVariants productId={isNew ? null : productId} />
       </Section>
     </>
   );

@@ -34,7 +34,7 @@ export default function MediaImageField({ id, label, hint, alt, shape = "wide", 
       <span id={`${id}-label`} className="text-small text-fg">
         {label}
       </span>
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-4">
         <div className={`${SHAPES[shape]} shrink-0 overflow-hidden rounded-card border border-line bg-surface`}>
           {value ? (
             <img src={value} alt={alt} className="h-full w-full object-cover" />

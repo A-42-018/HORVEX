@@ -31,7 +31,7 @@ export default function CategoryImageField({ value, onChange }) {
   return (
     <div className="flex flex-col gap-3">
       <span className="text-small text-fg">{t.fields.image}</span>
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-4">
         <div className="aspect-[4/5] w-24 shrink-0 overflow-hidden rounded-card border border-line bg-surface">
           {value ? (
             <img src={value} alt={t.image.alt} className="h-full w-full object-cover" />

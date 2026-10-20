@@ -34,11 +34,11 @@ function ListingBody({ title, description, crumbs, query, view, useTotal, showCa
             </div>
           </aside>
           <div className="min-w-0">
-            <div className="mb-6 flex items-center justify-between gap-4">
+            <div className="mb-6 flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
               <p className="text-small text-muted" aria-live="polite">
                 {data ? strings.listing.showing(shown, total) : ""}
               </p>
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
                 <MobileFilters view={view} {...facets} useTotal={useTotal} />
                 <SortSelect value={view.sort} onChange={view.setSort} />
               </div>

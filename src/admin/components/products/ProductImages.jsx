@@ -94,11 +94,11 @@ function ImageTile({ image, index, total, onPatch, onRemove, busy }) {
       {confirming ? (
         <div role="alertdialog" aria-label={t.removeConfirm} className="flex flex-col gap-2">
           <p className="text-small text-danger">{t.removeConfirm}</p>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <Button
               size="sm"
               variant="secondary"
-              className="flex-1"
+              className="grow"
               disabled={busy}
               onClick={() => {
                 setConfirming(false);
@@ -107,7 +107,7 @@ function ImageTile({ image, index, total, onPatch, onRemove, busy }) {
             >
               {t.removeYes}
             </Button>
-            <Button size="sm" variant="ghost" className="flex-1" onClick={() => setConfirming(false)}>
+            <Button size="sm" variant="ghost" className="grow" onClick={() => setConfirming(false)}>
               {t.removeNo}
             </Button>
           </div>
