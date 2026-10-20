@@ -1,4 +1,4 @@
-import { existsSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
@@ -23,7 +23,16 @@ const appShellFallback = {
   },
 }
 
+// `vite preview` also sends vercel.json's site-wide headers (CSP etc.), so the
+// production build is checked under the same policy locally.
+const vercelHeaders = Object.fromEntries(
+  JSON.parse(readFileSync(new URL('./vercel.json', import.meta.url), 'utf8'))
+    .headers.find((rule) => rule.source === '/(.*)')
+    .headers.map(({ key, value }) => [key, value]),
+)
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), appShellFallback],
+  preview: { headers: vercelHeaders },
 })

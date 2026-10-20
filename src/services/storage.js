@@ -30,13 +30,18 @@ export async function uploadImage(file, { bucket, folder, ...options }) {
   const { maxDimension, maxSizeMB, quality } = { ...IMAGE_DEFAULTS, ...options };
 
   // Loaded on first upload only; it's a sizeable library.
-  const { default: imageCompression } = await import("browser-image-compression");
+  const [{ default: imageCompression }, { default: libURL }] = await Promise.all([
+    import("browser-image-compression"),
+    // The worker loads the library from our own origin, not jsDelivr (CSP: script-src 'self').
+    import("browser-image-compression/dist/browser-image-compression.js?url"),
+  ]);
   const compressed = await imageCompression(file, {
     maxWidthOrHeight: maxDimension,
     maxSizeMB,
     initialQuality: quality,
     fileType: "image/webp",
     useWebWorker: true,
+    libURL: new URL(libURL, location.href).href,
   });
 
   const bitmap = await createImageBitmap(compressed);

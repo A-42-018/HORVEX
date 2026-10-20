@@ -3,6 +3,9 @@ import { findDistrict } from "./districts";
 import { isValidPhone } from "./format";
 import { strings } from "./strings";
 
+// No eval: the CSP (vercel.json) has no 'unsafe-eval', and zod's JIT probe would log a violation.
+z.config({ jitless: true });
+
 // Mirrors the limits and checks in place_order (supabase/README.md). The server
 // stays the authority; these only give clear messages before a round trip.
 const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
