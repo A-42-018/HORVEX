@@ -15,6 +15,8 @@ export const EVENTS = {
   purchase: "purchase",
   search: "search",
   generateLead: "generate_lead",
+  signUp: "sign_up",
+  login: "login",
 };
 
 const CURRENCY = "BDT";
@@ -32,6 +34,7 @@ const PIXEL_EVENTS = {
   [EVENTS.purchase]: "Purchase",
   [EVENTS.search]: "Search",
   [EVENTS.generateLead]: "Lead",
+  [EVENTS.signUp]: "CompleteRegistration",
 };
 
 let status = "pending"; // pending → ready (ids known; possibly none)

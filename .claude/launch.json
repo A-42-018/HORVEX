@@ -4,56 +4,132 @@
     {
       "name": "wristory-dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--", "--port", "5173", "--strictPort"],
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--",
+        "--port",
+        "5173",
+        "--strictPort"
+      ],
       "port": 5173
     },
     {
       "name": "wristory-dev-alt",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--", "--port", "5174", "--strictPort"],
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--",
+        "--port",
+        "5174",
+        "--strictPort"
+      ],
       "port": 5174
     },
     {
       "name": "wristory-c1",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--", "--port", "5181", "--strictPort"],
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--",
+        "--port",
+        "5181",
+        "--strictPort"
+      ],
       "port": 5181
     },
     {
       "name": "wristory-c2",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--", "--port", "5182", "--strictPort"],
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--",
+        "--port",
+        "5182",
+        "--strictPort"
+      ],
       "port": 5182
     },
     {
       "name": "wristory-c3",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--", "--port", "5183", "--strictPort"],
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--",
+        "--port",
+        "5183",
+        "--strictPort"
+      ],
       "port": 5183
     },
     {
       "name": "wristory-c3-preview",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "preview", "--", "--port", "5185", "--strictPort"],
+      "runtimeArgs": [
+        "run",
+        "preview",
+        "--",
+        "--port",
+        "5185",
+        "--strictPort"
+      ],
       "port": 5185
     },
     {
       "name": "wristory-c5",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--", "--port", "5186", "--strictPort"],
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--",
+        "--port",
+        "5186",
+        "--strictPort"
+      ],
       "port": 5186
     },
     {
       "name": "wristory-c4",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--", "--port", "5184", "--strictPort"],
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--",
+        "--port",
+        "5184",
+        "--strictPort"
+      ],
       "port": 5184
     },
     {
       "name": "wristory-c4-preview",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "preview", "--", "--port", "5187", "--strictPort"],
+      "runtimeArgs": [
+        "run",
+        "preview",
+        "--",
+        "--port",
+        "5187",
+        "--strictPort"
+      ],
       "port": 5187
+    },
+    {
+      "name": "wristory-c6b",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--",
+        "--port",
+        "5192",
+        "--strictPort"
+      ],
+      "port": 5192
     }
   ]
 }

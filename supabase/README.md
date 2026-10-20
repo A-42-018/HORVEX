@@ -20,6 +20,13 @@
 - `cost_price` lives in `product_costs` (manager+), never on `products`.
 - Storage buckets `product-images`, `site-media` and `review-photos` are public by URL but can't be listed by anon. Only managers and owners can upload or delete.
 
+## Customer accounts (Phase C6b)
+Optional email + password accounts for shoppers (migration `20261024100000_c6b_customer_accounts.sql`, test `tests/c6b_customer_accounts_check.sql`). Guest checkout is unchanged and orders still have no user id.
+- A customer is a Supabase Auth user **without** an `admin_profiles` row, so `is_admin()` is false and every admin policy treats them like anon. Giving a customer a staff role is still only the owner's `add_admin_user`.
+- `customer_profiles` (`user_id`, `name`, `phone`): RLS own row only (select / insert / update); only `name` and `phone` can be updated; no anon access.
+- `my_orders(p_limit = 20)` (`authenticated` only, max 50): `[{ order_number, status, total, item_count, created_at }]` for orders whose `email` matches the caller's **confirmed** account email (case-insensitive). No address or phone is returned.
+- Dashboard settings (Authentication): turn **Allow new users to sign up** on (A6/C5 had it off), keep **Confirm email** on, set the password minimum to 8, set **Site URL** to the live domain and add `https://<domain>/account` and `https://<domain>/account/reset-password` (plus `http://localhost:5173/**` for development) to **Redirect URLs**; edit the Confirm signup and Reset password email templates (brand name, copy). Supabase's built-in mailer is rate-limited (a few emails per hour); set up custom SMTP before launch.
+
 ## Order engine (Phase A4)
 Three RPCs are callable by anyone (`supabase.rpc(name, args)`); everything else in the migration is internal.
 

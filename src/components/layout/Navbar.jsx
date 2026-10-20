@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, NavLink, useLocation } from "react-router";
-import { Heart, Menu, Search, ShoppingBag } from "lucide-react";
+import { Heart, Menu, Search, ShoppingBag, UserRound } from "lucide-react";
 import { Container, IconButton } from "../common";
 import MegaMenu from "./MegaMenu";
 import { useHeaderScroll } from "../../hooks/useHeaderScroll";
@@ -44,7 +44,7 @@ function Wordmark() {
   );
 }
 
-// Mobile: [☰] WRISTORY [Search] [Bag] (menu = MobileMenu drawer). Desktop (lg+): [Men] [Women] [Collections ▾ mega menu]  — WRISTORY —  [Search] [Wishlist] [Bag].
+// Mobile: [☰] WRISTORY [Search] [Bag] (+ [Account] from sm) (menu = MobileMenu drawer). Desktop (lg+): [Men] [Women] [Collections ▾ mega menu]  — WRISTORY —  [Search] [Wishlist] [Account] [Bag].
 // Transparent over the top of the home page, solid after 80px, hides on scroll
 // down. Below lg it is a plain solid bar that stays visible.
 function Navbar() {
@@ -129,6 +129,10 @@ function Navbar() {
             >
               <Heart {...ICON} />
               <Counter value={wishlistCount} />
+            </IconButton>
+            {/* No room for a fourth icon on phones (360px); there it's in the menu drawer. */}
+            <IconButton as={Link} to="/account" label={strings.nav.account} variant="ghost" className="hidden border-0 sm:inline-flex">
+              <UserRound {...ICON} />
             </IconButton>
             <button
               type="button"
