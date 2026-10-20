@@ -10,4 +10,7 @@ export const useUI = create((set) => ({
   openMenu: () => set({ ...CLOSED, menuOpen: true }),
   openSearch: () => set({ ...CLOSED, searchOpen: true }),
   closeAll: () => set(CLOSED),
+  // Mobile PDP buy bar is showing; lets the WhatsApp FAB and page padding make room.
+  stickyBar: false,
+  setStickyBar: (stickyBar) => set({ stickyBar }),
 }));

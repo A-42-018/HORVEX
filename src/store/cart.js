@@ -8,7 +8,7 @@ import { persistOptions, syncAcrossTabs } from "./persist";
 export const MAX_LINES = 20;
 export const MAX_QTY_PER_LINE = 10;
 
-const lineKey = (productId, variantId) => `${productId}:${variantId ?? ""}`;
+export const lineKey = (productId, variantId) => `${productId}:${variantId ?? ""}`;
 
 /**
  * Line = { key, productId, variantId, slug, name, variantName, image, price, maxQty, qty }.

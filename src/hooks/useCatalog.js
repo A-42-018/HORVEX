@@ -6,6 +6,7 @@ import {
   getProductsByIds,
   listProductReviews,
   listProducts,
+  listRelatedProducts,
   searchProducts,
   summarizeRatings,
 } from "../services/products";
@@ -46,6 +47,15 @@ export function useProductsByIds(ids) {
     queryFn: () => getProductsByIds(ids),
     enabled: ids.length > 0,
     placeholderData: ids.length ? keepPreviousData : [],
+  });
+}
+
+/** { items, total }: other watches to suggest on a PDP (same category, then same gender). */
+export function useRelatedProducts(product, limit = 4) {
+  return useQuery({
+    queryKey: queryKeys.products.related(product?.id, limit),
+    queryFn: () => listRelatedProducts(product, limit),
+    enabled: Boolean(product),
   });
 }
 

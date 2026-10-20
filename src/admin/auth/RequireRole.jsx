@@ -14,11 +14,11 @@ function RequireRole({ minRole, children }) {
   return (
     <div className="flex flex-col items-start gap-2">
       <title>{`${t.title} | HORVEX Admin`}</title>
-      <h1 className="text-h3 text-ink">{t.title}</h1>
-      <p className="text-small text-ink-secondary">{t.body(strings.admin.roles[profile?.role] ?? profile?.role)}</p>
+      <h1 className="text-h3 text-fg">{t.title}</h1>
+      <p className="text-small text-muted">{t.body(strings.admin.roles[profile?.role] ?? profile?.role)}</p>
       <Link
         to="/admin"
-        className="mt-2 inline-flex min-h-11 items-center text-small font-semibold text-ink underline underline-offset-4"
+        className="mt-2 inline-flex min-h-11 items-center text-small font-semibold text-fg underline underline-offset-4"
       >
         {t.back}
       </Link>

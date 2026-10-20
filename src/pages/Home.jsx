@@ -33,7 +33,8 @@ const SECTIONS = {
   faq: FAQ,
 };
 
-// Spec order (roadmap §6.1); used while loading, on error, or if the table is empty.
+// Spec order (roadmap §6.1); used only while loading or after a failed load. A
+// loaded but empty list means every section is hidden, which is honoured.
 const DEFAULT_ORDER = [
   "hero",
   "trust_marquee",
@@ -53,7 +54,7 @@ const DEFAULT_ORDER = [
 function Home() {
   const { data, isError } = useHomeSections();
   const keys =
-    !isError && data?.length
+    !isError && data
       ? [...data].sort((a, b) => a.sort_order - b.sort_order).map((row) => row.key)
       : DEFAULT_ORDER;
 

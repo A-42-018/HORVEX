@@ -5,9 +5,9 @@ function AdminPlaceholder({ title, phase }) {
 
   return (
     <div className="flex flex-col gap-2">
-      <span className="text-small font-semibold uppercase tracking-wider text-ink-secondary">Coming in Phase {phase}</span>
-      <h1 className="text-h3 text-ink">{title}</h1>
-      <p className="text-small text-ink-secondary">Route: {pathname}</p>
+      <span className="text-small font-semibold uppercase tracking-wider text-muted">Coming in Phase {phase}</span>
+      <h1 className="text-h3 text-fg">{title}</h1>
+      <p className="text-small text-muted">Route: {pathname}</p>
     </div>
   );
 }

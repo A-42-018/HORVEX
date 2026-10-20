@@ -1,17 +1,18 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router";
 import { Container, Price, Skeleton } from "../components/common";
-import { ProductGallery, QuantityStepper, StockLine, VariantPicker } from "../components/product";
+import { BuyActions, ProductGallery, ProductTabs, QuantityStepper, RecentlyViewed, RelatedProducts, StickyBuyBar, StockLine, TrustRow, VariantPicker } from "../components/product";
 import { useProduct } from "../hooks/useCatalog";
 import { MAX_QTY_PER_LINE } from "../store/cart";
+import { useRecentlyViewed } from "../store/recentlyViewed";
 import { strings } from "../lib/strings";
 import NotFound from "./NotFound";
 
 // PDP shell. Gallery is B14a/B14b; buy box fills in across B15a (variants/stock,
-// here), B15b (buy actions) and B15c (sticky bar); tabs (B16) and related (B16c)
+// here), B15b (buy actions) and B15c (sticky bar); tabs (B16a, below the grid), related + recent (B16c)
 // slot in below. `selected` lives here (not inside BuyBox) so the gallery can
 // jump to the variant's image alongside the price/stock line updating.
-function BuyBox({ product, selected, onSelect, qty, onQtyChange }) {
+function BuyBox({ product, selected, onSelect, qty, onQtyChange, orderRef }) {
   const { name, price, compare_at_price: compareAt, low_stock_at: lowStockAt, variants = [] } = product;
   const stock = selected ? selected.stock : product.stock;
   const maxQty = Math.max(0, Math.min(MAX_QTY_PER_LINE, stock));
@@ -30,6 +31,9 @@ function BuyBox({ product, selected, onSelect, qty, onQtyChange }) {
       </div>
 
       <StockLine stock={stock} lowStockAt={lowStockAt} />
+
+      <BuyActions product={product} selected={selected} qty={qty} inStock={maxQty > 0} orderRef={orderRef} />
+      <TrustRow />
     </div>
   );
 }
@@ -38,6 +42,12 @@ function ProductDetail({ product }) {
   const { variants = [] } = product;
   const [selected, setSelected] = useState(() => variants.find((v) => v.stock > 0) ?? variants[0] ?? null);
   const [qty, setQty] = useState(1);
+  const orderRef = useRef(null);
+  const inStock = (selected ? selected.stock : product.stock) > 0;
+  const addRecent = useRecentlyViewed((s) => s.add);
+
+  // Remember this watch for the "Recently viewed" strip (survives refresh via persist).
+  useEffect(() => addRecent(product.id), [addRecent, product.id]);
 
   const selectVariant = (variant) => {
     setSelected(variant);
@@ -55,9 +65,13 @@ function ProductDetail({ product }) {
             name={product.name}
             activeImageId={selected?.image_id ?? null}
           />
-          <BuyBox product={product} selected={selected} onSelect={selectVariant} qty={qty} onQtyChange={setQty} />
+          <BuyBox product={product} selected={selected} onSelect={selectVariant} qty={qty} onQtyChange={setQty} orderRef={orderRef} />
         </div>
+        <ProductTabs key={product.id} product={product} />
+        <RelatedProducts key={`related-${product.id}`} product={product} />
+        <RecentlyViewed currentId={product.id} />
       </Container>
+      <StickyBuyBar product={product} selected={selected} qty={qty} inStock={inStock} orderRef={orderRef} />
     </>
   );
 }

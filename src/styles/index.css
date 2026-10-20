@@ -124,3 +124,15 @@
   .trust-marquee__row { flex-wrap: wrap; justify-content: center; }
   .trust-marquee__row[aria-hidden="true"] { display: none; }
 }
+
+/* Printing (admin invoice / packing slip, B26a): A4, plain paper, no site background. */
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
+  body {
+    background: none;
+  }
+}

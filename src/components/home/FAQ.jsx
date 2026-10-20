@@ -1,8 +1,8 @@
 import { useId, useState } from "react";
 import { Link } from "react-router";
-import { ChevronDown } from "lucide-react";
 import { Button, Container, Reveal, SectionHeading, Skeleton } from "../common";
 import { useFaqs, useHomeSections } from "../../hooks/useContent";
+import FaqItem from "../faq/FaqItem";
 import { strings } from "../../lib/strings";
 
 // Home FAQ (roadmap §6.1 #15): dark accordion, one answer open at a time, from
@@ -11,44 +11,6 @@ import { strings } from "../../lib/strings";
 
 const DEFAULT_LIMIT = 6;
 const MAX_LIMIT = 12;
-
-function FAQItem({ item, isOpen, onToggle, uid }) {
-  const panelId = `${uid}-panel`;
-  const buttonId = `${uid}-button`;
-
-  return (
-    <div className="border-b border-line">
-      <h3>
-        <button
-          id={buttonId}
-          type="button"
-          aria-expanded={isOpen}
-          aria-controls={panelId}
-          onClick={onToggle}
-          className="flex min-h-14 w-full items-center justify-between gap-4 py-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
-        >
-          <span className="text-body font-semibold text-fg">{item.question}</span>
-          <ChevronDown
-            aria-hidden="true"
-            size={20}
-            strokeWidth={1.5}
-            className={`shrink-0 text-brand transition-transform duration-base ${isOpen ? "rotate-180" : ""}`}
-          />
-        </button>
-      </h3>
-      <div
-        id={panelId}
-        role="region"
-        aria-labelledby={buttonId}
-        className={`grid transition-[grid-template-rows] duration-base ease-out ${isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
-      >
-        <div className="min-h-0 overflow-hidden">
-          <p className="pb-5 pr-8 text-body text-muted">{item.answer}</p>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function FAQ() {
   const uid = useId();
@@ -76,7 +38,7 @@ function FAQ() {
           {isPending
             ? Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="my-3 h-8 w-full" />)
             : items.map((item) => (
-                <FAQItem
+                <FaqItem
                   key={item.id}
                   item={item}
                   uid={`${uid}-${item.id}`}

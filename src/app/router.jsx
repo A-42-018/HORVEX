@@ -4,11 +4,17 @@ import Home from "../pages/Home";
 import NotFound from "../pages/NotFound";
 import { CategoryListing, CollectionListing, Shop } from "../pages/Listing";
 import Product from "../pages/Product";
-import PagePlaceholder from "../pages/PagePlaceholder";
+import Wishlist from "../pages/Wishlist";
+import Cart from "../pages/Cart";
+import Checkout from "../pages/Checkout";
+import OrderSuccess from "../pages/OrderSuccess";
+import TrackOrder from "../pages/TrackOrder";
+import About from "../pages/About";
+import Contact from "../pages/Contact";
+import Faq from "../pages/Faq";
+import Policy from "../pages/Policy";
 
-// Route map from roadmap §5. Placeholders are swapped for real pages phase by phase.
-const placeholder = (path, title, phase) => ({ path, element: <PagePlaceholder title={title} phase={phase} /> });
-
+// Route map from roadmap §5.
 export const router = createBrowserRouter([
   {
     element: <StoreLayout />,
@@ -18,15 +24,15 @@ export const router = createBrowserRouter([
       { path: "category/:slug", element: <CategoryListing /> },
       { path: "collection/:slug", element: <CollectionListing /> },
       { path: "product/:slug", element: <Product /> },
-      placeholder("wishlist", "Wishlist", 7),
-      placeholder("cart", "Your bag", 7),
-      placeholder("checkout", "Checkout", 8),
-      placeholder("order/success/:orderId", "Order placed", 8),
-      placeholder("track-order", "Track your order", 8),
-      placeholder("about", "About HORVEX", 15),
-      placeholder("contact", "Contact", 15),
-      placeholder("faq", "FAQ", 15),
-      placeholder("policy/:slug", "Policy", 12),
+      { path: "wishlist", element: <Wishlist /> },
+      { path: "cart", element: <Cart /> },
+      { path: "checkout", element: <Checkout /> },
+      { path: "order/success/:orderId", element: <OrderSuccess /> },
+      { path: "track-order", element: <TrackOrder /> },
+      { path: "about", element: <About /> },
+      { path: "contact", element: <Contact /> },
+      { path: "faq", element: <Faq /> },
+      { path: "policy/:slug", element: <Policy /> },
       { path: "*", element: <NotFound /> },
     ],
   },

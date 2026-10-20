@@ -1,44 +1,16 @@
 import { useEffect } from "react";
 import { Link, useLocation } from "react-router";
-import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
+import { ShoppingBag, Trash2 } from "lucide-react";
 import { Button, Drawer, IconButton, Price } from "../common";
 import { useProducts } from "../../hooks/useCatalog";
-import { useSiteSettings } from "../../hooks/useContent";
 import { addToBag } from "../../lib/cartActions";
+import { FreeDeliveryBar, QtyStepper } from "../cart/CartParts";
 import { MAX_LINES, selectCartCount, selectCartEstimate, useCart } from "../../store/cart";
 import { useUI } from "../../store/ui";
 import { formatTaka } from "../../lib/format";
 import { strings } from "../../lib/strings";
 
 const t = strings.cart;
-
-function QtyStepper({ line }) {
-  const setQty = useCart((s) => s.setQty);
-  const atMax = line.qty >= line.maxQty;
-  return (
-    <div className="inline-flex items-center rounded-control border border-line" role="group" aria-label={t.qtyGroup(line.name)}>
-      <IconButton
-        label={t.decrease(line.name)}
-        variant="ghost"
-        disabled={line.qty <= 1}
-        onClick={() => setQty(line.key, line.qty - 1)}
-      >
-        <Minus size={16} strokeWidth={1.5} aria-hidden="true" />
-      </IconButton>
-      <span className="min-w-8 text-center text-small tabular-nums" aria-live="polite">
-        {line.qty}
-      </span>
-      <IconButton
-        label={atMax ? t.maxQty : t.increase(line.name)}
-        variant="ghost"
-        disabled={atMax}
-        onClick={() => setQty(line.key, line.qty + 1)}
-      >
-        <Plus size={16} strokeWidth={1.5} aria-hidden="true" />
-      </IconButton>
-    </div>
-  );
-}
 
 function Line({ line }) {
   const remove = useCart((s) => s.remove);
@@ -65,37 +37,6 @@ function Line({ line }) {
         </div>
       </div>
     </li>
-  );
-}
-
-// Progress towards free delivery. Hidden when the store has no threshold set.
-// Uses the snapshot estimate; the real delivery charge is decided at checkout.
-function FreeDeliveryBar({ estimate }) {
-  const { data: settings } = useSiteSettings();
-  const threshold = settings?.free_delivery_threshold;
-  if (!threshold) return null;
-
-  const remaining = Math.max(0, threshold - estimate);
-  const percent = Math.min(100, Math.round((estimate / threshold) * 100));
-  return (
-    <div className="mb-2 rounded-card border border-line bg-surface p-4">
-      <p className="text-small text-fg" role="status">
-        {remaining > 0 ? t.freeDeliveryMore(formatTaka(remaining)) : t.freeDeliveryReached}
-      </p>
-      <div
-        role="progressbar"
-        aria-label={t.freeDeliveryLabel}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-valuenow={percent}
-        className="mt-3 h-1 overflow-hidden rounded-pill bg-line"
-      >
-        <div
-          className="h-full origin-left rounded-pill bg-gold transition-transform duration-slow"
-          style={{ transform: `scaleX(${percent / 100})` }}
-        />
-      </div>
-    </div>
   );
 }
 
@@ -185,7 +126,7 @@ function CartDrawer() {
         <EmptyState onClose={closeAll} />
       ) : (
         <>
-          <FreeDeliveryBar estimate={estimate} />
+          <FreeDeliveryBar amount={estimate} />
           <ul className="divide-y divide-line">
             {lines.map((line) => (
               <Line key={line.key} line={line} />

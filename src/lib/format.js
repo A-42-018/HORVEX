@@ -50,6 +50,11 @@ const weekdayFormat = new Intl.DateTimeFormat("en-GB", { weekday: "long" });
 /** → "19 Oct 2026" */
 export const formatDate = (date) => dateFormat.format(new Date(date));
 
+const dateTimeFormat = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit", hour12: true });
+
+/** → "19 Oct, 9:41 pm" */
+export const formatDateTime = (date) => dateTimeFormat.format(new Date(date)).replace(/\b(am|pm)\b/i, (m) => m.toLowerCase());
+
 /** Delivery ETA in plain words: "by Thursday" within the week, otherwise "by 27 Oct 2026". */
 export function formatDeliveryBy(date, now = new Date()) {
   const target = new Date(date);

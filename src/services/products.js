@@ -142,6 +142,34 @@ export async function getProductsByIds(ids) {
   return ids.map((id) => byId.get(id)).filter(Boolean);
 }
 
+/**
+ * "You may also like": same category first, topped up with same-gender pieces (any
+ * category) when the category is small. Never includes the product itself.
+ */
+export async function listRelatedProducts(product, limit = 4) {
+  if (!product) return { items: [], total: 0 };
+  const take = limit + 1; // room to drop the current product
+  const seen = new Set([product.id]);
+  const items = [];
+  const collect = (rows) => {
+    for (const row of rows) {
+      if (items.length < limit && !seen.has(row.id)) {
+        seen.add(row.id);
+        items.push(row);
+      }
+    }
+  };
+
+  if (product.category?.slug) {
+    collect((await listProducts({ ...categoryScope(product.category.slug), limit: take })).items);
+  }
+  if (items.length < limit) {
+    const gender = GENDER_CATEGORIES.includes(product.gender) ? { gender: product.gender } : {};
+    collect((await listProducts({ ...gender, limit: take + limit })).items);
+  }
+  return { items, total: items.length };
+}
+
 /** Approved reviews for one product, newest first. */
 export function listProductReviews(productId) {
   return query((db) =>
@@ -149,6 +177,7 @@ export function listProductReviews(productId) {
       .from("reviews")
       .select("id, name, rating, text, photo_url, created_at")
       .eq("product_id", productId)
+      .eq("status", "approved")
       .order("created_at", { ascending: false }),
   );
 }

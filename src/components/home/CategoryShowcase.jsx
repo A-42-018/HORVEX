@@ -2,6 +2,7 @@ import { Link } from "react-router";
 import { ArrowUpRight } from "lucide-react";
 import { Container, SectionHeading, Reveal, Skeleton } from "../common";
 import { useCategories } from "../../hooks/useCatalog";
+import { useHomeSections } from "../../hooks/useContent";
 import { responsiveImage } from "../../lib/images";
 import { strings } from "../../lib/strings";
 
@@ -68,6 +69,7 @@ function CategoryTile({ category, index }) {
 
 function CategoryShowcase() {
   const { data, isPending } = useCategories();
+  const section = useHomeSections().data?.find((s) => s.key === "categories");
   const tiles = (data ?? []).filter((c) => !c.parent_id).slice(0, MAX_TILES);
 
   // Nothing to show (no visible categories, or a failed load): drop the section
@@ -78,8 +80,8 @@ function CategoryShowcase() {
     <section aria-label={strings.categories.label} className="section-dark py-section-sm lg:py-section">
       <Container className="flex flex-col gap-10">
         <SectionHeading
-          eyebrow={strings.categories.eyebrow}
-          title={strings.categories.title}
+          eyebrow={section?.title || strings.categories.eyebrow}
+          title={section?.subtitle || strings.categories.title}
           subtitle={strings.categories.subtitle}
         />
 
