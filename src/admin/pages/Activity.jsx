@@ -1,7 +1,7 @@
 import { useSearchParams } from "react-router";
 import { Button, Card, Select, Skeleton } from "../../components/common";
 import { formatDateTime } from "../../lib/format";
-import { strings } from "../../lib/strings";
+import { strings } from "../strings";
 import { diffKeys, diffText, targetOf } from "../components/activity/activityRules";
 import { useActivity, useActivityEntities } from "../hooks/useActivityAdmin";
 

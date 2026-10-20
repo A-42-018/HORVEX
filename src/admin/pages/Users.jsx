@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Badge, Button, Card, Modal, Select, Skeleton } from "../../components/common";
 import { formatDateTime } from "../../lib/format";
-import { strings } from "../../lib/strings";
+import { strings } from "../strings";
 import { useAuth } from "../auth/authContext";
 import AddUserModal from "../components/users/AddUserModal";
 import { ROLES, errorToken, isForbidden } from "../components/users/userRules";

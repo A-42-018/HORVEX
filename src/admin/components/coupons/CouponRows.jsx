@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Pencil, Trash2 } from "lucide-react";
 import { Badge, Button, IconButton } from "../../../components/common";
 import { formatDateTime, formatTaka } from "../../../lib/format";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import QuickToggle from "../products/QuickToggle";
 import { couponState, valueText } from "./couponForm";
 

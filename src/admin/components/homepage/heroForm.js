@@ -1,5 +1,5 @@
 // Pure helpers for the hero slide editor: form <-> DB row and validation.
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { isValidLink, isoToLocal, localToIso, orNull, starsBalanced, text } from "./contentRules";
 
 const c = strings.admin.homeContent.common.errors;

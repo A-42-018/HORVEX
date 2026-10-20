@@ -1,5 +1,5 @@
 // Pure helpers for the homepage builder: section copy, form <-> DB row, ordering.
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 
 const t = strings.admin.homepage;
 

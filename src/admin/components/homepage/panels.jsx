@@ -1,6 +1,6 @@
 import { Badge } from "../../../components/common";
 import { formatDateTime } from "../../../lib/format";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { heroHooks, promoHooks } from "../../hooks/useHomeContentAdmin";
 import ContentPanel from "./ContentPanel";
 import HeroModal from "./HeroModal";

@@ -1,5 +1,5 @@
 // Pure helpers for review moderation: tabs, row actions, manual-review form.
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { orNull } from "../homepage/contentRules";
 
 const c = strings.admin.homeContent.common.errors;

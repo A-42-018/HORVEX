@@ -1,7 +1,7 @@
 import { Bell, BellOff } from "lucide-react";
 import { IconButton } from "../../../components/common";
 import { playChime, unlockAudio } from "../../../lib/alertSound";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { useOrderAlerts } from "../../../store/orderAlerts";
 
 const t = strings.admin.alerts;

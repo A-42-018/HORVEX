@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ArrowDown, ArrowUp, Plus, Trash2 } from "lucide-react";
 import { Button, IconButton, Input, Select, Skeleton } from "../../../components/common";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { useProductImages } from "../../hooks/useProductImages";
 import {
   useAddProductVariant,

@@ -3,7 +3,7 @@ import { SortableContext, sortableKeyboardCoordinates, useSortable, verticalList
 import { CSS } from "@dnd-kit/utilities";
 import { ArrowDown, ArrowUp, GripVertical, Pencil } from "lucide-react";
 import { Badge, IconButton } from "../../../components/common";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import QuickToggle from "../products/QuickToggle";
 import { metaFor } from "./homeSections";
 

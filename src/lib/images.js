@@ -24,3 +24,32 @@ export function responsiveImage(url, { aspect = [4, 5], widths = CARD_WIDTHS } =
     return { src: url };
   }
 }
+
+// Hero slides (B6). Mobile widths include 828 / 1242 so 2x and 3x phones
+// (~390–430px wide) get a close match instead of the next size up.
+const HERO_DESKTOP_WIDTHS = [1080, 1600, 2560];
+const HERO_MOBILE_WIDTHS = [480, 640, 828, 1080, 1242];
+
+/**
+ * { desktop, mobile } sources for a hero slide. Shared by the hero, its LCP
+ * preload and scripts/prerender.mjs (which preloads slide 1 in the home HTML),
+ * so all three request the same URLs.
+ */
+export function heroSources(slide) {
+  return {
+    desktop: responsiveImage(slide.image_desktop, { aspect: [16, 9], widths: HERO_DESKTOP_WIDTHS }),
+    mobile: responsiveImage(slide.image_mobile || slide.image_desktop, {
+      aspect: slide.image_mobile ? [4, 5] : [16, 9],
+      widths: HERO_MOBILE_WIDTHS,
+    }),
+  };
+}
+
+/** Viewport split used by the hero's <source media>, so each viewport preloads only the image it shows. */
+export const heroPreloads = (slide) => {
+  const { desktop, mobile } = heroSources(slide);
+  return [
+    { image: mobile, media: "(max-width: 1023px)" },
+    { image: desktop, media: "(min-width: 1024px)" },
+  ].filter((p) => p.image.src);
+};

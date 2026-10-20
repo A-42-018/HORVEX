@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, Input, Modal, Select } from "../../../components/common";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { useCouponCrud } from "../../hooks/useCouponAdmin";
 import DateTimeField from "../homepage/DateTimeField";
 import { changedColumns, emptyForm, fieldId, normalizeCode, toForm, toPayload, TYPES, validateForm } from "./couponForm";

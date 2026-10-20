@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router";
-import { ExternalLink, LogOut, Menu, Moon, Sun } from "lucide-react";
+import { ExternalLink, LoaderCircle, LogOut, Menu, Moon, Sun } from "lucide-react";
 import { Drawer, IconButton } from "../../components/common";
-import { strings } from "../../lib/strings";
+import { strings } from "../strings";
 import { selectUnseen, useOrderAlerts } from "../../store/orderAlerts";
 import AlertBell from "../components/alerts/AlertBell";
 import AlertCount from "../components/alerts/AlertCount";
@@ -60,6 +60,16 @@ function UserBlock({ profile, signingOut, onSignOut }) {
         <LogOut aria-hidden="true" size={20} strokeWidth={1.5} />
         {strings.admin.signOut}
       </button>
+    </div>
+  );
+}
+
+// Shown while a page's chunk loads (pages are lazy, see AdminApp).
+function PageLoading() {
+  return (
+    <div role="status" className="flex justify-center py-16">
+      <LoaderCircle aria-hidden="true" size={28} strokeWidth={1.5} className="animate-spin text-brand" />
+      <span className="sr-only">{strings.admin.loadingPage}</span>
     </div>
   );
 }
@@ -154,7 +164,9 @@ function AdminLayout() {
           tabIndex={-1}
           className="flex-1 px-gutter pb-[calc(6rem+env(safe-area-inset-bottom))] pt-6 outline-none lg:pb-10 lg:pt-10"
         >
-          <Outlet />
+          <Suspense fallback={<PageLoading />}>
+            <Outlet />
+          </Suspense>
         </main>
       </div>
 

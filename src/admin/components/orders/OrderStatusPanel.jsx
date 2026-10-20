@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Check, X } from "lucide-react";
 import { Button, Card } from "../../../components/common";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { isClosed, needsConfirm, nextStatuses, pipelineSteps } from "./orderStatus";
 import { StatusBadge } from "./OrderRows";
 

@@ -11,7 +11,7 @@ import { SortableContext, arrayMove, rectSortingStrategy, sortableKeyboardCoordi
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical, ImagePlus, Trash2 } from "lucide-react";
 import { Button, IconButton, Skeleton } from "../../../components/common";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import {
   useAddProductImage,
   useDeleteProductImage,

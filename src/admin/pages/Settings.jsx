@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ExternalLink } from "lucide-react";
 import { Link } from "react-router";
 import { Button, Card, Input, Modal, Skeleton } from "../../components/common";
-import { strings } from "../../lib/strings";
+import { strings } from "../strings";
 import MediaImageField from "../components/homepage/MediaImageField";
 import QuickToggle from "../components/products/QuickToggle";
 import { changedColumns, fieldId, LIMITS, SOCIAL_KEYS, toForm, toPayload, validateForm } from "../components/settings/settingsForm";

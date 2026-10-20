@@ -1,7 +1,7 @@
 import { ExternalLink } from "lucide-react";
 import { Link, useSearchParams } from "react-router";
 import { Button } from "../../components/common";
-import { strings } from "../../lib/strings";
+import { strings } from "../strings";
 import { HeroPanel, PromoPanel } from "../components/homepage/panels";
 import SectionsPanel from "../components/homepage/SectionsPanel";
 

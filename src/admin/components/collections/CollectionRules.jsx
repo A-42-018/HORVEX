@@ -1,5 +1,5 @@
 import { Input, Select } from "../../../components/common";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { BADGE_RULES, fieldId, GENDER_RULES } from "./collectionForm";
 
 const t = strings.admin.collections.rules;

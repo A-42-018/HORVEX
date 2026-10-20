@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, Input, Modal } from "../../../components/common";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { useZoneCrud } from "../../hooks/useZoneAdmin";
 import { asksDistrict, changedColumns, emptyForm, fieldId, LIMITS, toForm, toPayload, validateForm } from "./zoneForm";
 

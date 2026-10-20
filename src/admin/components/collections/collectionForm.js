@@ -1,5 +1,5 @@
 // Pure helpers for the collection editor: form <-> DB row, rules, schedule, validation.
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { isValidSlug } from "../../../lib/slug";
 
 const e = strings.admin.collections.errors;

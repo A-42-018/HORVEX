@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { Badge } from "../../../components/common";
 import { formatDateTime, formatPhone, formatTaka } from "../../../lib/format";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 
 const t = strings.admin.orders;
 const focusRing = "focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus";

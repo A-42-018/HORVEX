@@ -2,7 +2,7 @@ import { Link, useParams } from "react-router";
 import { ChevronLeft, FileText, Package } from "lucide-react";
 import { Button, Card, Skeleton } from "../../components/common";
 import { formatDateTime } from "../../lib/format";
-import { strings } from "../../lib/strings";
+import { strings } from "../strings";
 import { useAuth } from "../auth/authContext";
 import { CustomerCard, ItemsCard, TotalsCard } from "../components/orders/OrderBody";
 import OrderActionsCard from "../components/orders/OrderActions";

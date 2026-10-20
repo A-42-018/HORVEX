@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Button, Card, Skeleton } from "../../components/common";
-import { strings } from "../../lib/strings";
+import { strings } from "../strings";
 import CouponModal from "../components/coupons/CouponModal";
 import CouponList from "../components/coupons/CouponRows";
 import { couponState } from "../components/coupons/couponForm";

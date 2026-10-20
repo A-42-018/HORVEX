@@ -1,5 +1,5 @@
 // Pure helpers for the category editor: form <-> DB row, validation, parent rules.
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { isValidSlug } from "../../../lib/slug";
 
 const e = strings.admin.categories.errors;

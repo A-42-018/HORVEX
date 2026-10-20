@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { ImagePlus, Trash2 } from "lucide-react";
 import { Button } from "../../../components/common";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { COLLECTION_BUCKET, COLLECTION_FOLDER } from "../../../services/adminCollections";
 import { useImageUpload } from "../../hooks/useImageUpload";
 

@@ -1,5 +1,5 @@
 import { Outlet, ScrollRestoration } from "react-router";
-import { useEffect } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { useSiteSettings } from "../../hooks/useContent";
 import { useStoreAnalytics } from "../../hooks/useStoreAnalytics";
 import { useUI } from "../../store/ui";
@@ -10,9 +10,11 @@ import MobileMenu from "./MobileMenu";
 import CartDrawer from "./CartDrawer";
 import MobileTabBar from "./MobileTabBar";
 import WhatsAppFab from "./WhatsAppFab";
-import Toaster from "./Toaster";
 import MaintenanceScreen from "./MaintenanceScreen";
 import { Preloader, RouteTransition, SmoothScroll } from "../motion";
+
+// Toasts are rare on the store (bag errors), so sonner stays out of the first load.
+const Toaster = lazy(() => import("./Toaster"));
 
 // Shell for every storefront route: skip link, header, routed page, footer.
 // The base is dark; template sections that are still light carry their own
@@ -52,7 +54,8 @@ function StoreLayout() {
         Skip to main content
       </a>
       <Navbar />
-      <main id="main-content">
+      {/* min-h-svh: the footer starts below the fold, so it doesn't jump (CLS) when a page chunk or its data arrives. */}
+      <main id="main-content" className="min-h-svh">
         <RouteTransition>
           <Outlet />
         </RouteTransition>
@@ -63,7 +66,9 @@ function StoreLayout() {
       <CartDrawer />
       <MobileTabBar />
       <WhatsAppFab />
-      <Toaster />
+      <Suspense fallback={null}>
+        <Toaster />
+      </Suspense>
       <ScrollRestoration />
       <SmoothScroll />
       <Preloader />

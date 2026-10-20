@@ -3,7 +3,7 @@ import { Link } from "react-router";
 import { BellRing, X } from "lucide-react";
 import { IconButton } from "../../../components/common";
 import { formatTaka } from "../../../lib/format";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { useOrderAlerts } from "../../../store/orderAlerts";
 
 const t = strings.admin.alerts;

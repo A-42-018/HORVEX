@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button, Input, Modal } from "../../../components/common";
 import { formatPhone } from "../../../lib/format";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { useBlockPhone, useUnblockPhone } from "../../hooks/useCustomerAdmin";
 import { MAX_REASON, readReason } from "./customerRules";
 

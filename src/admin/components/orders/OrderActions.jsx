@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, Card, Input } from "../../../components/common";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { useSaveOrderDetails } from "../../hooks/useAdminOrders";
 import { ACTION_LIMITS, COURIER_SUGGESTIONS, changedActionColumns, toActionsForm, validateActions } from "./orderActionsForm";
 

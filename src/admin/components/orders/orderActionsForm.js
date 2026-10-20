@@ -1,7 +1,7 @@
 // Pure helpers for the order actions card (roadmap §10, B25c): contact links,
 // courier / tracking / admin-note form <-> DB columns, validation, diffs.
 import { normalizePhone } from "../../../lib/format";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 
 const e = strings.admin.orders.detail.actions.errors;
 

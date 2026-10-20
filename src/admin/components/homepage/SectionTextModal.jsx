@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, Input, Modal } from "../../../components/common";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { useUpdateHomeSection } from "../../hooks/useHomeSectionAdmin";
 import { LIMITS, changedColumns, metaFor, toForm, toPayload, validateForm } from "./homeSections";
 

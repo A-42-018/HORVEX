@@ -1,7 +1,7 @@
 import { MessageCircle, Phone } from "lucide-react";
 import { Button, Card } from "../../../components/common";
 import { formatPhone, formatTaka } from "../../../lib/format";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import CustomerStanding from "../customers/CustomerStanding";
 import { telHref, whatsappHref } from "./orderActionsForm";
 

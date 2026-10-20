@@ -1,6 +1,6 @@
 // Pure helpers for the coupon editor: form <-> DB row, validation, state label.
 import { formatTaka } from "../../../lib/format";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { isoToLocal, localToIso } from "../collections/collectionForm";
 
 const e = strings.admin.coupons.errors;

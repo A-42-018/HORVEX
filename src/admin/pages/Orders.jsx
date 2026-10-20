@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useSearchParams } from "react-router";
 import { Button, Card, Input, Skeleton } from "../../components/common";
-import { strings } from "../../lib/strings";
+import { strings } from "../strings";
 import ExportButton from "../components/export/ExportButton";
 import { OrderCards, OrderTable } from "../components/orders/OrderRows";
 import { ORDER_STATUSES, hasExtraFilters, isBackwards, readFilters } from "../components/orders/orderFilters";

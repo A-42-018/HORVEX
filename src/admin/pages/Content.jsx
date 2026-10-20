@@ -1,7 +1,7 @@
 import { ExternalLink } from "lucide-react";
 import { Link, useSearchParams } from "react-router";
 import { Button } from "../../components/common";
-import { strings } from "../../lib/strings";
+import { strings } from "../strings";
 import AnnouncementsPanel from "../components/content/AnnouncementsPanel";
 import PagesPanel from "../components/content/PagesPanel";
 import { FaqPanel, TestimonialsPanel } from "../components/content/panels";

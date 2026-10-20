@@ -1,5 +1,5 @@
 // Pure helpers for the page editor: form <-> DB row, validation and store paths.
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { changedColumns, orNull, text } from "../homepage/contentRules";
 
 const c = strings.admin.homeContent.common.errors;

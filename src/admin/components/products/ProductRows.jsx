@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { Badge } from "../../../components/common";
 import { formatTaka } from "../../../lib/format";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import QuickToggle from "./QuickToggle";
 import { stockState } from "./productFilters";
 

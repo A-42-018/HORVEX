@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, Input, Modal, Select } from "../../../components/common";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { testimonialHooks } from "../../hooks/useContentAdmin";
 import MediaImageField from "../homepage/MediaImageField";
 import {

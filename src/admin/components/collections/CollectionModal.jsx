@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button, Input, Modal, Skeleton } from "../../../components/common";
 import { slugify } from "../../../lib/slug";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { useCollectionPicks, useRuleCategories, useSaveCollection } from "../../hooks/useCollectionAdmin";
 import CollectionBannerField from "./CollectionBannerField";
 import CollectionPicks from "./CollectionPicks";

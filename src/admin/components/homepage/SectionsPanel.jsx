@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, Card, Skeleton } from "../../../components/common";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import SectionList from "./SectionRows";
 import SectionTextModal from "./SectionTextModal";
 import { dragRow, isLastVisible, metaFor, moveRow } from "./homeSections";

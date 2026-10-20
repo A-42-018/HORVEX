@@ -2,7 +2,7 @@ import { Link, useParams, useSearchParams } from "react-router";
 import { ChevronLeft, Printer } from "lucide-react";
 import { Button, Card, Skeleton } from "../../components/common";
 import { useSiteSettings } from "../../hooks/useContent";
-import { strings } from "../../lib/strings";
+import { strings } from "../strings";
 import { InvoiceSheet, PackingSheet } from "../components/orders/PrintSheet";
 import { isOrderId, readDoc } from "../components/orders/orderPrint";
 import { useAdminOrder } from "../hooks/useAdminOrders";

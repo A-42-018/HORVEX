@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { strings } from "../../lib/strings";
+import { strings } from "../strings";
 import { useAuth } from "./authContext";
 import { hasRole } from "./roles";
 

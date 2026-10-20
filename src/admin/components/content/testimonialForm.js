@@ -1,5 +1,5 @@
 // Pure helpers for the testimonial editor: form <-> DB row and validation.
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { changedColumns, orNull, text } from "../homepage/contentRules";
 
 const c = strings.admin.homeContent.common.errors;

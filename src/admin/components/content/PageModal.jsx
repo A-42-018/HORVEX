@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button, Input, Modal } from "../../../components/common";
 import PageBody from "../../../components/pages/PageBody";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { usePageUpdate } from "../../hooks/useContentAdmin";
 import { PAGE_LIMITS, changedColumns, pageFieldId, pageToForm, pageToPayload, validatePage } from "./pageForm";
 

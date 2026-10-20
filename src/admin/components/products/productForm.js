@@ -1,5 +1,5 @@
 // Pure helpers for the product editor: form <-> DB row, and validation.
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { isValidSlug, slugify } from "../../../lib/slug";
 
 const e = strings.admin.productEditor.errors;

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ArrowDown, ArrowUp, ExternalLink, Pencil, Trash2 } from "lucide-react";
 import { Link } from "react-router";
 import { Button, IconButton } from "../../../components/common";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import QuickToggle from "../products/QuickToggle";
 import { isProtected } from "./categoryForm";
 

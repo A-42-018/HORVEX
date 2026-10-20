@@ -2,15 +2,13 @@ import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router";
 import { Pause, Play } from "lucide-react";
 import { useHeroSlides } from "../../hooks/useContent";
-import { responsiveImage } from "../../lib/images";
+import { heroPreloads, heroSources } from "../../lib/images";
 import { strings } from "../../lib/strings";
 import { Button, Container, Skeleton } from "../common";
 import { BezelRing, LightSweep, Magnetic, MaskReveal, Parallax } from "../motion";
 import { useReducedMotion } from "../../hooks/useMotionPrefs";
 
 const INTERVAL = 6500;
-const DESKTOP_WIDTHS = [1080, 1600, 2560];
-const MOBILE_WIDTHS = [480, 720, 1080];
 const pad = (n) => String(n).padStart(2, "0");
 const fill = (t, vars) => t.replace(/\{(\w+)\}/g, (_, k) => vars[k]);
 
@@ -23,19 +21,8 @@ const headlineSegments = (text) =>
       part.startsWith("*") ? { text: part.slice(1, -1), em: true, className: "italic text-brand" } : { text: part },
     );
 
-// Shared by SlideImage and the LCP preload so both request the same URLs.
-function slideSources(slide) {
-  return {
-    desktop: responsiveImage(slide.image_desktop, { aspect: [16, 9], widths: DESKTOP_WIDTHS }),
-    mobile: responsiveImage(slide.image_mobile || slide.image_desktop, {
-      aspect: slide.image_mobile ? [4, 5] : [16, 9],
-      widths: MOBILE_WIDTHS,
-    }),
-  };
-}
-
-function SlideImage({ slide, priority }) {
-  const { desktop, mobile } = slideSources(slide);
+function SlideImage({ slide, priority, onLoad }) {
+  const { desktop, mobile } = heroSources(slide);
   return (
     <picture>
       <source media="(min-width: 1024px)" srcSet={desktop.srcSet} sizes="100vw" />
@@ -49,6 +36,7 @@ function SlideImage({ slide, priority }) {
         loading={priority ? "eager" : "lazy"}
         fetchPriority={priority ? "high" : undefined}
         decoding={priority ? "sync" : "async"}
+        onLoad={onLoad}
         className="h-full w-full object-cover"
       />
     </picture>
@@ -68,12 +56,24 @@ function Hero() {
   const slides = data ?? [];
   const total = slides.length;
   const [index, setIndex] = useState(0);
+  // Hidden slides share the viewport (opacity 0), so `loading="lazy"` wouldn't
+  // hold their images back: slides [0, mounted) get one. The next slide's image
+  // mounts once the first has loaded, and each change mounts the one after it.
+  const [mounted, setMounted] = useState(1);
   const [paused, setPaused] = useState(false); // user toggle
   const [hold, setHold] = useState(false); // hover / focus
   const reduced = useReducedMotion();
 
   const playing = total > 1 && !paused && !hold && !reduced;
-  const go = useCallback((i) => setIndex(((i % total) + total) % total), [total]);
+  const go = useCallback(
+    (i) => {
+      const next = ((i % total) + total) % total;
+      setIndex(next);
+      setMounted((m) => Math.max(m, next + 2));
+    },
+    [total],
+  );
+  const warmNext = useCallback(() => setMounted((m) => Math.max(m, 2)), []);
 
   // `index` is a dependency so every manual change restarts the timer.
   useEffect(() => {
@@ -85,12 +85,7 @@ function Hero() {
   if (isPending) return <HeroSkeleton />;
   if (!total) return null;
 
-  const first = slideSources(slides[0]);
-  // Same split as SlideImage's <source media>, so each viewport preloads only the image it shows.
-  const preloads = [
-    { image: first.mobile, media: "(max-width: 1023px)" },
-    { image: first.desktop, media: "(min-width: 1024px)" },
-  ].filter((p) => p.image.src);
+  const preloads = heroPreloads(slides[0]);
 
   return (
     <section
@@ -123,7 +118,7 @@ function Hero() {
             >
               <div className="relative aspect-[4/5] w-full overflow-hidden sm:aspect-[4/3] lg:absolute lg:inset-0 lg:aspect-auto">
                 <Parallax>
-                  <SlideImage slide={slide} priority={i === 0} />
+                  {i < mounted && <SlideImage slide={slide} priority={i === 0} onLoad={i === 0 ? warmNext : undefined} />}
                 </Parallax>
                 {active && <LightSweep />}
                 <div className="absolute inset-0 hidden bg-gradient-to-r from-obsidian/85 via-obsidian/40 to-transparent lg:block" aria-hidden="true" />

@@ -1,6 +1,6 @@
 import { Card, Skeleton } from "../../../components/common";
 import { formatDateTime } from "../../../lib/format";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { actorOf } from "./orderStatus";
 
 const t = strings.admin.orders.detail.history;

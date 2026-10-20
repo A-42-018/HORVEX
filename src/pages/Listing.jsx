@@ -37,6 +37,8 @@ function ListingBody({ title, description, crumbs, query, view, useTotal, showCa
             </div>
           </aside>
           <div className="min-w-0">
+            {/* Keeps h1 → h2 → card h3 in order on mobile, where the filter sidebar's h2 is hidden. */}
+            <h2 className="sr-only">{strings.listing.resultsHeading}</h2>
             <div className="mb-6 flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
               <p className="text-small text-muted" aria-live="polite">
                 {data ? strings.listing.showing(shown, total) : ""}

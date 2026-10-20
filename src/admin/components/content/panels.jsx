@@ -1,6 +1,6 @@
 import { Star } from "lucide-react";
 import { Badge } from "../../../components/common";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { faqHooks, testimonialHooks } from "../../hooks/useContentAdmin";
 import ContentPanel from "../homepage/ContentPanel";
 import FaqModal from "./FaqModal";

@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { ArrowDown, ArrowUp, Plus, X } from "lucide-react";
 import { Button, IconButton, Input } from "../../../components/common";
 import { formatTaka } from "../../../lib/format";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { useAdminProducts } from "../../hooks/useAdminProducts";
 import { moveRow } from "../categories/categoryForm";
 

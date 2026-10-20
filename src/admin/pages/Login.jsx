@@ -3,7 +3,7 @@ import { Navigate, useLocation } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { CircleAlert } from "lucide-react";
 import { Button, Input } from "../../components/common";
-import { strings } from "../../lib/strings";
+import { strings } from "../strings";
 import { signIn, signOut } from "../../services/auth";
 import { adminProfileQuery, useAuth } from "../auth/authContext";
 import AdminStatus from "../components/AdminStatus";

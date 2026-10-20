@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, Card, Input, Skeleton } from "../../../components/common";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { useFreeDeliveryThreshold, useSaveFreeDeliveryThreshold } from "../../hooks/useSettingsAdmin";
 import { parseThreshold } from "../settings/settingsForm";
 

@@ -42,6 +42,18 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev", "--", "--port", "5186", "--strictPort"],
       "port": 5186
+    },
+    {
+      "name": "wristory-c4",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--", "--port", "5184", "--strictPort"],
+      "port": 5184
+    },
+    {
+      "name": "wristory-c4-preview",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "preview", "--", "--port", "5187", "--strictPort"],
+      "port": 5187
     }
   ]
 }

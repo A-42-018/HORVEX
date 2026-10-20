@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Check, EyeOff, Trash2, X } from "lucide-react";
 import { Badge, Button, Rating } from "../../../components/common";
 import { formatDateTime } from "../../../lib/format";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { reviewActions } from "./reviewRules";
 
 const t = strings.admin.reviews;

@@ -1,6 +1,6 @@
 import { Navigate, useLocation } from "react-router";
 import { Button } from "../../components/common";
-import { strings } from "../../lib/strings";
+import { strings } from "../strings";
 import AdminStatus from "../components/AdminStatus";
 import { useAuth } from "./authContext";
 

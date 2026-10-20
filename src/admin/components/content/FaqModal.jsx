@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, Input, Modal } from "../../../components/common";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { topicsOf } from "../../../services/adminContent";
 import { faqHooks } from "../../hooks/useContentAdmin";
 import { FAQ_LIMITS, changedColumns, emptyFaqForm, faqFieldId, faqToForm, faqToPayload, validateFaq } from "./faqForm";

@@ -3,7 +3,7 @@ import { Link } from "react-router";
 import { RefreshCw } from "lucide-react";
 import { Badge, Button, Card, Skeleton } from "../../components/common";
 import { formatDateTime, formatTaka } from "../../lib/format";
-import { strings } from "../../lib/strings";
+import { strings } from "../strings";
 import { useDashboard } from "../hooks/useDashboard";
 
 const RevenueChart = lazy(() => import("../components/dashboard/RevenueChart"));

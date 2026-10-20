@@ -1,5 +1,5 @@
 // Pure helpers for the variants editor: DB row <-> form, validation, diffs.
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 
 const e = strings.admin.productEditor.variants.errors;
 

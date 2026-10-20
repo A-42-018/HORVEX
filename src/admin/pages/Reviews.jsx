@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Plus } from "lucide-react";
 import { useSearchParams } from "react-router";
 import { Button, Card, Skeleton } from "../../components/common";
-import { strings } from "../../lib/strings";
+import { strings } from "../strings";
 import ReviewCard from "../components/reviews/ReviewCard";
 import ReviewModal from "../components/reviews/ReviewModal";
 import { ACTION_STATUS, REVIEW_TABS, readReviewFilters } from "../components/reviews/reviewRules";

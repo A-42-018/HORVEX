@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ArrowDown, ArrowUp, Pencil, Plus } from "lucide-react";
 import { Button, Card, IconButton, Skeleton } from "../../../components/common";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { useAnnouncementRows, useSaveAnnouncements } from "../../hooks/useContentAdmin";
 import { RemoveControl } from "../homepage/ContentRows";
 import AnnouncementModal from "./AnnouncementModal";

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button, Input, Modal, Select } from "../../../components/common";
 import { slugify } from "../../../lib/slug";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { useCategoryCrud } from "../../hooks/useCategoryAdmin";
 import CategoryImageField from "./CategoryImageField";
 import {

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Button, Card, Skeleton } from "../../components/common";
-import { strings } from "../../lib/strings";
+import { strings } from "../strings";
 import { moveRow } from "../components/categories/categoryForm";
 import ThresholdCard from "../components/delivery/ThresholdCard";
 import ZoneModal from "../components/delivery/ZoneModal";

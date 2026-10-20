@@ -1,5 +1,5 @@
 import { Card, Input, Select } from "../../../components/common";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import ProductImages from "./ProductImages";
 import ProductVariants from "./ProductVariants";
 import QuickToggle from "./QuickToggle";

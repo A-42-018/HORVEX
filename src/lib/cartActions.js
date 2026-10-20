@@ -1,8 +1,11 @@
-import { toast } from "sonner";
 import { lineKey, useCart } from "../store/cart";
 import { useUI } from "../store/ui";
 import { strings } from "./strings";
 import { flyToBag } from "./flyToBag";
+
+// sonner loads on first use (it's its own chunk, like the <Toaster> that shows it).
+const toast = (message) => import("sonner").then((m) => m.toast(message));
+toast.error = (message) => import("sonner").then((m) => m.toast.error(message));
 
 const FAILURE_COPY = {
   out_of_stock: strings.badge.soldOut,

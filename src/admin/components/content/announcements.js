@@ -1,5 +1,5 @@
 // Pure rules for the announcement-bar messages ([{ text, link? }], roadmap §10).
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { isValidLink, orNull, text } from "../homepage/contentRules";
 
 const c = strings.admin.homeContent.common.errors;

@@ -1,4 +1,4 @@
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 
 const t = strings.admin.alerts;
 

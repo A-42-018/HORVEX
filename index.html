@@ -5,6 +5,10 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#0B0B0C" />
+    <!-- Performance (roadmap §13): the first API call and the hero image start sooner; the display font (headlines) is preloaded. -->
+    <link rel="preconnect" href="%VITE_SUPABASE_URL%" crossorigin />
+    <link rel="preconnect" href="https://images.unsplash.com" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="./node_modules/@fontsource-variable/cormorant-garamond/files/cormorant-garamond-latin-wght-normal.woff2" />
     <!-- seo:start (defaults for crawlers without JS; scripts/prerender.mjs writes per-page tags here, src/main.jsx removes them before React renders its own) -->
     <title data-seo>WRISTORY — Premium Watches</title>
     <meta data-seo name="description" content="WRISTORY — premium wristwatches for men and women. Cash on delivery across Bangladesh." />

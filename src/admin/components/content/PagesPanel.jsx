@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ExternalLink, Pencil } from "lucide-react";
 import { Badge, Button, Card, Skeleton } from "../../../components/common";
 import { formatDateTime } from "../../../lib/format";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { usePageRows } from "../../hooks/useContentAdmin";
 import PageModal from "./PageModal";
 import { pagePath } from "./pageForm";

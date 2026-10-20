@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "../../../components/common";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { useCustomerByPhone } from "../../hooks/useCustomerAdmin";
 import BlockModal from "./BlockModal";
 import { CustomerBadge } from "./CustomerRows";

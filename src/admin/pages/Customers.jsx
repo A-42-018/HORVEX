@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router";
 import { Button, Card, Input, Skeleton } from "../../components/common";
-import { strings } from "../../lib/strings";
+import { strings } from "../strings";
 import BlockModal from "../components/customers/BlockModal";
 import { CustomerCards, CustomerTable } from "../components/customers/CustomerRows";
 import { CUSTOMER_VIEWS, readCustomerFilters } from "../components/customers/customerRules";

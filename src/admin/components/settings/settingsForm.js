@@ -1,6 +1,6 @@
 // Pure helpers for the Settings page: form <-> site_settings row, validation, diff.
 import { normalizePhone } from "../../../lib/format";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 
 const e = strings.admin.settings.errors;
 

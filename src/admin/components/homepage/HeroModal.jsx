@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, Input, Modal } from "../../../components/common";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { HERO_FOLDER } from "../../../services/adminHomeContent";
 import { heroHooks } from "../../hooks/useHomeContentAdmin";
 import DateTimeField from "./DateTimeField";

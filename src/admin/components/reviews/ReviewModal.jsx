@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, Input, Modal, Select } from "../../../components/common";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { useCreateReview, useReviewProducts } from "../../hooks/useReviewAdmin";
 import MediaImageField from "../homepage/MediaImageField";
 import { REVIEW_LIMITS, emptyReviewForm, reviewFieldId, reviewToPayload, validateReview } from "./reviewRules";

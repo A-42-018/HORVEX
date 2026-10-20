@@ -1,28 +1,31 @@
-import { createClient } from "@supabase/supabase-js";
+import { PostgrestClient } from "@supabase/postgrest-js";
 
 // Only the URL and the publishable (anon) key belong in the browser; RLS
 // decides what each request may read or write.
-const url = import.meta.env.VITE_SUPABASE_URL;
-const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-export const isSupabaseConfigured = Boolean(url && anonKey);
+export const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+export const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
 
 if (!isSupabaseConfigured && import.meta.env.DEV) {
   console.warn("Supabase isn't configured: copy .env.example to .env and fill in the URL and anon key.");
 }
 
-/** Creates a client for this project. The admin builds its own one in services/adminClient.js. */
-export const createSupabaseClient = (authOptions) =>
-  isSupabaseConfigured ? createClient(url, anonKey, { auth: authOptions }) : null;
-
 // The storefront client never holds a session. RLS shows admins drafts and
 // hidden rows, so an owner signed in to /admin must still see the shop as a
-// visitor does; the admin session lives in its own client and storage key.
-export const supabase = createSupabaseClient({
-  persistSession: false,
-  autoRefreshToken: false,
-  detectSessionInUrl: false,
-});
+// visitor does; the admin session lives in its own client (services/adminClient.js).
+// The shop only reads tables and calls RPCs, so it talks to PostgREST directly:
+// auth, storage and realtime stay in the admin chunk. The publishable key goes
+// in the query string (the API gateway accepts it there) instead of headers, so
+// plain reads are CORS "simple" requests and skip the preflight round trip.
+function fetchWithKey(input, init) {
+  const target = new URL(input instanceof Request ? input.url : input);
+  target.searchParams.set("apikey", supabaseAnonKey);
+  return fetch(input instanceof Request ? new Request(target, input) : target, init);
+}
+
+export const supabase = isSupabaseConfigured
+  ? new PostgrestClient(`${supabaseUrl.replace(/\/$/, "")}/rest/v1`, { fetch: fetchWithKey })
+  : null;
 
 /**
  * Error thrown by every service. `code` is the server's stable token

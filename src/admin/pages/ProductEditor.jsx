@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router";
 import { ArrowLeft, Copy, ExternalLink } from "lucide-react";
 import { Button, Skeleton } from "../../components/common";
-import { strings } from "../../lib/strings";
+import { strings } from "../strings";
 import { slugify } from "../../lib/slug";
 import { MainFields, MediaFields, SideFields } from "../components/products/ProductFields";
 import {

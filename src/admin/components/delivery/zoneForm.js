@@ -1,6 +1,6 @@
 // Pure helpers for the delivery-zone editor: form <-> DB row, validation, safety rules.
 import { isOutsideDhaka } from "../../../lib/districts";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 
 const e = strings.admin.delivery.errors;
 

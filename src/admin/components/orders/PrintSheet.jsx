@@ -1,5 +1,5 @@
 import { formatDate, formatPhone, formatTaka } from "../../../lib/format";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import { amountToCollect, contactLines, isVoidStatus, lineTotal, unitCount } from "./orderPrint";
 
 const t = strings.admin.orders.detail.print;

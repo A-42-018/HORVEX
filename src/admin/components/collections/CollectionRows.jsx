@@ -3,7 +3,7 @@ import { ArrowDown, ArrowUp, ExternalLink, Pencil, Trash2 } from "lucide-react";
 import { Link } from "react-router";
 import { Badge, Button, IconButton } from "../../../components/common";
 import { formatDateTime, formatTaka } from "../../../lib/format";
-import { strings } from "../../../lib/strings";
+import { strings } from "../../strings";
 import QuickToggle from "../products/QuickToggle";
 import { describeRules, scheduleState } from "./collectionForm";
 
