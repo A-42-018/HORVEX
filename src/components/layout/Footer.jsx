@@ -122,7 +122,8 @@ function Footer() {
 
   return (
     <footer className="section-dark border-t border-line">
-      <Container className="py-16">
+      {/* Extra bottom room so the floating WhatsApp button never covers the last row. */}
+      <Container className="pt-16 pb-24">
         <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-12">
           {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-4 lg:pr-8">
