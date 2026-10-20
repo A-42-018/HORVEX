@@ -41,14 +41,4 @@ export const router = createBrowserRouter([
     HydrateFallback: () => null,
     lazy: async () => ({ Component: (await import("../admin/AdminApp")).default }),
   },
-  // Primitive reference page. The condition is static, so production builds drop it.
-  ...(import.meta.env.DEV
-    ? [
-        {
-          path: "style-guide",
-          HydrateFallback: () => null,
-          lazy: async () => ({ Component: (await import("../pages/StyleGuide")).default }),
-        },
-      ]
-    : []),
 ]);
