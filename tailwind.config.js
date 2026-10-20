@@ -60,6 +60,8 @@ const typography = plugin(({ addComponents }) => {
     ".text-display": typeRole("display", "clamp(2.75rem, 5vw + 1rem, 6.5rem)", "0.95", "-0.01em", "500"),
     ".text-h1": typeRole("display", "clamp(2.25rem, 3.5vw + 1rem, 4rem)", "1.05", "-0.01em", "500"),
     ".text-h2": typeRole("display", "clamp(1.875rem, 2.5vw + 1rem, 3rem)", "1.1", "0", "500"),
+    // Serif card titles in narrow tiles (category row on lg+).
+    ".text-h4": typeRole("display", "clamp(1.5rem, 1vw + 0.875rem, 2rem)", "1.1", "0", "500"),
     ".text-h3": typeRole("sans", "1.375rem", "1.3", "-0.01em", "600"),
     ".text-eyebrow": typeRole("sans", "0.75rem", "1", "0.28em", "600", {
       textTransform: "uppercase",

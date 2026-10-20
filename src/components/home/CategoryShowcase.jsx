@@ -53,11 +53,11 @@ function CategoryTile({ category, index }) {
 
         {/* tokens-dark keeps the label readable on the photo even in an ivory section */}
         <div
-          className={`tokens-dark relative z-10 flex items-end justify-between gap-3 p-5 transition-transform duration-base ease-out ${CAN_HOVER}:translate-y-2 ${CAN_HOVER}:group-hover:translate-y-0 group-focus-visible:translate-y-0`}
+          className={`tokens-dark relative z-10 flex items-end justify-between gap-3 p-5 lg:p-4 xl:p-5 transition-transform duration-base ease-out ${CAN_HOVER}:translate-y-2 ${CAN_HOVER}:group-hover:translate-y-0 group-focus-visible:translate-y-0`}
         >
           <div className="flex min-w-0 flex-col gap-1">
-            <h3 className="text-h3 text-fg">{category.name}</h3>
-            <span className="text-eyebrow text-muted">{strings.categories.shop}</span>
+            <h3 className="text-h2 text-balance text-fg lg:text-h4">{category.name}</h3>
+            <span className="whitespace-nowrap text-button text-muted">{strings.categories.shop}</span>
           </div>
           <ArrowUpRight
             aria-hidden="true"
