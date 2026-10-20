@@ -175,8 +175,12 @@ function Footer() {
                   </ContactRow>
                 )}
                 {whatsapp && (
-                  <ContactRow icon={WhatsAppGlyph} href={`https://wa.me/${whatsapp.slice(1)}`} external>
-                    {t.whatsapp} {formatPhone(whatsapp)}
+                  <ContactRow
+                    icon={WhatsAppGlyph}
+                    href={`https://wa.me/${whatsapp.slice(1)}?text=${encodeURIComponent(strings.whatsapp.message)}`}
+                    external
+                  >
+                    {t.whatsapp}
                   </ContactRow>
                 )}
                 {email && (

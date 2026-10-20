@@ -57,7 +57,7 @@ function Contact() {
             <Card
               icon={WhatsAppGlyph}
               label={t.whatsapp}
-              value={formatPhone(whatsapp)}
+              value={t.whatsappValue}
               href={`https://wa.me/${whatsapp.slice(1)}?text=${encodeURIComponent(strings.whatsapp.message)}`}
               external
             />
