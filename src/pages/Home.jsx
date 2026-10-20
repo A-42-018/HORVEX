@@ -1,4 +1,6 @@
-import { useHomeSections } from "../hooks/useContent";
+import { useHomeSections, useSiteSettings } from "../hooks/useContent";
+import { organizationLd, websiteLd } from "../lib/seo";
+import { JsonLd, SITE_URL, Seo } from "../components/seo";
 import {
   Hero,
   TrustMarquee,
@@ -53,6 +55,7 @@ const DEFAULT_ORDER = [
 
 function Home() {
   const { data, isError } = useHomeSections();
+  const { data: settings } = useSiteSettings();
   const keys =
     !isError && data
       ? [...data].sort((a, b) => a.sort_order - b.sort_order).map((row) => row.key)
@@ -60,6 +63,9 @@ function Home() {
 
   return (
     <>
+      <Seo path="/" />
+      <JsonLd data={organizationLd(settings, SITE_URL)} />
+      <JsonLd data={websiteLd(settings, SITE_URL)} />
       {keys.map((key) => {
         const Section = SECTIONS[key];
         return Section ? <Section key={key} /> : null;

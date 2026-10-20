@@ -4,6 +4,7 @@ import PageBody from "../components/pages/PageBody";
 import { usePage } from "../hooks/useContent";
 import { formatDate } from "../lib/format";
 import { strings } from "../lib/strings";
+import { Seo } from "../components/seo";
 
 const t = strings.policy;
 
@@ -26,7 +27,7 @@ function Policy() {
   if (isError || !page) {
     return (
       <Container className="flex flex-col items-center gap-6 py-section-sm text-center lg:py-section">
-        <title>{`${isError ? t.failed : t.notFoundTitle} | WRISTORY`}</title>
+        <Seo title={isError ? t.failed : t.notFoundTitle} noindex />
         <SectionHeading
           eyebrow={isError ? undefined : strings.notFound.eyebrow}
           title={isError ? t.failed : t.notFoundTitle}
@@ -47,8 +48,7 @@ function Policy() {
 
   return (
     <section className="py-section-sm lg:py-section">
-      <title>{`${page.title} | WRISTORY`}</title>
-      {page.seo_desc && <meta name="description" content={page.seo_desc} />}
+      <Seo title={page.title} description={page.seo_desc || page.content} />
       <Container className="max-w-3xl">
         <SectionHeading as="h1" eyebrow={t.eyebrow} title={page.title} />
         {page.updated_at && <p className="mt-4 text-center text-small text-muted">{t.updated(formatDate(page.updated_at))}</p>}

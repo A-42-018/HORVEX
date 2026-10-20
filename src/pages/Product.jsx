@@ -2,10 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router";
 import { Container, Price, Skeleton } from "../components/common";
 import { BuyActions, ProductGallery, ProductTabs, QuantityStepper, RecentlyViewed, RelatedProducts, StickyBuyBar, StockLine, TrustRow, VariantPicker } from "../components/product";
-import { useProduct } from "../hooks/useCatalog";
+import { useProduct, useProductReviews } from "../hooks/useCatalog";
+import { useSiteSettings } from "../hooks/useContent";
 import { MAX_QTY_PER_LINE } from "../store/cart";
 import { useRecentlyViewed } from "../store/recentlyViewed";
 import { strings } from "../lib/strings";
+import { EVENTS, track } from "../lib/analytics";
+import { breadcrumbLd, productLd } from "../lib/seo";
+import { JsonLd, SITE_URL, Seo } from "../components/seo";
 import NotFound from "./NotFound";
 
 // PDP shell. Gallery is B14a/B14b; buy box fills in across B15a (variants/stock,
@@ -38,6 +42,13 @@ function BuyBox({ product, selected, onSelect, qty, onQtyChange, orderRef }) {
   );
 }
 
+// Home › Shop › Category › Product, for BreadcrumbList.
+const productCrumbs = (product) => [
+  { name: strings.listing.shop, path: "/shop" },
+  ...(product.category ? [{ name: product.category.name, path: `/category/${product.category.slug}` }] : []),
+  { name: product.name, path: `/product/${product.slug}` },
+];
+
 function ProductDetail({ product }) {
   const { variants = [] } = product;
   const [selected, setSelected] = useState(() => variants.find((v) => v.stock > 0) ?? variants[0] ?? null);
@@ -45,9 +56,21 @@ function ProductDetail({ product }) {
   const orderRef = useRef(null);
   const inStock = (selected ? selected.stock : product.stock) > 0;
   const addRecent = useRecentlyViewed((s) => s.add);
+  const { data: settings } = useSiteSettings();
+  // Same cached query as the Reviews tab; feeds AggregateRating.
+  const { data: rating } = useProductReviews(product.id);
 
   // Remember this watch for the "Recently viewed" strip (survives refresh via persist).
   useEffect(() => addRecent(product.id), [addRecent, product.id]);
+
+  // view_item once per product (the ref also survives StrictMode's effect replay).
+  const { id, name, price, category } = product;
+  const viewed = useRef(null);
+  useEffect(() => {
+    if (viewed.current === id) return;
+    viewed.current = id;
+    track(EVENTS.viewItem, { item_id: id, item_name: name, item_category: category?.name, price });
+  }, [id, name, price, category?.name]);
 
   const selectVariant = (variant) => {
     setSelected(variant);
@@ -56,7 +79,15 @@ function ProductDetail({ product }) {
 
   return (
     <>
-      <title>{`${product.name} | WRISTORY`}</title>
+      <Seo
+        title={product.seo_title || product.name}
+        description={product.seo_desc || product.short_desc || product.description}
+        image={product.images[0]?.url}
+        path={`/product/${product.slug}`}
+        product={{ price: product.price }}
+      />
+      <JsonLd data={productLd(product, { siteUrl: SITE_URL, settings, rating })} />
+      <JsonLd data={breadcrumbLd(productCrumbs(product), SITE_URL)} />
       <Container className="py-8 lg:py-12">
         <div className="lg:grid lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-12">
           <ProductGallery

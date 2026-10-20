@@ -4,6 +4,7 @@ import { Button, Container, Reveal, SectionHeading, Skeleton } from "../componen
 import PageBody from "../components/pages/PageBody";
 import { usePage } from "../hooks/useContent";
 import { strings } from "../lib/strings";
+import { Seo } from "../components/seo";
 
 const t = strings.about;
 const ICONS = [ScanSearch, Gem, HandCoins, ShieldCheck];
@@ -14,8 +15,7 @@ function About() {
 
   return (
     <>
-      <title>{`${title} | WRISTORY`}</title>
-      {page?.seo_desc && <meta name="description" content={page.seo_desc} />}
+      <Seo title={title} description={page?.seo_desc || page?.content} />
 
       <section className="py-section-sm lg:py-section">
         <Container className="max-w-3xl">

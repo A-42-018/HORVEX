@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import { ShoppingBag } from "lucide-react";
 import { Button, Container, SectionHeading, Skeleton } from "../components/common";
@@ -11,6 +11,7 @@ import { formatTaka } from "../lib/format";
 import { saveLastOrder } from "../lib/lastOrder";
 import { EVENTS, track } from "../lib/analytics";
 import { strings } from "../lib/strings";
+import { Seo } from "../components/seo";
 
 const t = strings.checkout;
 const FORM_ID = "checkout-form";
@@ -52,6 +53,24 @@ function CheckoutBody({ zones, lines, state }) {
       setApplied("");
     }
   }, [error]);
+
+  // begin_checkout once per visit (the ref also survives StrictMode's effect replay).
+  const checkoutTracked = useRef(false);
+  useEffect(() => {
+    if (checkoutTracked.current) return;
+    checkoutTracked.current = true;
+    track(EVENTS.beginCheckout, {
+      currency: "BDT",
+      value: estimate,
+      items: lines.map((l) => ({
+        item_id: l.productId,
+        item_name: l.name,
+        item_variant: l.variantName ?? undefined,
+        price: l.price,
+        quantity: l.qty,
+      })),
+    });
+  }, [estimate, lines]);
 
   // Lift the WhatsApp button and pad the page for the sticky confirm bar (< lg).
   useEffect(() => {
@@ -209,7 +228,7 @@ function Checkout() {
 
   return (
     <Container className="py-section-sm lg:py-section">
-      <title>{`${t.title} | WRISTORY`}</title>
+      <Seo title={t.title} noindex />
       <SectionHeading as="h1" eyebrow={t.eyebrow} title={t.title} subtitle={t.intro} align="left" className="mb-10" />
       {lines.length > 0 && (
         <Button as={Link} to="/cart" variant="link" className="mb-8">
