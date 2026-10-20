@@ -30,7 +30,7 @@ function TrackOrder() {
   // What was last submitted; the lookup only runs for this pair.
   const [query, setQuery] = useState({ phone: "", orderNumber: "" });
 
-  const { data: order, isFetching, isError } = useTrackOrder(query);
+  const { data: order, isFetching, isError, error } = useTrackOrder(query);
   const searched = Boolean(query.phone && query.orderNumber);
 
   const submit = (event) => {
@@ -84,7 +84,7 @@ function TrackOrder() {
 
           {searched && !isFetching && isError && (
             <p role="alert" className="text-body text-danger">
-              {t.failed}
+              {error?.code === "rate_limited" ? t.rateLimited : t.failed}
             </p>
           )}
 
