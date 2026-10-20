@@ -14,6 +14,12 @@ begin
 end;
 $$;
 
+-- Fail early with a clear message if the migrations haven't been applied.
+select pg_temp.expect('trigger orders_restock_on_cancel missing: apply 20261020140000_restock_on_cancel.sql first',
+  exists (select 1 from pg_trigger where tgname = 'orders_restock_on_cancel' and tgrelid = 'public.orders'::regclass));
+select pg_temp.expect('admin_activity_log has no p_offset: apply 20261020150000_admin_list_offsets.sql first',
+  exists (select 1 from pg_proc where proname = 'admin_activity_log' and pronamespace = 'public'::regnamespace and pronargs = 3));
+
 do $$
 declare
   p_plain uuid;
