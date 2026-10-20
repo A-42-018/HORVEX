@@ -24,6 +24,7 @@ function CheckoutForm({
   confirmLabel = t.confirm,
   confirmDisabled = false,
   submitting = false,
+  prefill = null, // signed-in customer's { name, phone, email } (C6b)
   children,
 }) {
   const zoneById = useMemo(() => new Map(zones.map((z) => [String(z.id), z])), [zones]);
@@ -35,6 +36,7 @@ function CheckoutForm({
     control,
     handleSubmit,
     watch,
+    getValues,
     setValue,
     formState: { errors },
   } = useForm({
@@ -60,6 +62,14 @@ function CheckoutForm({
   useEffect(() => {
     if (!zoneById.has(zoneId) && zones.length > 0) setValue("zoneId", String(zones[0].id));
   }, [zoneById, zones, zoneId, setValue]);
+
+  // Fill in what a signed-in customer saved, without overwriting anything typed already.
+  useEffect(() => {
+    if (!prefill) return;
+    for (const key of ["name", "phone", "email"]) {
+      if (prefill[key] && !getValues(key)) setValue(key, prefill[key]);
+    }
+  }, [prefill, getValues, setValue]);
 
   // Lets the page quote the zone the shopper has picked right now.
   useEffect(() => {

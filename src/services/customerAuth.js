@@ -1,9 +1,11 @@
 import { AuthClient } from "@supabase/auth-js";
 import { PostgrestClient } from "@supabase/postgrest-js";
 import { ServiceError, createServiceHelpers, isSupabaseConfigured, supabaseAnonKey, supabaseUrl } from "./supabase";
+import { CUSTOMER_AUTH_KEY } from "../lib/customerSession";
 
 // Optional customer accounts (C6b). Import this only from the account pages
-// (services/account.js, hooks/useAccount.js) so auth-js loads with that chunk.
+// (services/account.js, hooks/useAccount.js) so auth-js loads with that chunk;
+// checkout imports it dynamically, and only when a customer is signed in.
 // Separate from both the anonymous storefront client (catalog reads stay
 // anon, so an admin who is also a customer still sees the shop as a visitor)
 // and the admin client (own storage key). A customer is an `authenticated`
@@ -37,7 +39,7 @@ const auth = isSupabaseConfigured
   ? new AuthClient({
       url: `${base}/auth/v1`,
       headers: { Authorization: `Bearer ${supabaseAnonKey}`, apikey: supabaseAnonKey },
-      storageKey: "wristory-customer-auth",
+      storageKey: CUSTOMER_AUTH_KEY,
       persistSession: true,
       autoRefreshToken: true,
       // Implicit flow: the email link works on another device or browser
@@ -76,8 +78,9 @@ const authError = (error) =>
 const redirect = (path) => `${window.location.origin}${path}`;
 
 /**
- * Creates the account. Returns { session, needsConfirmation }: with email
- * confirmation on (the default) there's no session until the link is clicked.
+ * Creates the account. Returns { session, needsConfirmation }. "Confirm email"
+ * is off for this store, so the customer is signed in at once; if it's ever
+ * switched on, there's no session until the link is clicked.
  */
 export async function signUp({ name, email, password }) {
   const { data, error } = await authClient().signUp({
@@ -93,6 +96,13 @@ export async function signIn({ email, password }) {
   const { data, error } = await authClient().signInWithPassword({ email, password });
   if (error) throw authError(error);
   return data.session;
+}
+
+/** The stored session's user (refreshed if needed), or null. */
+export async function currentUser() {
+  if (!auth) return null;
+  const { data } = await auth.getSession();
+  return data.session?.user ?? null;
 }
 
 /** Signs out this browser only. */

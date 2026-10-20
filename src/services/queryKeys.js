@@ -76,6 +76,7 @@ export const queryKeys = {
     all: ["account"],
     profile: (userId) => ["account", "profile", userId],
     orders: (userId) => ["account", "orders", userId],
+    checkoutPrefill: () => ["account", "checkoutPrefill"],
   },
   auth: {
     all: ["auth"],

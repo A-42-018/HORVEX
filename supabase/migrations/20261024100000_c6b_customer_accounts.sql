@@ -3,12 +3,14 @@
 -- every admin policy and function already treats them like anon (is_admin() is
 -- false). This migration only adds what a customer may touch:
 -- 1. customer_profiles: name + phone, each customer reads and writes their own row.
--- 2. my_orders(): the customer's orders, matched on their *confirmed* account
---    email (orders.email from checkout). Guest checkout is unchanged; orders
---    still carry no user id. Only summary columns come back (no address).
+-- 2. orders.user_id: set by place_order from the caller's token (auth.uid()) when a
+--    signed-in customer checks out. Guests (anon) get null. There is no argument
+--    for it, so nobody can attach an order to another account.
+-- 3. my_orders(): the caller's own orders (user_id = auth.uid()), summary columns only.
+--    Not matched on email: with "Confirm email" off, anyone could sign up with
+--    someone else's address.
 -- Apply after 20261023100000_contact_details.sql. Test: tests/c6b_customer_accounts_check.sql.
--- Also (👤 dashboard): turn public sign-ups back on and set the site URL /
--- redirect URLs, see supabase/README.md "Customer accounts".
+-- Also (👤 dashboard): sign-ups on, "Confirm email" off, see supabase/README.md "Customer accounts".
 
 -- ---------------------------------------------------------------------------
 -- 1. Profiles
@@ -47,12 +49,69 @@ create policy "update: own" on public.customer_profiles
   using (user_id = (select auth.uid())) with check (user_id = (select auth.uid()));
 
 -- ---------------------------------------------------------------------------
--- 2. Order history by confirmed email
+-- 2. Orders placed while signed in
 -- ---------------------------------------------------------------------------
-create index if not exists orders_email_lower_created_idx
-  on public.orders (lower(email), created_at desc) where email is not null;
+alter table public.orders
+  add column if not exists user_id uuid references auth.users (id) on delete set null;
+create index if not exists orders_user_created_idx
+  on public.orders (user_id, created_at desc) where user_id is not null;
+-- (C5's column grants already keep user_id out of the API's UPDATE rights.)
 
-create or replace function public.my_orders(p_limit integer default 20)
+-- The C5 wrapper, plus: a signed-in caller's order is linked to their account.
+-- place_order_checked (the engine) is unchanged.
+create or replace function public.place_order(
+  p_items         jsonb,
+  p_zone_id       uuid,
+  p_customer_name text,
+  p_phone         text,
+  p_address       text,
+  p_district      text default null,
+  p_email         text default null,
+  p_note          text default null,
+  p_coupon_code   text default null,
+  p_website       text default null
+)
+returns jsonb
+language plpgsql
+volatile
+security definer
+set search_path = ''
+as $$
+declare
+  v_ip  text := host(public.request_ip());
+  v_uid uuid := auth.uid();
+  r     jsonb;
+begin
+  if public.coupon_locked(p_coupon_code) then
+    raise exception using errcode = 'P0001', message = 'invalid_coupon';
+  end if;
+  begin
+    r := public.place_order_checked(p_items, p_zone_id, p_customer_name, p_phone, p_address,
+                                    p_district, p_email, p_note, p_coupon_code, p_website);
+  exception when raise_exception then
+    if sqlerrm = 'invalid_coupon' and v_ip is not null then
+      perform public.note_attempt('coupon_miss', v_ip);
+      return jsonb_build_object('error', 'invalid_coupon');
+    end if;
+    raise;
+  end;
+  if v_uid is not null and r ? 'order_id' and exists (select 1 from auth.users u where u.id = v_uid) then
+    update public.orders set user_id = v_uid where id = (r ->> 'order_id')::uuid;
+  end if;
+  return r;
+end;
+$$;
+
+revoke execute on function public.place_order(jsonb, uuid, text, text, text, text, text, text, text, text)
+  from public, anon, authenticated;
+grant execute on function public.place_order(jsonb, uuid, text, text, text, text, text, text, text, text)
+  to anon, authenticated;
+
+-- ---------------------------------------------------------------------------
+-- 3. Order history
+-- ---------------------------------------------------------------------------
+drop function if exists public.my_orders(integer);
+create function public.my_orders(p_limit integer default 20)
 returns table (
   order_number text,
   status       text,
@@ -65,18 +124,11 @@ stable
 security definer
 set search_path = ''
 as $$
-  with me as (
-    -- The address only counts once Supabase has confirmed it (an unconfirmed
-    -- sign-up must not see orders placed with someone else's email).
-    select lower(u.email) as email
-    from auth.users u
-    where u.id = auth.uid() and u.email_confirmed_at is not null and u.email is not null
-  )
   select o.order_number, o.status, o.total,
          (select coalesce(sum(oi.qty), 0)::int from public.order_items oi where oi.order_id = o.id),
          o.created_at
   from public.orders o
-  join me on lower(o.email) = me.email
+  where o.user_id = auth.uid()
   order by o.created_at desc
   limit least(greatest(coalesce(p_limit, 20), 1), 50);
 $$;

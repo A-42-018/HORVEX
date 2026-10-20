@@ -49,8 +49,12 @@ function Register() {
   const passwordRef = useRef(null);
   const confirmRef = useRef(null);
 
-  // Confirmation switched off in Supabase: sign-up signs straight in.
-  if (session) return <Navigate to={state?.from ?? "/account"} replace />;
+  // "Confirm email" is off: sign-up signs straight in and lands on the account page.
+  if (session) {
+    const notice = signUp.isSuccess ? "welcome" : undefined;
+    return <Navigate to={state?.from ?? "/account"} replace state={{ notice }} />;
+  }
+  // Fallback if confirmation is ever switched back on: no session until the link is clicked.
   if (signUp.isSuccess && signUp.data.needsConfirmation) {
     return (
       <AuthShell title={t.register.title}>

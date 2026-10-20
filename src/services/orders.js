@@ -1,4 +1,5 @@
 import { ServiceError, rpc } from "./supabase";
+import { hasStoredCustomerSession } from "../lib/customerSession";
 
 // Thin wrappers over the A4 order engine (supabase/README.md → "Order engine").
 // The server re-prices everything; the client only sends ids and quantities.
@@ -25,9 +26,18 @@ export async function quoteOrder({ lines, zoneId, couponCode }) {
   }));
 }
 
+// A signed-in customer places the order with their token, so place_order links
+// it to their account (C6b). Guests keep the anonymous client; auth-js only
+// loads when there's a stored customer session.
+async function placeOrderRpc() {
+  if (!hasStoredCustomerSession()) return rpc;
+  return (await import("./customerAuth")).rpc;
+}
+
 /** Creates the order. `website` is the honeypot field's value (empty for real customers). */
 export async function placeOrder({ lines, zoneId, couponCode, name, phone, address, district, email, note, website }) {
-  return engineResult(await rpc("place_order", {
+  const call = await placeOrderRpc();
+  return engineResult(await call("place_order", {
     p_items: toOrderItems(lines),
     p_zone_id: zoneId,
     p_customer_name: name,
