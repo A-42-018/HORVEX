@@ -17,11 +17,12 @@ const NAV_LINKS = [
   { to: "/category/women", label: strings.nav.women },
 ];
 
-function Counter({ value }) {
+function Counter({ value, bag = false }) {
   if (value < 1) return null;
   return (
     <span
       aria-hidden="true"
+      data-bag-count={bag || undefined}
       className="pointer-events-none absolute -right-0.5 -top-0.5 flex h-[1.125rem] min-w-[1.125rem] items-center justify-center rounded-pill bg-gold px-1 text-badge tracking-normal text-obsidian tabular-nums"
     >
       {value > 99 ? "99+" : value}
@@ -133,11 +134,12 @@ function Navbar() {
               type="button"
               aria-label={strings.nav.bag(cartCount)}
               onClick={openCart}
+              data-bag-target
               className="relative inline-flex h-11 min-w-11 items-center justify-center gap-2 rounded-pill px-3 text-fg transition-colors duration-fast hover:bg-fg/10 active:scale-95"
             >
               <span className="relative">
                 <ShoppingBag {...ICON} />
-                <Counter value={cartCount} />
+                <Counter value={cartCount} bag />
               </span>
               {cartCount > 0 && (
                 <span className="hidden text-small font-semibold tabular-nums xl:inline">{formatTaka(cartEstimate)}</span>

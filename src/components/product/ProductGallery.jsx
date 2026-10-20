@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, Maximize2 } from "lucide-react";
 import { IconButton } from "../common";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { responsiveImage } from "../../lib/images";
+import { prefersReducedMotion } from "../../lib/motion";
 import { strings } from "../../lib/strings";
 import GalleryLightbox from "./GalleryLightbox";
 
@@ -63,7 +64,7 @@ function MobileCarousel({ list, name, index, onIndex, onOpen, eager }) {
   }, [index]);
 
   const scrollToSlide = (i) =>
-    trackRef.current?.scrollTo({ left: i * slideWidth(), behavior: "smooth" });
+    trackRef.current?.scrollTo({ left: i * slideWidth(), behavior: prefersReducedMotion() ? "auto" : "smooth" });
 
   return (
     <div className="relative lg:hidden">

@@ -1,5 +1,6 @@
 import { Button, Reveal, Skeleton } from "../common";
 import ProductCard from "../home/ProductCard";
+import { staggerDelay } from "../../lib/motion";
 import { strings } from "../../lib/strings";
 
 // Same columns as every product listing. Keep in sync with nothing else:
@@ -61,7 +62,7 @@ function ProductGrid({ query, skeletons = 8, label, emptyMessage = strings.data.
       {data.items.map((product, i) => (
         <li key={product.id}>
           {reveal ? (
-            <Reveal delay={(i % 4) * 80}>
+            <Reveal delay={staggerDelay(i % 4)}>
               <ProductCard product={product} />
             </Reveal>
           ) : (

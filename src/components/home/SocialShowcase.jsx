@@ -3,6 +3,7 @@ import { Container, Reveal, SectionHeading } from "../common";
 import { InstagramIcon } from "../layout/icons";
 import { useHomeSections, useSiteSettings } from "../../hooks/useContent";
 import { responsiveImage } from "../../lib/images";
+import { staggerDelay } from "../../lib/motion";
 import { strings } from "../../lib/strings";
 
 // Instagram / Facebook grid (roadmap §6.1 #13): up to 6 square tiles linked to
@@ -56,7 +57,7 @@ function SocialShowcase() {
                   href={post.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  delay={Math.min(i, 5) * 60}
+                  delay={staggerDelay(i)}
                   aria-label={strings.social.viewPost(i + 1)}
                   className="group relative block aspect-square overflow-hidden rounded-card border border-line bg-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
                 >

@@ -1,7 +1,8 @@
-import { memo } from "react";
+import { memo, useRef } from "react";
 import { Link } from "react-router";
-import { Heart, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Badge, Button, Price } from "../common";
+import { HeartBurst, LightSweep } from "../motion";
 import { discountPercent } from "../../lib/format";
 import { responsiveImage } from "../../lib/images";
 import { strings } from "../../lib/strings";
@@ -63,6 +64,8 @@ function ProductCard({ product }) {
   const { id, slug, name, price, compare_at_price: compareAt, images = [], variants = [], stock, category } = product;
   const wishlisted = useWishlist(selectInWishlist(id));
   const toggleWishlist = useWishlist((s) => s.toggle);
+  const imageRef = useRef(null);
+  const add = () => addToBag(product, undefined, { from: imageRef.current });
 
   // Studio shot first; the lifestyle shot (or the next image) is the hover swap.
   const primary = images.find((i) => !i.is_lifestyle) ?? images[0];
@@ -76,7 +79,7 @@ function ProductCard({ product }) {
 
   return (
     <div className="group flex flex-col">
-      <div className="tokens-dark relative aspect-[4/5] overflow-hidden rounded-card bg-carbon">
+      <div ref={imageRef} className="tokens-dark relative aspect-[4/5] overflow-hidden rounded-card bg-carbon">
         <Link to={href} tabIndex={-1} aria-hidden="true" className="absolute inset-0">
           {primary && (
             <CardImage
@@ -93,6 +96,7 @@ function ProductCard({ product }) {
             </span>
           )}
         </Link>
+        <LightSweep mode="hover" />
 
         {badge && (
           <Badge variant={badge.variant} className="absolute left-3 top-3 z-10 bg-obsidian/70 backdrop-blur-sm">
@@ -112,7 +116,7 @@ function ProductCard({ product }) {
               wishlisted ? "text-oxblood" : "text-ink"
             }`}
           >
-            <Heart aria-hidden="true" size={20} strokeWidth={1.5} fill={wishlisted ? "currentColor" : "none"} />
+            <HeartBurst active={wishlisted} />
           </span>
         </button>
 
@@ -130,7 +134,7 @@ function ProductCard({ product }) {
             ) : (
               <button
                 type="button"
-                onClick={() => addToBag(product)}
+                onClick={add}
                 aria-label={strings.product.addToCartNamed(name)}
                 className="absolute bottom-3 right-3 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-gold text-obsidian transition-transform duration-fast active:scale-95 lg:hidden"
               >
@@ -145,7 +149,7 @@ function ProductCard({ product }) {
                   {strings.product.chooseOptions}
                 </Button>
               ) : (
-                <Button size="sm" className="w-full" onClick={() => addToBag(product)}>
+                <Button size="sm" className="w-full" onClick={add}>
                   {strings.product.addToCart}
                 </Button>
               )}

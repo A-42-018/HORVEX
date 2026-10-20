@@ -8,6 +8,7 @@ import ProductCard from "./ProductCard";
 import { useProducts } from "../../hooks/useCatalog";
 import { useHomeSections } from "../../hooks/useContent";
 import { responsiveImage } from "../../lib/images";
+import { prefersReducedMotion } from "../../lib/motion";
 import { strings } from "../../lib/strings";
 
 // "Shop for Him / Shop for Her" (roadmap §6.1 #8). Two editorial panels, each a
@@ -76,10 +77,10 @@ function MiniCarousel({ query, label }) {
       {/* Arrows only help pointer users; touch swipes. Hidden when everything fits. */}
       {(canPrev || canNext) && (
         <div className="hidden items-center justify-end gap-2 md:flex">
-          <IconButton label={strings.himHer.prev} disabled={!canPrev} onClick={() => embla?.scrollPrev()}>
+          <IconButton label={strings.himHer.prev} disabled={!canPrev} onClick={() => embla?.scrollPrev(prefersReducedMotion())}>
             <ChevronLeft aria-hidden="true" size={20} strokeWidth={1.5} />
           </IconButton>
-          <IconButton label={strings.himHer.next} disabled={!canNext} onClick={() => embla?.scrollNext()}>
+          <IconButton label={strings.himHer.next} disabled={!canNext} onClick={() => embla?.scrollNext(prefersReducedMotion())}>
             <ChevronRight aria-hidden="true" size={20} strokeWidth={1.5} />
           </IconButton>
         </div>

@@ -1,9 +1,11 @@
 import { Link } from "react-router";
 import { ArrowUpRight } from "lucide-react";
 import { Container, SectionHeading, Reveal, Skeleton } from "../common";
+import { Parallax } from "../motion";
 import { useCategories } from "../../hooks/useCatalog";
 import { useHomeSections } from "../../hooks/useContent";
 import { responsiveImage } from "../../lib/images";
+import { staggerDelay } from "../../lib/motion";
 import { strings } from "../../lib/strings";
 
 // Shop by Category (roadmap §6.1 #5): 4–5 tall tiles from `categories`
@@ -27,20 +29,22 @@ function CategoryTile({ category, index }) {
   const img = responsiveImage(category.image, { aspect: TILE_ASPECT, widths: TILE_WIDTHS });
 
   return (
-    <Reveal as="li" delay={Math.min(index, 4) * 80} className={itemClass}>
+    <Reveal as="li" delay={staggerDelay(index)} className={itemClass}>
       <Link
         to={`/category/${category.slug}`}
         className="group relative flex aspect-[3/4] flex-col justify-end overflow-hidden rounded-card bg-raised focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
       >
         {img.src && (
-          <img
-            {...img}
-            sizes={SIZES}
-            alt=""
-            loading="lazy"
-            decoding="async"
-            className={`absolute inset-0 h-full w-full object-cover transition-transform duration-slow ease-out ${CAN_HOVER}:group-hover:scale-[1.06]`}
-          />
+          <Parallax>
+            <img
+              {...img}
+              sizes={SIZES}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              className={`absolute inset-0 h-full w-full object-cover transition-transform duration-slow ease-out ${CAN_HOVER}:group-hover:scale-[1.06]`}
+            />
+          </Parallax>
         )}
         <div
           aria-hidden="true"

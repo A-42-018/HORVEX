@@ -1,7 +1,8 @@
 import { toast } from "sonner";
-import { useCart } from "../store/cart";
+import { lineKey, useCart } from "../store/cart";
 import { useUI } from "../store/ui";
 import { strings } from "./strings";
+import { flyToBag } from "./flyToBag";
 
 const FAILURE_COPY = {
   out_of_stock: strings.badge.soldOut,
@@ -13,11 +14,22 @@ const FAILURE_COPY = {
  * The one way to add to the bag from anywhere in the storefront.
  * Success opens the cart drawer (the drawer is the feedback); failure toasts
  * the reason and leaves the drawer alone. Returns the store's { ok, reason?, qty? }.
+ * With `from` (the card image or the clicked button) a thumbnail first flies to
+ * the bag icon, then the drawer opens (at once under reduced motion).
  */
-export function addToBag(product, options) {
+export function addToBag(product, options, { from } = {}) {
   const result = useCart.getState().add(product, options);
-  if (result.ok) useUI.getState().openCart();
-  else toast.error(FAILURE_COPY[result.reason] ?? strings.product.addFailed);
+  if (!result.ok) {
+    toast.error(FAILURE_COPY[result.reason] ?? strings.product.addFailed);
+    return result;
+  }
+  const openCart = () => useUI.getState().openCart();
+  if (!from) openCart();
+  else {
+    const key = lineKey(product.id, options?.variant?.id);
+    const image = useCart.getState().lines.find((l) => l.key === key)?.image;
+    flyToBag(from, image).then(openCart);
+  }
   return result;
 }
 

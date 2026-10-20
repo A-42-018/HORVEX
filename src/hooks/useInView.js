@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { prefersReducedMotion } from "../lib/motion";
 
 /**
  * Tracks whether an element has scrolled into the viewport, once.
@@ -8,14 +9,6 @@ import { useEffect, useRef, useState } from "react";
  * - If the user prefers reduced motion, `inView` starts (and stays) `true` so no
  *   observer is even attached — content just renders in its final state.
  */
-function prefersReducedMotion() {
-  return (
-    typeof window !== "undefined" &&
-    typeof window.matchMedia === "function" &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches
-  );
-}
-
 export function useInView({ threshold = 0.15, rootMargin = "0px 0px -10% 0px" } = {}) {
   const ref = useRef(null);
   const [inView, setInView] = useState(prefersReducedMotion);
