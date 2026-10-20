@@ -553,6 +553,7 @@ const en = {
     },
     notFound: "We couldn't find an order with those details. Check the number and phone, or call us and we'll help.",
     failed: "We couldn't check your order just now. Please try again in a moment.",
+    rateLimited: "Too many lookups that didn't match. Please try again later, or call us and we'll check for you.",
     resultLabel: "Order status",
     placedOn: (date) => `Placed ${date}`,
     steps: {
