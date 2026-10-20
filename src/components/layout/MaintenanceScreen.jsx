@@ -2,6 +2,7 @@ import { Phone } from "lucide-react";
 import { formatPhone, normalizePhone } from "../../lib/format";
 import { strings } from "../../lib/strings";
 import { WhatsAppGlyph } from "./WhatsAppFab";
+import { Seo } from "../seo";
 
 const t = strings.maintenance;
 const linkClass =
@@ -15,7 +16,7 @@ function MaintenanceScreen({ settings }) {
 
   return (
     <main id="main-content" className="flex min-h-screen flex-col items-center justify-center gap-6 bg-surface px-6 py-16 text-center">
-      <title>{`${t.title} | ${brand}`}</title>
+      <Seo title={t.title} description={t.body} noindex />
       <p className="font-display text-h3 uppercase tracking-[0.32em] text-fg">{brand}</p>
       <h1 className="text-h2 text-fg">{t.title}</h1>
       <p className="max-w-md text-body text-muted">{t.body}</p>

@@ -1,14 +1,14 @@
 import { Link } from "react-router";
 import { Button, Container, SectionHeading } from "../components/common";
 import { strings } from "../lib/strings";
+import { Seo } from "../components/seo";
 
 const t = strings.notFound;
 
 function NotFound() {
   return (
     <Container className="flex flex-col items-center gap-8 py-section-sm text-center lg:py-section">
-      <title>{`${t.title} | WRISTORY`}</title>
-      <meta name="robots" content="noindex" />
+      <Seo title={t.title} noindex />
       <SectionHeading as="h1" eyebrow={t.eyebrow} title={t.title} subtitle={t.subtitle} />
       <div className="flex flex-col gap-3 sm:flex-row">
         <Button as={Link} to="/" size="lg">

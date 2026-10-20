@@ -1278,7 +1278,7 @@ const en = {
         socials: { title: "Social links", intro: "Full links starting with https://. Empty ones are hidden in the footer." },
         delivery: { title: "Couriers", intro: "Courier partners listed in the footer. One per line." },
         seo: { title: "Search and sharing", intro: "Default title and description for search results and link previews. Individual pages can override them." },
-        tracking: { title: "Tracking IDs", intro: "Only the IDs are stored here. Events are sent once analytics is switched on (Phase C3)." },
+        tracking: { title: "Tracking IDs", intro: "GA4 and Meta Pixel load on the store with these IDs (page views, product views, add to bag, wishlist, checkout and orders). Leave empty to turn tracking off." },
       },
       fields: {
         maintenance: "Maintenance mode",

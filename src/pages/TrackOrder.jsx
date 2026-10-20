@@ -8,6 +8,7 @@ import { useSiteSettings } from "../hooks/useContent";
 import { useTrackOrder } from "../hooks/useOrders";
 import { formatDate, formatTaka, isValidPhone, normalizePhone } from "../lib/format";
 import { strings } from "../lib/strings";
+import { Seo } from "../components/seo";
 
 const t = strings.trackOrder;
 
@@ -50,7 +51,7 @@ function TrackOrder() {
 
   return (
     <Container className="py-section-sm lg:py-section">
-      <title>{`${t.eyebrow} | WRISTORY`}</title>
+      <Seo title={t.eyebrow} description={t.subtitle} noindex />
       <div className="mx-auto max-w-2xl">
         <SectionHeading as="h1" eyebrow={t.eyebrow} title={t.title} subtitle={t.subtitle} className="text-center" />
 

@@ -7,6 +7,7 @@ import ProductGrid, { ProductCardSkeleton } from "../components/product/ProductG
 import { useProducts, useProductsByIds } from "../hooks/useCatalog";
 import { addToBag } from "../lib/cartActions";
 import { strings } from "../lib/strings";
+import { Seo } from "../components/seo";
 import { useWishlist } from "../store/wishlist";
 
 // Same columns as ProductGrid.
@@ -127,7 +128,7 @@ function Wishlist() {
 
   return (
     <Container className="py-section-sm lg:py-section">
-      <title>{`${copy.title} | WRISTORY`}</title>
+      <Seo title={copy.title} noindex />
       <SectionHeading as="h1" eyebrow={copy.eyebrow} title={copy.title} align="left" className="mb-10" />
       {body}
     </Container>

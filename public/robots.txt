@@ -1,0 +1,9 @@
+# The build (scripts/prerender.mjs) appends the Sitemap line for the live domain.
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /checkout
+Disallow: /cart
+Disallow: /wishlist
+Disallow: /order/
+Disallow: /track-order
