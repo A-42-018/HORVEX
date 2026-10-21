@@ -3,7 +3,7 @@ import { findDistrict } from "./districts";
 import { isValidPhone } from "./format";
 import { strings } from "./strings";
 
-// No eval: the CSP (vercel.json) has no 'unsafe-eval', and zod's JIT probe would log a violation.
+// No eval: the CSP (public/_headers) has no 'unsafe-eval', and zod's JIT probe would log a violation.
 z.config({ jitless: true });
 
 // Mirrors the limits and checks in place_order (supabase/README.md). The server

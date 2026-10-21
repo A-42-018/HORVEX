@@ -1,0 +1,2 @@
+# SPA fallback: real files (prerendered pages, assets) win; anything else gets the app shell.
+/*  /app.html  200

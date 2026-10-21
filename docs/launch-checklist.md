@@ -33,16 +33,16 @@ State of the live project as read from the storefront API on 2026-10-21:
 - [ ] **Backups:** the free plan has no downloadable backups and pauses after a week without traffic. Upgrade to **Pro ($25/mo)** before launch: daily backups kept 7 days, no pausing. Point-in-time recovery (PITR) is a paid add-on on top of Pro; turn it on only if losing up to a day of orders is not acceptable.
 - [ ] Until Pro is on: export the database once a week (Database → Backups, or `pg_dump` with the DB password) and keep a copy off Supabase.
 
-## 3. Domain, Vercel and production env
+## 3. Domain, Cloudflare Pages and production env
 
 - [ ] Buy the domain (`.com.bd` or `.shop`, about ৳1,500–3,000 a year).
-- [ ] Vercel: import the GitHub repo. `vercel.json` already sets install/build/output, the SPA fallback (`/app.html`), caching and the security headers (CSP, HSTS, …). **Use Vercel Pro ($20/mo) for a commercial store**: the free Hobby plan is for non-commercial use only.
-- [ ] Vercel → Settings → Environment Variables (Production and Preview):
+- [ ] Cloudflare dashboard → Workers & Pages → Create → **Pages → Connect to Git** → the GitHub repo. Framework preset None; build command `npm run build`; output directory `dist`; production branch `main`. `public/_redirects` (SPA fallback to `/app.html`) and `public/_headers` (CSP, HSTS, caching) ship inside `dist`. The free plan allows commercial use.
+- [ ] Pages → Settings → Variables and Secrets (Production and Preview; set `NODE_VERSION` = `22` too):
   - `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` (same values as the local `.env`; the anon/publishable key only, never `service_role`).
-  - `VITE_SITE_URL` = `https://<your-domain>` (no trailing slash). Without it, canonicals, `og:url` and `sitemap.xml` use the `*.vercel.app` domain.
-- [ ] Vercel → Domains: add the domain (apex + `www`, redirect one to the other), set the DNS records Vercel shows, wait for the certificate.
+  - `VITE_SITE_URL` = `https://<your-domain>` (no trailing slash). Without it, canonicals, `og:url` and `sitemap.xml` are skipped.
+- [ ] Pages → Custom domains: add the apex and `www` (the domain is already on Cloudflare DNS, so the records are created for you); redirect one to the other with a Redirect Rule.
 - [ ] Redeploy after setting the env vars (they are baked in at build time).
-- [ ] Open the live site with DevTools → Console on home, a product, checkout and `/admin`: no "Content-Security-Policy" errors. If you later add a new image host, video host, chat widget or analytics tool, add its origin to the `Content-Security-Policy` line in `vercel.json`, or it will be blocked.
+- [ ] Open the live site with DevTools → Console on home, a product, checkout and `/admin`: no "Content-Security-Policy" errors. If you later add a new image host, video host, chat widget or analytics tool, add its origin to the `Content-Security-Policy` line in `public/_headers`, or it will be blocked.
 
 ## 4. Analytics and SEO
 
@@ -53,7 +53,7 @@ GA4 and Pixel IDs are **not env vars**: they are read from the database.
 - [ ] GA4 → DebugView and Meta **Pixel Helper** (Chrome extension): browse, add to bag, start checkout; `page_view`, `view_item`, `add_to_cart`, `begin_checkout` arrive. The test order in §7 should show `purchase` / `Purchase` once.
 - [ ] Google **Rich Results Test** on a product URL and `/faq` (Product + FAQ detected, no errors).
 - [ ] Google Search Console: verify the domain, submit `https://<domain>/sitemap.xml`.
-- [ ] After bulk product edits, redeploy (or add a Vercel deploy hook) so prerendered titles/prices in `sitemap.xml` and the page heads refresh.
+- [ ] After bulk product edits, redeploy (or add a Pages deploy hook) so prerendered titles/prices in `sitemap.xml` and the page heads refresh.
 
 ## 5. Content and test data
 
@@ -89,14 +89,14 @@ GA4 and Pixel IDs are **not env vars**: they are read from the database.
 - [ ] Final policies: returns/replacement, warranty, privacy, terms.
 - [ ] Contact: phone and address (WhatsApp, email, Facebook done); Instagram/TikTok links if any.
 - [ ] Courier partner name; Meta Pixel ID; GA4 access.
-- [ ] Domain + Vercel/Supabase account access (or approval to create them in the client's name).
+- [ ] Domain + Cloudflare/Supabase account access (or approval to create them in the client's name).
 - [ ] Lifestyle/hero photos or a shoot budget.
 
 ## 9. Running costs (roadmap §17)
 
 | Item | Cost | Decision |
 |---|---|---|
-| Vercel | Hobby is free but non-commercial; **Pro ~$20/mo** for a store | [ ] pick plan |
+| Cloudflare Pages | Free plan allows commercial use | [x] chosen (moved from Vercel) |
 | Supabase | Free to start; **Pro $25/mo** recommended from launch (daily backups, no pausing); PITR is an extra add-on | [ ] upgrade |
 | Domain `.com.bd` / `.shop` | ~৳1,500–3,000 / year | [ ] buy |
 | Email (Resend), when order emails are added | Free tier | – |

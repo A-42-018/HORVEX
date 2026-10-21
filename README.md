@@ -40,4 +40,4 @@ src/
 
 ## Deployment
 
-Deployed on Vercel. `vercel.json` rewrites every path to `index.html` so client-side routes work on refresh.
+Deployed on Cloudflare Pages (GitHub → Pages, build `npm run build`, output `dist`). `public/_redirects` falls back to `app.html` for client-side routes and `public/_headers` sets the CSP and caching.

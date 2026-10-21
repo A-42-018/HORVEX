@@ -3,7 +3,7 @@ import path from 'node:path'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
-// `vite preview` serves pages like Vercel (vercel.json): a prerendered
+// `vite preview` serves pages like Cloudflare Pages (public/_redirects): a prerendered
 // <route>/index.html (also without the trailing slash), else dist/app.html, the
 // shell without home's hero preload (scripts/prerender.mjs).
 const appShellFallback = {
@@ -23,16 +23,23 @@ const appShellFallback = {
   },
 }
 
-// `vite preview` also sends vercel.json's site-wide headers (CSP etc.), so the
-// production build is checked under the same policy locally.
-const vercelHeaders = Object.fromEntries(
-  JSON.parse(readFileSync(new URL('./vercel.json', import.meta.url), 'utf8'))
-    .headers.find((rule) => rule.source === '/(.*)')
-    .headers.map(({ key, value }) => [key, value]),
+// `vite preview` also sends the site-wide `/*` block of public/_headers (CSP etc.),
+// so the production build is checked under the same policy locally.
+const siteHeaders = Object.fromEntries(
+  readFileSync(new URL('./public/_headers', import.meta.url), 'utf8')
+    .split(/\n(?=\S)/)
+    .find((block) => block.startsWith('/*\n'))
+    .split('\n')
+    .slice(1)
+    .filter((line) => line.trim())
+    .map((line) => {
+      const i = line.indexOf(':')
+      return [line.slice(0, i).trim(), line.slice(i + 1).trim()]
+    }),
 )
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), appShellFallback],
-  preview: { headers: vercelHeaders },
+  preview: { headers: siteHeaders },
 })

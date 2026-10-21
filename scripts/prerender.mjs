@@ -6,7 +6,7 @@
 // - robots.txt with the Sitemap line;
 // - a preload for hero slide 1 in the home page (dist/index.html), so the LCP
 //   image downloads alongside the JS instead of after the API call. Every other
-//   path falls back to dist/app.html (same shell, no hero preload; vercel.json).
+//   path falls back to dist/app.html (same shell, no hero preload; public/_redirects).
 // Data is read with the public anon key (RLS shows only what visitors see).
 // A failed read never fails the build: it warns and writes what it can.
 // Snapshot: price or product changes show in these files after the next deploy.
@@ -31,8 +31,7 @@ import { heroPreloads } from "../src/lib/images.js";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const dist = path.join(root, "dist");
 const env = { ...loadEnv("production", root, ""), ...process.env };
-const vercelHost = env.VERCEL_PROJECT_PRODUCTION_URL;
-const siteUrl = (env.VITE_SITE_URL || (vercelHost ? `https://${vercelHost}` : "")).replace(/\/+$/, "") || null;
+const siteUrl = (env.VITE_SITE_URL || "").replace(/\/+$/, "") || null;
 
 const log = (...args) => console.log("[prerender]", ...args);
 const warn = (...args) => console.warn("[prerender] warning:", ...args);
@@ -237,5 +236,5 @@ if (siteUrl) {
   await writeFile(path.join(dist, "robots.txt"), `${robots.trimEnd()}\n\nSitemap: ${siteUrl}/sitemap.xml\n`);
   log(`sitemap.xml: ${routes.length + 1} URLs on ${siteUrl}`);
 } else {
-  warn("VITE_SITE_URL not set (and not on Vercel); sitemap.xml and canonical URLs skipped.");
+  warn("VITE_SITE_URL not set; sitemap.xml and canonical URLs skipped.");
 }
