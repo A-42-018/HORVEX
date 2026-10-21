@@ -6,7 +6,7 @@
 // - robots.txt with the Sitemap line;
 // - a preload for hero slide 1 in the home page (dist/index.html), so the LCP
 //   image downloads alongside the JS instead of after the API call. Every other
-//   path falls back to dist/app.html (same shell, no hero preload; public/_redirects).
+//   path falls back to dist/app.html (same shell, no hero preload; public/_redirects, served as /app).
 // Data is read with the public anon key (RLS shows only what visitors see).
 // A failed read never fails the build: it warns and writes what it can.
 // Snapshot: price or product changes show in these files after the next deploy.

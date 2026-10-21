@@ -1,2 +1,3 @@
 # SPA fallback: real files (prerendered pages, assets) win; anything else gets the app shell.
-/*  /app.html  200
+# Extensionless on purpose: Pages redirects /app.html -> /app, so rewriting to .html loops.
+/*  /app  200
