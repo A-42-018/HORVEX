@@ -40,4 +40,4 @@ src/
 
 ## Deployment
 
-Deployed on Cloudflare Pages (GitHub → Pages, build `npm run build`, output `dist`). `public/_redirects` falls back to `app.html` for client-side routes and `public/_headers` sets the CSP and caching.
+Deployed on Cloudflare Pages (GitHub → Pages, build `npm run build`, output `dist`). Pages serves `index.html` for client-side routes (no `_redirects`; a `/* /app 200` rewrite also swallowed `/assets`) and `public/_headers` sets the CSP and caching.

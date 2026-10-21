@@ -36,7 +36,7 @@ State of the live project as read from the storefront API on 2026-10-21:
 ## 3. Domain, Cloudflare Pages and production env
 
 - [ ] Buy the domain (`.com.bd` or `.shop`, about ৳1,500–3,000 a year).
-- [ ] Cloudflare dashboard → Workers & Pages → Create → **Pages → Connect to Git** → the GitHub repo. Framework preset None; build command `npm run build`; output directory `dist`; production branch `main`. `public/_redirects` (SPA fallback to `/app.html`) and `public/_headers` (CSP, HSTS, caching) ship inside `dist`. The free plan allows commercial use.
+- [ ] Cloudflare dashboard → Workers & Pages → Create → **Pages → Connect to Git** → the GitHub repo. Framework preset None; build command `npm run build`; output directory `dist`; production branch `main`. `public/_headers` (CSP, HSTS, caching) ship inside `dist`. The free plan allows commercial use.
 - [ ] Pages → Settings → Variables and Secrets (Production and Preview; set `NODE_VERSION` = `22` too):
   - `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` (same values as the local `.env`; the anon/publishable key only, never `service_role`).
   - `VITE_SITE_URL` = `https://<your-domain>` (no trailing slash). Without it, canonicals, `og:url` and `sitemap.xml` are skipped.
